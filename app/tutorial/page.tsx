@@ -124,6 +124,11 @@ export default function TutorialPage() {
             <p className="mb-3">
               「<strong>Propose changes</strong>」をクリックすると、Pull Request作成画面に移ります。
             </p>
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm mb-3">
+              <p className="text-amber-800">
+                <strong>⚠️ 重要:</strong> PR先が <code className="bg-amber-100 px-1 rounded">t0k0shi/git-training-ground</code> になっていることを確認してください。自分のFork内へのPRにならないように注意！
+              </p>
+            </div>
             <div className="bg-gray-50 rounded-lg p-4 text-sm space-y-2 mb-3">
               <p><strong className="text-[#1E293B]">タイトル:</strong> Add YOUR_NAME to contributors</p>
               <p><strong className="text-[#1E293B]">説明欄:</strong> 自己紹介や参加の動機を書くと、レビュアーに喜ばれます。</p>
