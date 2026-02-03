@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('チュートリアルページ', () => {
   test('ページが正常に表示される', async ({ page }) => {
     await page.goto('/tutorial');
-    await expect(page.getByRole('heading', { name: 'チュートリアル' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'はじめてのPRチュートリアル' })).toBeVisible();
   });
 
   test('9つのステップが表示される', async ({ page }) => {

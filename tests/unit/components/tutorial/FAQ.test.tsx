@@ -9,6 +9,10 @@ describe('FAQ', () => {
     expect(screen.getByText('コンフリクトが起きた場合は？')).toBeInTheDocument();
     expect(screen.getByText('CIチェックが失敗した場合は？')).toBeInTheDocument();
     expect(screen.getByText('PRがマージされない場合は？')).toBeInTheDocument();
+    expect(screen.getByText('Gitをインストールしていません')).toBeInTheDocument();
+    expect(screen.getByText('GitHubアカウントが必要ですか？')).toBeInTheDocument();
+    expect(screen.getByText('Forkって何ですか？')).toBeInTheDocument();
+    expect(screen.getByText('prNumberは何を書けばいいですか？')).toBeInTheDocument();
   });
 
   it('初期状態では回答が表示されない', () => {
@@ -20,7 +24,7 @@ describe('FAQ', () => {
   it('クリックで回答が表示される', () => {
     render(<FAQ />);
 
-    const question = screen.getByRole('button', { name: 'コンフリクトが起きた場合は？' });
+    const question = screen.getByRole('button', { name: /コンフリクトが起きた場合は？/ });
     fireEvent.click(question);
 
     expect(screen.getByText(/最新のmainブランチ/)).toBeInTheDocument();
@@ -29,7 +33,7 @@ describe('FAQ', () => {
   it('再クリックで回答が閉じる', () => {
     render(<FAQ />);
 
-    const question = screen.getByRole('button', { name: 'CIチェックが失敗した場合は？' });
+    const question = screen.getByRole('button', { name: /CIチェックが失敗した場合は？/ });
 
     // 1回目クリック: 開く
     fireEvent.click(question);
@@ -43,8 +47,8 @@ describe('FAQ', () => {
   it('別の質問をクリックすると前の回答が閉じる', () => {
     render(<FAQ />);
 
-    const question1 = screen.getByRole('button', { name: 'コンフリクトが起きた場合は？' });
-    const question2 = screen.getByRole('button', { name: 'CIチェックが失敗した場合は？' });
+    const question1 = screen.getByRole('button', { name: /コンフリクトが起きた場合は？/ });
+    const question2 = screen.getByRole('button', { name: /CIチェックが失敗した場合は？/ });
 
     fireEvent.click(question1);
     expect(screen.getByText(/最新のmainブランチ/)).toBeInTheDocument();
@@ -57,7 +61,7 @@ describe('FAQ', () => {
   it('aria-expanded属性が適切に設定される', () => {
     render(<FAQ />);
 
-    const question = screen.getByRole('button', { name: 'コンフリクトが起きた場合は？' });
+    const question = screen.getByRole('button', { name: /コンフリクトが起きた場合は？/ });
 
     expect(question).toHaveAttribute('aria-expanded', 'false');
 
