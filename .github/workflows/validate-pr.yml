@@ -1,0 +1,31 @@
+name: Validate PR
+
+on:
+  pull_request:
+    paths:
+      - 'data/contributors.json'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate JSON Schema
+        run: node scripts/validate-contributors.js
+
+      - name: Check NG Words
+        run: node scripts/check-ng-words.js
+
+      - name: Run tests
+        run: npm test
