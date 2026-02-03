@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { StepGuide } from '@/components/tutorial/StepGuide';
-import { CodeBlock } from '@/components/tutorial/CodeBlock';
 import { FAQ } from '@/components/tutorial/FAQ';
 
 export default function TutorialPage() {
@@ -13,7 +12,7 @@ export default function TutorialPage() {
             はじめてのPRチュートリアル
           </h1>
           <p className="text-lg text-[#64748B]">
-            ステップバイステップで、あなたの最初のPull Requestを作成しましょう。
+            ブラウザだけで完結！Gitのインストール不要で、あなたの最初のPull Requestを作成しましょう。
           </p>
         </div>
       </section>
@@ -21,55 +20,69 @@ export default function TutorialPage() {
       <div className="max-w-3xl mx-auto px-6 py-12">
         {/* 前提条件 */}
         <section className="mb-12 bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-[#1E293B] mb-4">前提条件</h2>
+          <h2 className="text-xl font-bold text-[#1E293B] mb-4">必要なもの</h2>
           <ul className="space-y-3 text-[#64748B]">
             <li className="flex items-start gap-3">
               <span className="text-[#10B981] font-bold mt-0.5">✓</span>
               <span>
-                <strong className="text-[#1E293B]">Git</strong> がインストール済みであること（ターミナルで{' '}
-                <code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm">git --version</code>{' '}
-                を実行して確認できます）
+                <strong className="text-[#1E293B]">GitHub アカウント</strong>（
+                <a href="https://github.com" className="text-[#2563EB] underline" target="_blank" rel="noopener noreferrer">github.com</a>{' '}
+                で無料作成できます）
               </span>
             </li>
             <li className="flex items-start gap-3">
               <span className="text-[#10B981] font-bold mt-0.5">✓</span>
               <span>
-                <strong className="text-[#1E293B]">GitHub アカウント</strong> を持っていること（
-                <a href="https://github.com" className="text-[#2563EB] underline" target="_blank" rel="noopener noreferrer">github.com</a>{' '}
-                で無料作成できます）
+                <strong className="text-[#1E293B]">ブラウザ</strong>（これを読んでいるなら準備OK）
               </span>
             </li>
           </ul>
+          <p className="mt-4 text-sm text-[#64748B]">
+            ※ Gitのインストールは不要です。すべてブラウザ上で完結します。
+          </p>
         </section>
 
         {/* ステップガイド */}
         <div className="space-y-0">
           <StepGuide step={1} title="リポジトリをForkする">
+            <p className="mb-3">
+              まず、<a href="https://github.com/t0k0shi/git-training-ground" className="text-[#2563EB] underline" target="_blank" rel="noopener noreferrer">Git Training Ground のリポジトリ</a>を開きます。
+            </p>
+            <p className="mb-3">
+              右上の「<strong>Fork</strong>」ボタンをクリックしてください。
+            </p>
+            <div className="bg-gray-50 rounded-lg p-4 text-sm">
+              <p className="text-[#64748B]">
+                <strong className="text-[#1E293B]">Forkとは？</strong><br />
+                リポジトリの個人コピーを自分のアカウントに作ることです。元のリポジトリには影響しないので、安心して作業できます。
+              </p>
+            </div>
+          </StepGuide>
+
+          <StepGuide step={2} title="contributors.json を開く">
+            <p className="mb-3">
+              Forkしたリポジトリ（自分のアカウントの git-training-ground）で、<code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm">data/contributors.json</code> を開きます。
+            </p>
             <p>
-              GitHubのリポジトリページで右上の「Fork」ボタンをクリックします。
-              Forkとは、リポジトリの個人コピーを自分のアカウントに作ることです。
-              元のリポジトリには影響しないので、安心して作業できます。
+              ファイル一覧から <strong>data</strong> フォルダ → <strong>contributors.json</strong> の順にクリックしてください。
             </p>
           </StepGuide>
 
-          <StepGuide step={2} title="ローカルにCloneする">
-            <p>Forkしたリポジトリをローカルにクローンします。</p>
-            <CodeBlock code="git clone https://github.com/YOUR_USERNAME/git-training-ground.git" />
-          </StepGuide>
-
-          <StepGuide step={3} title="ブランチを作成する">
-            <p>作業用のブランチを作成します。</p>
-            <CodeBlock code={`cd git-training-ground\ngit checkout -b add-YOUR_NAME`} />
-          </StepGuide>
-
-          <StepGuide step={4} title="contributors.jsonを編集する">
-            <p>
-              <code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm">data/contributors.json</code>{' '}
-              を開き、配列の末尾に自分の情報を追加します。各フィールドの説明は以下の通りです。
+          <StepGuide step={3} title="編集モードに入る">
+            <p className="mb-3">
+              ファイルを開いたら、右上の<strong>鉛筆アイコン（Edit this file）</strong>をクリックします。
             </p>
-            <CodeBlock
-              language="json"
-              code={`{
+            <p className="text-sm text-[#64748B]">
+              編集画面が開き、直接ファイルを書き換えられるようになります。
+            </p>
+          </StepGuide>
+
+          <StepGuide step={4} title="自分の情報を追加する">
+            <p className="mb-3">
+              配列の末尾（最後の <code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm">{'}'}</code> の後ろ）にカンマを追加し、自分の情報を追加します。
+            </p>
+            <div className="bg-[#1E293B] rounded-lg p-4 text-sm font-mono text-white overflow-x-auto mb-4">
+              <pre>{`{
   "name": "your-name",
   "github": "https://github.com/your-name",
   "favoriteColor": "#3B82F6",
@@ -77,8 +90,8 @@ export default function TutorialPage() {
   "message": "はじめてのPR！",
   "joinedAt": "2026-02-03",
   "prNumber": 0
-}`}
-            />
+}`}</pre>
+            </div>
             <div className="bg-gray-50 rounded-lg p-4 text-sm">
               <table className="w-full">
                 <tbody className="divide-y divide-gray-200">
@@ -95,41 +108,50 @@ export default function TutorialPage() {
           </StepGuide>
 
           <StepGuide step={5} title="変更をコミットする">
-            <p>変更をステージングしてコミットします。</p>
-            <CodeBlock code={`git add data/contributors.json\ngit commit -m "Add YOUR_NAME to contributors"`} />
-          </StepGuide>
-
-          <StepGuide step={6} title="リモートにプッシュする">
-            <p>変更をGitHubにプッシュします。</p>
-            <CodeBlock code="git push origin add-YOUR_NAME" />
-          </StepGuide>
-
-          <StepGuide step={7} title="Pull Requestを作成する">
-            <p>
-              GitHubでFork元のリポジトリに対してPull Requestを作成します。
-              「Compare &amp; pull request」ボタンが表示されるのでクリックしてください。
+            <p className="mb-3">
+              編集が終わったら、ページ右上の「<strong>Commit changes...</strong>」ボタンをクリックします。
             </p>
-            <div className="bg-gray-50 rounded-lg p-4 text-sm space-y-2">
-              <p><strong className="text-[#1E293B]">タイトル例:</strong> Add YOUR_NAME to contributors</p>
+            <div className="bg-gray-50 rounded-lg p-4 text-sm space-y-2 mb-3">
+              <p><strong className="text-[#1E293B]">Commit message:</strong> Add YOUR_NAME to contributors</p>
+              <p><strong className="text-[#1E293B]">選択:</strong> 「Create a new branch for this commit and start a pull request」を選ぶ</p>
+            </div>
+            <p className="text-sm text-[#64748B]">
+              ブランチ名は自動で提案されますが、<code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm">add-your-name</code> のようにわかりやすい名前に変えてもOKです。
+            </p>
+          </StepGuide>
+
+          <StepGuide step={6} title="Pull Requestを作成する">
+            <p className="mb-3">
+              「<strong>Propose changes</strong>」をクリックすると、Pull Request作成画面に移ります。
+            </p>
+            <div className="bg-gray-50 rounded-lg p-4 text-sm space-y-2 mb-3">
+              <p><strong className="text-[#1E293B]">タイトル:</strong> Add YOUR_NAME to contributors</p>
               <p><strong className="text-[#1E293B]">説明欄:</strong> 自己紹介や参加の動機を書くと、レビュアーに喜ばれます。</p>
             </div>
+            <p>
+              内容を確認して「<strong>Create pull request</strong>」をクリックしてください。
+            </p>
           </StepGuide>
 
-          <StepGuide step={8} title="CIチェックを待つ">
-            <p>
+          <StepGuide step={7} title="CIチェックを待つ">
+            <p className="mb-3">
               PRを作成すると自動テスト（CI）が実行されます。以下の項目がチェックされます。
             </p>
-            <ul className="list-disc list-inside space-y-1 text-sm">
+            <ul className="list-disc list-inside space-y-1 text-sm mb-3">
               <li>contributors.json のJSON構文チェック</li>
               <li>スキーマバリデーション（必須フィールドの確認）</li>
               <li>NGワードチェック</li>
               <li>ビルドの成功</li>
             </ul>
-            <p className="text-sm">すべてのチェックがパスするのを待ちましょう。失敗した場合はエラーメッセージを確認して修正してください。</p>
+            <p className="text-sm text-[#64748B]">
+              すべてのチェックがパスするのを待ちましょう。失敗した場合はエラーメッセージを確認して修正してください。
+            </p>
           </StepGuide>
 
-          <StepGuide step={9} title="マージを待つ">
-            <p>メンテナーがレビューし、問題なければマージされます。おめでとうございます！</p>
+          <StepGuide step={8} title="マージを待つ">
+            <p>
+              メンテナーがレビューし、問題なければマージされます。おめでとうございます！
+            </p>
           </StepGuide>
         </div>
 
@@ -145,6 +167,32 @@ export default function TutorialPage() {
           >
             トップページを見る
           </Link>
+        </section>
+
+        {/* CLI版への案内 */}
+        <section className="mt-12 bg-white rounded-xl border border-gray-200 p-6">
+          <h2 className="text-lg font-bold text-[#1E293B] mb-3">CLIで操作したい方へ</h2>
+          <p className="text-[#64748B] text-sm mb-4">
+            Gitコマンドを使って操作したい場合は、以下の流れで行えます。
+          </p>
+          <details className="text-sm">
+            <summary className="cursor-pointer text-[#2563EB] font-medium">CLI版の手順を見る</summary>
+            <div className="mt-4 space-y-4 text-[#64748B]">
+              <div>
+                <p className="font-medium text-[#1E293B] mb-1">1. クローン</p>
+                <code className="block bg-gray-100 px-3 py-2 rounded text-sm">git clone https://github.com/YOUR_USERNAME/git-training-ground.git</code>
+              </div>
+              <div>
+                <p className="font-medium text-[#1E293B] mb-1">2. ブランチ作成</p>
+                <code className="block bg-gray-100 px-3 py-2 rounded text-sm">cd git-training-ground && git checkout -b add-YOUR_NAME</code>
+              </div>
+              <div>
+                <p className="font-medium text-[#1E293B] mb-1">3. 編集後、コミット & プッシュ</p>
+                <code className="block bg-gray-100 px-3 py-2 rounded text-sm">git add data/contributors.json && git commit -m &quot;Add YOUR_NAME&quot; && git push origin add-YOUR_NAME</code>
+              </div>
+              <p>その後、GitHub上でPull Requestを作成してください。</p>
+            </div>
+          </details>
         </section>
 
         <FAQ />

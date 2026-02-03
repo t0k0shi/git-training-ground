@@ -9,7 +9,7 @@ describe('TutorialPage', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'はじめてのPRチュートリアル' })).toBeInTheDocument();
   });
 
-  it('9つのステップが表示される', () => {
+  it('8つのステップが表示される', () => {
     render(<TutorialPage />);
 
     expect(screen.getByText('Step 1')).toBeInTheDocument();
@@ -20,22 +20,21 @@ describe('TutorialPage', () => {
     expect(screen.getByText('Step 6')).toBeInTheDocument();
     expect(screen.getByText('Step 7')).toBeInTheDocument();
     expect(screen.getByText('Step 8')).toBeInTheDocument();
-    expect(screen.getByText('Step 9')).toBeInTheDocument();
   });
 
   it('ステップタイトルが表示される', () => {
     render(<TutorialPage />);
 
     expect(screen.getByText('リポジトリをForkする')).toBeInTheDocument();
-    expect(screen.getByText('ローカルにCloneする')).toBeInTheDocument();
+    expect(screen.getByText('contributors.json を開く')).toBeInTheDocument();
     expect(screen.getByText('Pull Requestを作成する')).toBeInTheDocument();
   });
 
-  it('CodeBlockコンポーネントが含まれる', () => {
+  it('CLI版への案内セクションが存在する', () => {
     render(<TutorialPage />);
 
-    expect(screen.getByText(/git clone https:\/\/github.com/)).toBeInTheDocument();
-    expect(screen.getByText(/git checkout -b/)).toBeInTheDocument();
+    expect(screen.getByText('CLIで操作したい方へ')).toBeInTheDocument();
+    expect(screen.getByText('CLI版の手順を見る')).toBeInTheDocument();
   });
 
   it('FAQセクションが存在する', () => {
@@ -47,8 +46,14 @@ describe('TutorialPage', () => {
   it('前提条件セクションが存在する', () => {
     render(<TutorialPage />);
 
-    expect(screen.getByRole('heading', { level: 2, name: '前提条件' })).toBeInTheDocument();
-    expect(screen.getByText('git --version')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: '必要なもの' })).toBeInTheDocument();
     expect(screen.getByText(/GitHub アカウント/)).toBeInTheDocument();
+    expect(screen.getByText(/これを読んでいるなら準備OK/)).toBeInTheDocument();
+  });
+
+  it('Gitインストール不要のメッセージが表示される', () => {
+    render(<TutorialPage />);
+
+    expect(screen.getByText(/Gitのインストールは不要/)).toBeInTheDocument();
   });
 });
