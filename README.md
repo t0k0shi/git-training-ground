@@ -1,42 +1,46 @@
 # Git Training Ground 🎯
 
-A safe place to practice your first Pull Request.
+はじめてのPull Requestを安全に練習できる場所。
 
-## Features
+## インスパイア元
 
-- **Beginner-friendly**: Step-by-step tutorial for creating your first PR
-- **Automated validation**: CI checks ensure your contribution meets the format
-- **Visual showcase**: Your emoji and color are displayed on the site
+このプロジェクトは [first-contributions-ja](https://first-contributions-ja.github.io/) にインスパイアされて作りました。
 
-## Quick Start
+## 特徴
 
-1. Fork this repository
-2. Clone your fork: `git clone https://github.com/YOUR_USERNAME/git-training-ground.git`
-3. Create a branch: `git checkout -b add-YOUR_NAME`
-4. Edit `data/contributors.json` and add your entry
-5. Commit and push your changes
-6. Create a Pull Request
+- **初心者向け**: ステップバイステップのチュートリアル
+- **自動チェック**: CIがフォーマットを検証
+- **達成感**: マージされるとトップページにカードが表示される
 
-See the [Tutorial](https://git-training-ground.vercel.app/tutorial) for detailed instructions.
+## やり方
 
-## Tech Stack
+1. このリポジトリをFork
+2. クローン: `git clone https://github.com/YOUR_USERNAME/git-training-ground.git`
+3. ブランチ作成: `git checkout -b add-YOUR_NAME`
+4. `data/contributors.json` に自分の情報を追加
+5. コミット & プッシュ
+6. Pull Requestを作成
 
-- [Next.js](https://nextjs.org/) - React framework with SSG
-- [TypeScript](https://www.typescriptlang.org/) - Type safety
-- [Tailwind CSS](https://tailwindcss.com/) - Utility-first styling
-- [Vitest](https://vitest.dev/) - Unit testing
-- [Playwright](https://playwright.dev/) - E2E testing
+詳しくは[チュートリアル](https://git-training-ground.vercel.app/tutorial)を参照。
 
-## Development
+## 技術スタック
+
+- [Next.js](https://nextjs.org/) - SSG
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Vitest](https://vitest.dev/) - ユニットテスト
+- [Playwright](https://playwright.dev/) - E2Eテスト
+
+## 開発
 
 ```bash
 npm install
-npm run dev     # Start dev server
-npm run build   # Build for production
-npm test        # Run unit tests
-npm run test:e2e # Run E2E tests
+npm run dev     # 開発サーバー起動
+npm run build   # ビルド
+npm test        # ユニットテスト
+npm run test:e2e # E2Eテスト
 ```
 
-## License
+## ライセンス
 
 [MIT](LICENSE)
