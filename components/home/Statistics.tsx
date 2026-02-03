@@ -6,30 +6,29 @@ interface StatisticsProps {
 
 export function Statistics({ stats }: StatisticsProps) {
   return (
-    <section className="statistics-section">
-      <h2>統計情報</h2>
-      <div className="stats-grid">
-        <div className="stat-item">
-          <p className="stat-value">{stats.totalContributors}</p>
-          <p className="stat-label">総貢献者数</p>
+    <div className="mt-10 flex flex-col items-center gap-6">
+      <div className="flex gap-12">
+        <div className="text-center">
+          <p className="text-3xl font-bold text-[#2563EB]">{stats.totalContributors}</p>
+          <p className="text-sm text-[#64748B]">総貢献者数</p>
         </div>
-        <div className="stat-item">
-          <p className="stat-value">{stats.thisMonthPRs}</p>
-          <p className="stat-label">今月のPR数</p>
+        <div className="text-center">
+          <p className="text-3xl font-bold text-[#2563EB]">{stats.thisMonthPRs}</p>
+          <p className="text-sm text-[#64748B]">今月のPR数</p>
         </div>
       </div>
-      <div className="recent-contributors">
-        <h3>最新の貢献者</h3>
-        <ul>
+      <div className="text-center">
+        <h3 className="text-sm font-semibold text-[#1E293B] mb-2">最新の貢献者</h3>
+        <ul className="flex gap-4 text-sm text-[#64748B]">
           {stats.recentContributors.map((contributor) => (
             <li key={contributor.github}>
-              <a href={contributor.github} target="_blank" rel="noopener noreferrer">
+              <a href={contributor.github} target="_blank" rel="noopener noreferrer" className="hover:text-[#2563EB] transition-colors">
                 {contributor.name}
               </a>
             </li>
           ))}
         </ul>
       </div>
-    </section>
+    </div>
   );
 }

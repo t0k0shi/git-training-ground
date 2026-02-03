@@ -3,9 +3,10 @@ import { render, screen } from '@testing-library/react';
 import { Hero } from '@/components/home/Hero';
 
 describe('Hero', () => {
-  it('キャッチコピー「あなたの初めてのPRを、ここで。」が表示される', () => {
+  it('キャッチコピーが表示される', () => {
     render(<Hero />);
-    expect(screen.getByText('あなたの初めてのPRを、ここで。')).toBeInTheDocument();
+    expect(screen.getByText(/OSSへの貢献、難しそう？/)).toBeInTheDocument();
+    expect(screen.getByText(/ここなら、3分で完了します。/)).toBeInTheDocument();
   });
 
   it('CTAリンクが /tutorial を指している', () => {

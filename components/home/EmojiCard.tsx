@@ -14,16 +14,16 @@ export function EmojiCard({ contributor }: EmojiCardProps) {
       href={contributor.github}
       target="_blank"
       rel="noopener noreferrer"
-      className="emoji-card"
+      className="emoji-card relative flex items-center justify-center w-16 h-16 rounded-xl text-3xl transition-transform hover:scale-110"
       style={{ backgroundColor: contributor.favoriteColor }}
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
     >
-      <span className="emoji">{contributor.favoriteEmoji}</span>
+      <span>{contributor.favoriteEmoji}</span>
       {showTooltip && (
         <Tooltip>
-          <p className="name">{contributor.name}</p>
-          {contributor.message && <p className="message">{contributor.message}</p>}
+          <p className="font-semibold">{contributor.name}</p>
+          {contributor.message && <p className="text-gray-300">{contributor.message}</p>}
         </Tooltip>
       )}
     </a>

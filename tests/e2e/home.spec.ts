@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('トップページ', () => {
   test('ページが正常に表示される', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByRole('heading', { name: 'あなたの初めてのPRを、ここで。' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /OSSへの貢献、難しそう？/ })).toBeVisible();
   });
 
   test('CTAボタンが /tutorial に遷移する', async ({ page }) => {
@@ -14,7 +14,6 @@ test.describe('トップページ', () => {
 
   test('EmojiCard が表示される', async ({ page }) => {
     await page.goto('/');
-    // 少なくとも1つの emoji-card が存在する
     const cards = page.locator('.emoji-card');
     await expect(cards.first()).toBeVisible();
   });
