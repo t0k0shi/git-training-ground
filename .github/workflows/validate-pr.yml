@@ -27,5 +27,8 @@ jobs:
       - name: Check NG Words
         run: node scripts/check-ng-words.js
 
+      - name: Check no deletions
+        run: node scripts/check-no-deletions.js
+
       - name: Run tests
         run: npm test
