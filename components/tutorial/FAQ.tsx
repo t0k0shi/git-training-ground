@@ -8,22 +8,6 @@ interface FAQItem {
 
 const faqData: FAQItem[] = [
   {
-    question: 'コンフリクトが起きた場合は？',
-    answer: '最新のmainブランチからブランチを作り直し、再度PRを作成してください。',
-  },
-  {
-    question: 'CIチェックが失敗した場合は？',
-    answer: 'エラーメッセージを確認し、contributors.jsonの形式を修正してください。',
-  },
-  {
-    question: 'PRがマージされない場合は？',
-    answer: 'レビューコメントを確認し、必要な修正を行ってから再度プッシュしてください。',
-  },
-  {
-    question: 'Gitをインストールしていません',
-    answer: 'git-scm.com からダウンロードできます。インストール後、ターミナルで git --version を実行して確認してください。',
-  },
-  {
     question: 'GitHubアカウントが必要ですか？',
     answer: 'はい。github.com で無料アカウントを作成してください。',
   },
@@ -32,8 +16,24 @@ const faqData: FAQItem[] = [
     answer: 'リポジトリの個人コピーを作ることです。元のリポジトリに影響しません。',
   },
   {
+    question: 'CIチェックが失敗した場合は？',
+    answer: 'エラーメッセージを確認し、contributors.jsonの形式を修正してください。Forkしたリポジトリで該当ファイルを再度編集してコミットすると、PRに反映されます。',
+  },
+  {
+    question: 'PRがマージされない場合は？',
+    answer: 'レビューコメントを確認し、必要な修正を行ってください。',
+  },
+  {
     question: 'prNumberは何を書けばいいですか？',
     answer: '0のままでOKです。マージ時にメンテナーが更新します。',
+  },
+  {
+    question: 'コンフリクトが起きた場合は？',
+    answer: '他の人のPRがマージされると起きることがあります。Forkを最新に同期してから、再度編集してください。',
+  },
+  {
+    question: 'CLIでやりたい場合は？',
+    answer: 'チュートリアル下部の「CLIで操作したい方へ」を参照してください。',
   },
 ];
 
