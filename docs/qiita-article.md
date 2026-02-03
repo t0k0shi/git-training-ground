@@ -15,7 +15,7 @@ OSSコントリビューション、やってみたいと思いつつ手が出�
 **Git Training Ground**
 https://git-training-ground.vercel.app/
 
-![トップページのスクリーンショット]()
+![トップページのスクリーンショット](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/15959/03dcd141-3f00-4d05-aeb7-49c653a10d31.jpeg)
 
 やることは簡単。JSONファイルに自分の情報を足してPRを送る。マージされたらトップページに自分のカードが出る。それだけ。
 
@@ -128,7 +128,27 @@ PR出すとGitHub Actionsが走る。
 
 ## 開発の進め方
 
-Claude Code使ってペアプロ的に進めた。要件→設計→実装→テストを対話しながら。仕様書とADRも一緒に整備。
+### MVPを意識
+
+最初から全部作ろうとしない。[この記事](https://qiita.com/ynmc0214/items/0a3ed437eeea02ccdefd)にあった「ユーザに価値を届けられる最小スコープ」という考え方を参考にした。
+
+このプロジェクトのMVPは:
+- トップページに貢献者カードが並ぶ
+- チュートリアルに従えばPRが出せる
+- CIでバリデーションされる
+
+これだけ。ランキングとかバッジとか、あったら嬉しい機能は後回し。
+
+### 要件→設計→実装→テスト
+
+Claude Codeを使ってペアプロ的に進めた。
+
+1. **要件定義**: 「誰が」「何を」「なぜ」を明確にする
+2. **設計**: データモデル、コンポーネント構成、CI設計
+3. **実装**: TDD的にテスト書きながら
+4. **レビュー**: 動くものができたら見直し
+
+仕様書とADR（Architecture Decision Records）も一緒に整備した。「なんでこうしたんだっけ」が後から追える。
 
 ## これから
 
@@ -154,6 +174,9 @@ OSSコントリビューション、やりたいけど怖いという人向け�
 - [OSS Gate参加記録](https://note.com/012xx_/n/nfbe044ec391e)
 - [OSS活動で3ヶ月で学んだこと](https://qiita.com/YmBIgo/items/a7c42042f7e7d7c49d98)
 - [OSSコントリビュートに挑戦してみた](https://zenn.dev/loglass/articles/aaca355c10c673)
+
+### 開発プロセス
+- [非エンジニアがClaudeでWebアプリを作った話](https://qiita.com/ynmc0214/items/0a3ed437eeea02ccdefd)
 
 ### 技術
 - [Next.js](https://nextjs.org/docs)
