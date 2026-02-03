@@ -25,4 +25,27 @@ describe('StepGuide', () => {
     expect(screen.getByText('これは子要素です')).toBeInTheDocument();
     expect(screen.getByText('複数の要素')).toBeInTheDocument();
   });
+
+  it('番号バッジにTailwindスタイルが適用される', () => {
+    const { container } = render(
+      <StepGuide step={3} title="テスト">
+        <p>内容</p>
+      </StepGuide>
+    );
+
+    const badge = container.querySelector('.rounded-full.bg-\\[\\#2563EB\\]');
+    expect(badge).toBeInTheDocument();
+    expect(badge).toHaveTextContent('3');
+  });
+
+  it('カードにTailwindスタイルが適用される', () => {
+    const { container } = render(
+      <StepGuide step={1} title="テスト">
+        <p>内容</p>
+      </StepGuide>
+    );
+
+    const card = container.querySelector('.bg-white.rounded-xl.shadow-sm');
+    expect(card).toBeInTheDocument();
+  });
 });

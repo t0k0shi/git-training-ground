@@ -61,4 +61,14 @@ describe('CodeBlock', () => {
       expect(screen.getByRole('button', { name: /copied/i })).toBeInTheDocument();
     });
   });
+
+  it('ダークテーマのTailwindスタイルが適用される', () => {
+    const { container } = render(<CodeBlock code="echo hello" />);
+
+    const header = container.querySelector('.bg-gray-800');
+    expect(header).toBeInTheDocument();
+
+    const pre = container.querySelector('pre.bg-gray-900');
+    expect(pre).toBeInTheDocument();
+  });
 });
