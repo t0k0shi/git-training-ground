@@ -81,6 +81,11 @@ export default function TutorialPage() {
             <p className="mb-3">
               配列の末尾（最後の <code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm">{'}'}</code> の後ろ）にカンマを追加し、自分の情報を追加します。
             </p>
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm mb-3">
+              <p className="text-amber-800">
+                <strong>⚠️ 注意:</strong> 既存の貢献者のデータは削除しないでください。自分のエントリを<strong>追加</strong>するだけです。既存データを消すとCIでエラーになります。
+              </p>
+            </div>
             <div className="bg-[#1E293B] rounded-lg p-4 text-sm font-mono text-white overflow-x-auto mb-4">
               <pre>{`{
   "name": "your-name",
