@@ -49,7 +49,7 @@ export default function TutorialPage() {
               まず、<a href="https://github.com/t0k0shi/git-training-ground" className="text-[#2563EB] underline" target="_blank" rel="noopener noreferrer">Git Training Ground のリポジトリ</a>を開きます。
             </p>
             <p className="mb-3">
-              右上の「<strong>Fork</strong>」ボタンをクリックしてください。
+              右上の「<strong>Fork</strong>」ボタンをクリックし、次の画面で「<strong>Create fork</strong>」をクリックしてください。
             </p>
             <div className="bg-gray-50 rounded-lg p-4 text-sm">
               <p className="text-[#64748B]">
