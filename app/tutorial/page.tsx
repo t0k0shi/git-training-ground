@@ -139,7 +139,6 @@ export default function TutorialPage() {
             </p>
             <ul className="list-disc list-inside space-y-1 text-sm mb-3">
               <li>絵文字の形式チェック</li>
-              <li>重複チェック（同じ絵文字は使えません）</li>
               <li>既存エントリが削除されていないかチェック</li>
             </ul>
             <p className="text-sm text-[#64748B]">
