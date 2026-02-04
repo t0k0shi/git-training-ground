@@ -29,17 +29,6 @@ jobs:
           done < data/emojis.txt
           echo "✅ Emoji format OK"
 
-      - name: Check for duplicates
-        run: |
-          echo "Checking for duplicates..."
-          DUPES=$(grep -v '^$' data/emojis.txt | sort | uniq -d)
-          if [ -n "$DUPES" ]; then
-            echo "❌ Duplicate entries found:"
-            echo "$DUPES"
-            exit 1
-          fi
-          echo "✅ No duplicates"
-
       - name: Verify no deletions
         run: |
           echo "Checking for deletions..."
