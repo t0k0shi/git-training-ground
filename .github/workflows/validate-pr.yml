@@ -3,7 +3,7 @@ name: Validate PR
 on:
   pull_request:
     paths:
-      - 'data/contributors.json'
+      - 'data/emojis.txt'
 
 jobs:
   validate:
@@ -12,6 +12,44 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check emoji format
+        run: |
+          echo "Checking emoji format..."
+          while IFS= read -r line || [ -n "$line" ]; do
+            [ -z "$line" ] && continue
+            # Count characters (emoji can be multi-byte)
+            count=$(echo -n "$line" | wc -m)
+            if [ "$count" -lt 1 ] || [ "$count" -gt 12 ]; then
+              echo "❌ Invalid emoji entry: $line (length: $count)"
+              exit 1
+            fi
+          done < data/emojis.txt
+          echo "✅ Emoji format OK"
+
+      - name: Check for duplicates
+        run: |
+          echo "Checking for duplicates..."
+          DUPES=$(grep -v '^$' data/emojis.txt | sort | uniq -d)
+          if [ -n "$DUPES" ]; then
+            echo "❌ Duplicate entries found:"
+            echo "$DUPES"
+            exit 1
+          fi
+          echo "✅ No duplicates"
+
+      - name: Verify no deletions
+        run: |
+          echo "Checking for deletions..."
+          DELETED=$(git diff origin/main -- data/emojis.txt | grep -c '^-[^-]' || true)
+          if [ "$DELETED" -gt 0 ]; then
+            echo "❌ Existing entries were deleted. Please only add your emoji at the end."
+            git diff origin/main -- data/emojis.txt | grep '^-[^-]'
+            exit 1
+          fi
+          echo "✅ No deletions"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -21,14 +59,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Validate JSON Schema
-        run: node scripts/validate-contributors.js
+      - name: Build
+        run: npm run build
 
-      - name: Check NG Words
-        run: node scripts/check-ng-words.js
-
-      - name: Check no deletions
-        run: node scripts/check-no-deletions.js
-
-      - name: Run tests
-        run: npm test
+      - name: Success
+        run: echo "✅ All checks passed!"

@@ -12,7 +12,7 @@ export default function TutorialPage() {
             はじめてのPRチュートリアル
           </h1>
           <p className="text-lg text-[#64748B]">
-            ブラウザだけで完結！Gitのインストール不要で、あなたの最初のPull Requestを作成しましょう。
+            絵文字を1つ追加するだけ！あなたの最初のPull Requestを作成しましょう。
           </p>
         </div>
       </section>
@@ -59,12 +59,12 @@ export default function TutorialPage() {
             </div>
           </StepGuide>
 
-          <StepGuide step={2} title="contributors.json を開く">
+          <StepGuide step={2} title="emojis.txt を開く">
             <p className="mb-3">
-              Forkしたリポジトリ（自分のアカウントの git-training-ground）で、<code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm">data/contributors.json</code> を開きます。
+              Forkしたリポジトリ（自分のアカウントの git-training-ground）で、<code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm">data/emojis.txt</code> を開きます。
             </p>
             <p>
-              ファイル一覧から <strong>data</strong> フォルダ → <strong>contributors.json</strong> の順にクリックしてください。
+              ファイル一覧から <strong>data</strong> フォルダ → <strong>emojis.txt</strong> の順にクリックしてください。
             </p>
           </StepGuide>
 
@@ -77,38 +77,32 @@ export default function TutorialPage() {
             </p>
           </StepGuide>
 
-          <StepGuide step={4} title="自分の情報を追加する">
-            <p className="mb-3">
-              配列の末尾（最後の <code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm">{'}'}</code> の後ろ）にカンマを追加し、自分の情報を追加します。
+          <StepGuide step={4} title="好きな絵文字を追加する">
+            <p className="mb-4 text-lg font-medium text-[#1E293B]">
+              ファイルの最後に、好きな絵文字を追加するだけ！
             </p>
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm mb-3">
-              <p className="text-amber-800">
-                <strong>⚠️ 注意:</strong> 既存の貢献者のデータは削除しないでください。自分のエントリを<strong>追加</strong>するだけです。既存データを消すとCIでエラーになります。
-              </p>
-            </div>
+
             <div className="bg-[#1E293B] rounded-lg p-4 text-sm font-mono text-white overflow-x-auto mb-4">
-              <pre>{`{
-  "name": "your-name",
-  "github": "https://github.com/your-name",
-  "favoriteColor": "#3B82F6",
-  "favoriteEmoji": "🚀",
-  "message": "はじめてのPR！",
-  "joinedAt": "2026-02-03",
-  "prNumber": 0
-}`}</pre>
+              <pre>{`🚀
+🎉🎉
+🌟🌟🌟
+
+🐱🐱  ← 最後に追加！`}</pre>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4 text-sm">
-              <table className="w-full">
-                <tbody className="divide-y divide-gray-200">
-                  <tr><td className="py-1.5 pr-4 font-medium text-[#1E293B] whitespace-nowrap">name</td><td className="py-1.5">あなたの名前（GitHub IDでもOK）</td></tr>
-                  <tr><td className="py-1.5 pr-4 font-medium text-[#1E293B] whitespace-nowrap">github</td><td className="py-1.5">GitHubプロフィールURL</td></tr>
-                  <tr><td className="py-1.5 pr-4 font-medium text-[#1E293B] whitespace-nowrap">favoriteColor</td><td className="py-1.5">好きな色（16進数カラーコード）</td></tr>
-                  <tr><td className="py-1.5 pr-4 font-medium text-[#1E293B] whitespace-nowrap">favoriteEmoji</td><td className="py-1.5">好きな絵文字</td></tr>
-                  <tr><td className="py-1.5 pr-4 font-medium text-[#1E293B] whitespace-nowrap">message</td><td className="py-1.5">ひとことメッセージ</td></tr>
-                  <tr><td className="py-1.5 pr-4 font-medium text-[#1E293B] whitespace-nowrap">joinedAt</td><td className="py-1.5">今日の日付（YYYY-MM-DD形式）</td></tr>
-                  <tr><td className="py-1.5 pr-4 font-medium text-[#1E293B] whitespace-nowrap">prNumber</td><td className="py-1.5">0のまま（マージ時にメンテナーが更新します）</td></tr>
-                </tbody>
-              </table>
+
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm mb-4">
+              <p className="text-blue-800 font-medium mb-2">💡 カードの大きさを選べます</p>
+              <div className="space-y-1 text-blue-700">
+                <p><code className="bg-blue-100 px-1.5 rounded">🐱</code> → 小さいカード</p>
+                <p><code className="bg-blue-100 px-1.5 rounded">🐱🐱</code> → 中くらい</p>
+                <p><code className="bg-blue-100 px-1.5 rounded">🐱🐱🐱</code> → 大きいカード（目立つ！）</p>
+              </div>
+            </div>
+
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm">
+              <p className="text-amber-800">
+                <strong>⚠️ 注意:</strong> 他の人の絵文字は消さないでください。自分の絵文字を<strong>最後に追加</strong>するだけです。
+              </p>
             </div>
           </StepGuide>
 
@@ -117,11 +111,11 @@ export default function TutorialPage() {
               編集が終わったら、ページ右上の「<strong>Commit changes...</strong>」ボタンをクリックします。
             </p>
             <div className="bg-gray-50 rounded-lg p-4 text-sm space-y-2 mb-3">
-              <p><strong className="text-[#1E293B]">Commit message:</strong> Add YOUR_NAME to contributors</p>
+              <p><strong className="text-[#1E293B]">Commit message:</strong> Add my emoji 🐱</p>
               <p><strong className="text-[#1E293B]">選択:</strong> 「Create a new branch for this commit and start a pull request」を選ぶ</p>
             </div>
             <p className="text-sm text-[#64748B]">
-              ブランチ名は自動で提案されますが、<code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm">add-your-name</code> のようにわかりやすい名前に変えてもOKです。
+              ブランチ名は自動で提案されますが、<code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm">add-my-emoji</code> のようにわかりやすい名前に変えてもOKです。
             </p>
           </StepGuide>
 
@@ -134,10 +128,6 @@ export default function TutorialPage() {
                 <strong>⚠️ 重要:</strong> PR先が <code className="bg-amber-100 px-1 rounded">t0k0shi/git-training-ground</code> になっていることを確認してください。自分のFork内へのPRにならないように注意！
               </p>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4 text-sm space-y-2 mb-3">
-              <p><strong className="text-[#1E293B]">タイトル:</strong> Add YOUR_NAME to contributors</p>
-              <p><strong className="text-[#1E293B]">説明欄:</strong> 自己紹介や参加の動機を書くと、レビュアーに喜ばれます。</p>
-            </div>
             <p>
               内容を確認して「<strong>Create pull request</strong>」をクリックしてください。
             </p>
@@ -145,16 +135,15 @@ export default function TutorialPage() {
 
           <StepGuide step={7} title="CIチェックを待つ">
             <p className="mb-3">
-              PRを作成すると自動テスト（CI）が実行されます。以下の項目がチェックされます。
+              PRを作成すると自動テスト（CI）が実行されます。
             </p>
             <ul className="list-disc list-inside space-y-1 text-sm mb-3">
-              <li>contributors.json のJSON構文チェック</li>
-              <li>スキーマバリデーション（必須フィールドの確認）</li>
-              <li>NGワードチェック</li>
-              <li>ビルドの成功</li>
+              <li>絵文字の形式チェック</li>
+              <li>重複チェック（同じ絵文字は使えません）</li>
+              <li>既存エントリが削除されていないかチェック</li>
             </ul>
             <p className="text-sm text-[#64748B]">
-              すべてのチェックがパスするのを待ちましょう。失敗した場合はエラーメッセージを確認して修正してください。
+              すべてのチェックがパスするのを待ちましょう。
             </p>
           </StepGuide>
 
@@ -169,7 +158,7 @@ export default function TutorialPage() {
         <section className="mt-16 text-center bg-gradient-to-r from-[#2563EB]/5 to-[#10B981]/5 rounded-2xl p-10">
           <h2 className="text-2xl font-bold text-[#1E293B] mb-3">PRがマージされたら...</h2>
           <p className="text-[#64748B] mb-6">
-            おめでとうございます！あなたのカードがトップページに表示されます。
+            おめでとうございます！あなたの絵文字がトップページに表示されます。
           </p>
           <Link
             href="/"
@@ -177,32 +166,6 @@ export default function TutorialPage() {
           >
             トップページを見る
           </Link>
-        </section>
-
-        {/* CLI版への案内 */}
-        <section className="mt-12 bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-lg font-bold text-[#1E293B] mb-3">CLIで操作したい方へ</h2>
-          <p className="text-[#64748B] text-sm mb-4">
-            Gitコマンドを使って操作したい場合は、以下の流れで行えます。
-          </p>
-          <details className="text-sm">
-            <summary className="cursor-pointer text-[#2563EB] font-medium">CLI版の手順を見る</summary>
-            <div className="mt-4 space-y-4 text-[#64748B]">
-              <div>
-                <p className="font-medium text-[#1E293B] mb-1">1. クローン</p>
-                <code className="block bg-gray-100 px-3 py-2 rounded text-sm">git clone https://github.com/YOUR_USERNAME/git-training-ground.git</code>
-              </div>
-              <div>
-                <p className="font-medium text-[#1E293B] mb-1">2. ブランチ作成</p>
-                <code className="block bg-gray-100 px-3 py-2 rounded text-sm">cd git-training-ground && git checkout -b add-YOUR_NAME</code>
-              </div>
-              <div>
-                <p className="font-medium text-[#1E293B] mb-1">3. 編集後、コミット & プッシュ</p>
-                <code className="block bg-gray-100 px-3 py-2 rounded text-sm">git add data/contributors.json && git commit -m &quot;Add YOUR_NAME&quot; && git push origin add-YOUR_NAME</code>
-              </div>
-              <p>その後、GitHub上でPull Requestを作成してください。</p>
-            </div>
-          </details>
         </section>
 
         <FAQ />

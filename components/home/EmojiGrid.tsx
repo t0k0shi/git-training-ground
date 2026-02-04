@@ -1,15 +1,15 @@
-import { Contributor } from '@/lib/types';
+import { EmojiCard as EmojiCardType } from '@/lib/types';
 import { EmojiCard } from './EmojiCard';
 
 interface EmojiGridProps {
-  contributors: Contributor[];
+  emojis: EmojiCardType[];
 }
 
-export function EmojiGrid({ contributors }: EmojiGridProps) {
+export function EmojiGrid({ emojis }: EmojiGridProps) {
   return (
-    <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-10 gap-4 justify-items-center">
-      {contributors.map((contributor) => (
-        <EmojiCard key={contributor.github} contributor={contributor} />
+    <div className="flex flex-wrap gap-3 justify-center items-center">
+      {emojis.map((card, i) => (
+        <EmojiCard key={i} emoji={card.emoji} size={card.size} />
       ))}
     </div>
   );

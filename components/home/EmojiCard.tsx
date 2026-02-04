@@ -1,31 +1,28 @@
-'use client';
-import { useState } from 'react';
-import { Contributor } from '@/lib/types';
-import { Tooltip } from '@/components/common/Tooltip';
+import { EmojiCard as EmojiCardType } from '@/lib/types';
 
 interface EmojiCardProps {
-  contributor: Contributor;
+  emoji: string;
+  size: 1 | 2 | 3;
 }
 
-export function EmojiCard({ contributor }: EmojiCardProps) {
-  const [showTooltip, setShowTooltip] = useState(false);
+const sizeClasses = {
+  1: 'col-span-1 row-span-1 text-2xl w-12 h-12',
+  2: 'col-span-2 row-span-2 text-4xl w-28 h-28',
+  3: 'col-span-3 row-span-3 text-6xl w-44 h-44',
+};
+
+export function EmojiCard({ emoji, size }: EmojiCardProps) {
   return (
-    <a
-      href={contributor.github}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="emoji-card relative flex items-center justify-center w-16 h-16 rounded-xl text-3xl transition-transform hover:scale-110"
-      style={{ backgroundColor: contributor.favoriteColor }}
-      onMouseEnter={() => setShowTooltip(true)}
-      onMouseLeave={() => setShowTooltip(false)}
+    <div
+      className={`
+        ${sizeClasses[size]}
+        flex items-center justify-center
+        bg-gradient-to-br from-gray-100 to-gray-200
+        rounded-xl shadow-sm
+        hover:scale-105 transition-transform
+      `}
     >
-      <span>{contributor.favoriteEmoji}</span>
-      {showTooltip && (
-        <Tooltip>
-          <p className="font-semibold">{contributor.name}</p>
-          {contributor.message && <p className="text-gray-300">{contributor.message}</p>}
-        </Tooltip>
-      )}
-    </a>
+      {emoji}
+    </div>
   );
 }

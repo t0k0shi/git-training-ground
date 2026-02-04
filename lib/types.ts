@@ -1,28 +1,38 @@
 /**
- * 貢献者エンティティ
+ * パース後のカード情報
+ */
+export interface EmojiCard {
+  emoji: string;      // 単一絵文字
+  size: 1 | 2 | 3;    // カードサイズ
+}
+
+// ========== 旧型定義（移行期間中のみ維持）==========
+
+/**
+ * @deprecated v2で削除予定
  */
 export interface Contributor {
-  name: string;            // 3-20文字、英数字+ハイフン+アンダースコア
-  github: string;          // GitHub プロフィールURL
-  favoriteColor: string;   // 16進数カラーコード (#XXXXXX)
-  favoriteEmoji: string;   // 絵文字1文字
-  message?: string;        // 一言メッセージ（50文字以内、オプショナル）
-  joinedAt: string;        // 参加日（YYYY-MM-DD）
-  prNumber: number;        // PR番号
+  name: string;
+  github: string;
+  favoriteColor: string;
+  favoriteEmoji: string;
+  message?: string;
+  joinedAt: string;
+  prNumber: number;
 }
 
 /**
- * contributors.json のスキーマ
+ * @deprecated v2で削除予定
  */
 export interface ContributorsData {
   contributors: Contributor[];
 }
 
 /**
- * 統計情報
+ * @deprecated v2で削除予定
  */
 export interface Statistics {
   totalContributors: number;
   thisMonthPRs: number;
-  recentContributors: Contributor[];  // 直近5人
+  recentContributors: Contributor[];
 }
