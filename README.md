@@ -8,18 +8,29 @@
 
 ## 特徴
 
+- **超シンプル**: 絵文字を1つ追加するだけ
 - **初心者向け**: ステップバイステップのチュートリアル
 - **自動チェック**: CIがフォーマットを検証
-- **達成感**: マージされるとトップページにカードが表示される
+- **達成感**: マージされるとトップページに絵文字が表示される
 
 ## やり方
 
 1. このリポジトリをFork
-2. クローン: `git clone https://github.com/YOUR_USERNAME/git-training-ground.git`
-3. ブランチ作成: `git checkout -b add-YOUR_NAME`
-4. `data/contributors.json` に自分の情報を追加
-5. コミット & プッシュ
-6. Pull Requestを作成
+2. `data/emojis.txt` を開く
+3. ファイルの最後に好きな絵文字を追加
+4. Pull Requestを作成
+
+```
+🚀
+🎉🎉
+🌟🌟🌟
+🐱  ← あなたの絵文字を最後に追加！
+```
+
+💡 **カードの大きさを選べます**:
+- `🐱` → 小さいカード
+- `🐱🐱` → 中くらい
+- `🐱🐱🐱` → 大きいカード
 
 詳しくは[チュートリアル](https://git-training-ground.vercel.app/tutorial)を参照。
 
@@ -28,8 +39,6 @@
 - [Next.js](https://nextjs.org/) - SSG
 - [TypeScript](https://www.typescriptlang.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
-- [Vitest](https://vitest.dev/) - ユニットテスト
-- [Playwright](https://playwright.dev/) - E2Eテスト
 
 ## 開発
 
@@ -37,8 +46,6 @@
 npm install
 npm run dev     # 開発サーバー起動
 npm run build   # ビルド
-npm test        # ユニットテスト
-npm run test:e2e # E2Eテスト
 ```
 
 ## ライセンス
