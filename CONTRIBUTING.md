@@ -4,58 +4,53 @@ Thank you for your interest in contributing! This project is designed for beginn
 
 ## How to Contribute
 
-### Adding yourself to contributors.json
+### Adding your emoji to emojis.txt
 
 1. **Fork** this repository
-2. **Clone** your fork locally
-3. **Create a branch**: `git checkout -b add-YOUR_NAME`
-4. **Edit** `data/contributors.json` - add your entry at the end of the `contributors` array:
+2. Open `data/emojis.txt` in your fork
+3. Click the **pencil icon** (Edit this file) to enter edit mode
+4. **Add your emoji** at the end of the file:
 
-```json
-{
-  "name": "your-github-username",
-  "github": "https://github.com/your-github-username",
-  "favoriteColor": "#FF6B6B",
-  "favoriteEmoji": "🎉",
-  "message": "Hello from your-name!",
-  "joinedAt": "2026-02-03",
-  "prNumber": 0
-}
+```
+🚀
+🎉🎉
+🌟🌟🌟
+
+🐱🐱  ← Add your emoji here!
 ```
 
-5. **Commit**: `git commit -m "Add your-name to contributors"`
-6. **Push**: `git push origin add-YOUR_NAME`
-7. **Create a Pull Request** against the `main` branch
+5. Choose **"Create a new branch for this commit and start a pull request"**
+6. Click **"Propose changes"** to commit
+7. Go to the **original repository** (t0k0shi/git-training-ground) and click **"Compare & pull request"**
+8. Click **"Create pull request"**
 
-### Field Requirements
+### Emoji Size Guide
 
-| Field | Rules |
-|-------|-------|
-| name | 3-20 characters, alphanumeric + hyphens + underscores |
-| github | `https://github.com/YOUR_USERNAME` |
-| favoriteColor | Hex color code (`#XXXXXX`) |
-| favoriteEmoji | Single emoji |
-| message | Optional, max 50 characters |
-| joinedAt | Today's date (`YYYY-MM-DD`) |
-| prNumber | Set to `0` (auto-assigned after merge) |
+| Format | Card Size |
+|--------|-----------|
+| `🐱` | Small card |
+| `🐱🐱` | Medium card |
+| `🐱🐱🐱` | Large card |
+
+### Rules
+
+- Add your emoji on a **new line at the end** of the file
+- Do **not** delete or modify other people's emojis
+- Each line should contain 1-3 repetitions of the same emoji
 
 ### CI Checks
 
 Your PR will be automatically checked for:
-- Valid JSON format
-- Schema compliance
-- No duplicate entries
-- Author verification
-- NG word filter
+- Valid emoji format (1-3 emoji characters per line)
+- No existing entries deleted
 - Build success
 
 ### Resolving Conflicts
 
 If your PR has conflicts:
-1. Delete your branch
-2. Create a new branch from the latest `main`
-3. Re-add your entry
-4. Create a new PR
+1. Sync your fork with the latest `main`
+2. Re-add your emoji at the end
+3. Create a new PR
 
 ## Code of Conduct
 

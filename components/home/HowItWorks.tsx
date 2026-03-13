@@ -1,7 +1,7 @@
 export function HowItWorks() {
   const steps = [
     { id: 'fork', icon: '🍴', title: 'Fork してクローン', description: 'リポジトリをフォークし、ローカルに clone します。' },
-    { id: 'add', icon: '✏️', title: '情報を追加', description: 'contributors.json に自分の情報を追加します。' },
+    { id: 'add', icon: '✏️', title: '絵文字を追加', description: 'emojis.txt に好きな絵文字を追加します。' },
     { id: 'pr', icon: '🚀', title: 'PR を作成', description: 'プルリクエストを作成し、マージを待ちます。' },
   ];
   return (

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { StepGuide } from '@/components/tutorial/StepGuide';
+import { CodeBlock } from '@/components/tutorial/CodeBlock';
 import { FAQ } from '@/components/tutorial/FAQ';
 
 export default function TutorialPage() {
@@ -117,23 +118,53 @@ export default function TutorialPage() {
             <p className="text-sm text-[#64748B]">
               ブランチ名は自動で提案されますが、<code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm">add-my-emoji</code> のようにわかりやすい名前に変えてもOKです。
             </p>
+            <p className="mt-3">
+              「<strong>Propose changes</strong>」をクリックしてコミットを完了します。
+            </p>
+            <div className="mt-4 bg-red-50 border border-red-200 rounded-lg p-4 text-sm">
+              <p className="text-red-800">
+                <strong>⚠️ Forkにコミットしただけでは反映されません！</strong><br />
+                この操作で自分のForkリポジトリにコミットされますが、
+                本家リポジトリには<strong>まだ反映されていません</strong>。
+                次のStep 6で「Pull Request」を作成して、はじめて本家に反映のリクエストが送られます。
+              </p>
+            </div>
           </StepGuide>
 
-          <StepGuide step={6} title="Pull Requestを作成する">
+          <StepGuide step={6} title="元のリポジトリからPull Requestを作成する">
             <p className="mb-3">
-              「<strong>Propose changes</strong>」をクリックすると、Pull Request作成画面に移ります。
+              コミット後、<a href="https://github.com/t0k0shi/git-training-ground" className="text-[#2563EB] underline" target="_blank" rel="noopener noreferrer">元のリポジトリ（t0k0shi/git-training-ground）</a>を開いてください。
+            </p>
+            <p className="mb-3">
+              ページ上部に黄色いバナーで「<strong>Compare & pull request</strong>」ボタンが表示されます。これをクリックしてください。
             </p>
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm mb-3">
               <p className="text-amber-800">
-                <strong>⚠️ 重要:</strong> PR先が <code className="bg-amber-100 px-1 rounded">t0k0shi/git-training-ground</code> になっていることを確認してください。自分のFork内へのPRにならないように注意！
+                <strong>⚠️ 重要:</strong> 必ず元のリポジトリ（<code className="bg-amber-100 px-1 rounded">t0k0shi/git-training-ground</code>）側から操作してください。自分のFork内で操作すると、PRの送り先が自分のForkになってしまいます。
               </p>
+            </div>
+            <div className="bg-gray-50 rounded-lg p-4 text-sm">
+              <p className="text-[#64748B]">
+                <strong className="text-[#1E293B]">バナーが表示されない場合は？</strong><br />
+                時間が経つとバナーが消えることがあります。その場合は自分のForkページで「<strong>Contribute</strong>」→「<strong>Open pull request</strong>」をクリックするか、「<strong>Pull requests</strong>」タブ →「<strong>New pull request</strong>」→「<strong>compare across forks</strong>」から、base を <code className="bg-gray-100 px-1 rounded">t0k0shi/git-training-ground</code>、compare を自分のフォークのブランチに設定してください。
+              </p>
+            </div>
+          </StepGuide>
+
+          <StepGuide step={7} title="PRの内容を確認して送信する">
+            <p className="mb-3">
+              「<strong>Open a pull request</strong>」画面が表示されます。base が <code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm">t0k0shi/git-training-ground</code> になっていることを確認してください。
+            </p>
+            <div className="bg-gray-50 rounded-lg p-4 text-sm space-y-2 mb-3">
+              <p><strong className="text-[#1E293B]">Title:</strong> Add my emoji 🐱（コミットメッセージが自動入力されます）</p>
+              <p><strong className="text-[#1E293B]">Description:</strong> 空欄でもOKです</p>
             </div>
             <p>
               内容を確認して「<strong>Create pull request</strong>」をクリックしてください。
             </p>
           </StepGuide>
 
-          <StepGuide step={7} title="CIチェックを待つ">
+          <StepGuide step={8} title="CIチェックを待つ">
             <p className="mb-3">
               PRを作成すると自動テスト（CI）が実行されます。
             </p>
@@ -146,12 +177,123 @@ export default function TutorialPage() {
             </p>
           </StepGuide>
 
-          <StepGuide step={8} title="マージを待つ">
+          <StepGuide step={9} title="マージを待つ">
             <p>
               メンテナーがレビューし、問題なければマージされます。おめでとうございます！
             </p>
           </StepGuide>
         </div>
+
+        {/* コンフリクト誘導リンク */}
+        <div className="mt-8 bg-blue-50 border border-blue-200 rounded-xl p-6 text-center">
+          <p className="text-blue-800 text-sm">
+            💡 PRを出した後に「コンフリクト」と表示されたら？
+          </p>
+          <a
+            href="#conflict-resolution"
+            className="inline-block mt-2 text-[#2563EB] font-medium underline text-sm"
+          >
+            コンフリクトについて →
+          </a>
+        </div>
+
+        {/* コンフリクト解決セクション */}
+        <section id="conflict-resolution" className="mt-16 scroll-mt-24">
+          <h2 className="text-2xl font-bold text-[#1E293B] mb-6">
+            コンフリクトが起きたら
+          </h2>
+
+          {/* 安心メッセージ */}
+          <div className="bg-green-50 border border-green-200 rounded-xl p-6 mb-8">
+            <p className="text-green-800 leading-relaxed">
+              PRを出した後に「コンフリクトがあります」と表示されることがあります。
+              これは、あなたが作業している間に他の人の変更がマージされたためです。
+            </p>
+            <p className="text-green-800 font-bold mt-3">
+              心配しないでください！
+            </p>
+            <p className="text-green-800 mt-1">
+              管理人がマージ時に調整しますので、そのまま待っていれば大丈夫です。
+            </p>
+            <p className="text-green-700 text-sm mt-3">
+              「自分で直してみたい！」という方は、以下の手順を試してみてください。
+              （やらなくても大丈夫です）
+            </p>
+          </div>
+
+          {/* Step A */}
+          <div className="mb-6 bg-white rounded-xl border border-gray-100 p-6">
+            <h3 className="text-lg font-bold text-[#1E293B] mb-3">
+              <span className="text-[#2563EB] mr-2">Step A</span>
+              upstream を登録する
+            </h3>
+            <p className="text-[#64748B] mb-3">
+              fork 元のリポジトリを &quot;upstream&quot; として登録します。
+            </p>
+            <CodeBlock code="git remote add upstream https://github.com/t0k0shi/git-training-ground.git" />
+          </div>
+
+          {/* Step B */}
+          <div className="mb-6 bg-white rounded-xl border border-gray-100 p-6">
+            <h3 className="text-lg font-bold text-[#1E293B] mb-3">
+              <span className="text-[#2563EB] mr-2">Step B</span>
+              upstream の最新を取得する
+            </h3>
+            <p className="text-[#64748B] mb-3">
+              upstream の最新変更を自分のブランチに取り込みます。
+            </p>
+            <CodeBlock code="git fetch upstream" />
+            <CodeBlock code="git merge upstream/main" />
+          </div>
+
+          {/* Step C */}
+          <div className="mb-6 bg-white rounded-xl border border-gray-100 p-6">
+            <h3 className="text-lg font-bold text-[#1E293B] mb-3">
+              <span className="text-[#2563EB] mr-2">Step C</span>
+              コンフリクトを解決する
+            </h3>
+            <p className="text-[#64748B] mb-3">
+              コンフリクトマーカーを削除して、自分の絵文字と他の人の絵文字の両方を残します。
+            </p>
+            <div className="bg-gray-50 rounded-lg p-4 text-sm mb-3">
+              <p className="text-[#64748B] font-medium mb-2">変更前（コンフリクトマーカーあり）:</p>
+              <pre className="bg-gray-900 text-gray-100 p-3 rounded text-xs leading-relaxed overflow-x-auto">{`<<<<<<< HEAD
+🎉🎉
+=======
+🚀🚀🚀
+>>>>>>> upstream/main`}</pre>
+            </div>
+            <div className="bg-gray-50 rounded-lg p-4 text-sm">
+              <p className="text-[#64748B] font-medium mb-2">変更後（両方の絵文字を残す）:</p>
+              <pre className="bg-gray-900 text-gray-100 p-3 rounded text-xs leading-relaxed overflow-x-auto">{`🎉🎉
+🚀🚀🚀`}</pre>
+            </div>
+          </div>
+
+          {/* Step D */}
+          <div className="mb-6 bg-white rounded-xl border border-gray-100 p-6">
+            <h3 className="text-lg font-bold text-[#1E293B] mb-3">
+              <span className="text-[#2563EB] mr-2">Step D</span>
+              解決をコミットして push する
+            </h3>
+            <p className="text-[#64748B] mb-3">
+              解決した変更をコミットして push します。
+            </p>
+            <CodeBlock code="git add data/emojis.txt" />
+            <CodeBlock code='git commit -m "resolve conflict"' />
+            <CodeBlock code="git push origin main" />
+          </div>
+
+          {/* まとめ */}
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 text-center">
+            <p className="text-blue-800">
+              これでPRのコンフリクトが解決されます！
+            </p>
+            <p className="text-blue-700 text-sm mt-2">
+              うまくいかなかった場合はコメントで質問してください。管理人がサポートします。
+            </p>
+          </div>
+        </section>
 
         {/* 完了セクション */}
         <section className="mt-16 text-center bg-gradient-to-r from-[#2563EB]/5 to-[#10B981]/5 rounded-2xl p-10">

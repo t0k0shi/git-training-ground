@@ -15,35 +15,66 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check emoji format
+      - name: Check only emojis.txt is changed
         run: |
-          echo "Checking emoji format..."
-          while IFS= read -r line || [ -n "$line" ]; do
-            [ -z "$line" ] && continue
-            # Count characters (emoji can be multi-byte)
-            count=$(echo -n "$line" | wc -m)
-            if [ "$count" -lt 1 ] || [ "$count" -gt 12 ]; then
-              echo "❌ Invalid emoji entry: $line (length: $count)"
-              exit 1
-            fi
-          done < data/emojis.txt
-          echo "✅ Emoji format OK"
-
-      - name: Verify no deletions
-        run: |
-          echo "Checking for deletions..."
-          DELETED=$(git diff origin/main -- data/emojis.txt | grep -c '^-[^-]' || true)
-          if [ "$DELETED" -gt 0 ]; then
-            echo "❌ Existing entries were deleted. Please only add your emoji at the end."
-            git diff origin/main -- data/emojis.txt | grep '^-[^-]'
+          echo "Checking changed files..."
+          CHANGED=$(git diff --name-only origin/main...HEAD)
+          INVALID=$(echo "$CHANGED" | grep -v '^data/emojis\.txt$' || true)
+          if [ -n "$INVALID" ]; then
+            echo ""
+            echo "❌ emojis.txt 以外のファイルが変更されています"
+            echo "   変更されたファイル: $INVALID"
+            echo ""
+            echo "   💡 この PR では data/emojis.txt のみ変更してください"
             exit 1
           fi
-          echo "✅ No deletions"
+          echo "✅ 変更対象ファイル OK"
+
+      - name: Check emoji format
+        run: python3 scripts/validate_emojis.py
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      - name: Verify no modifications or deletions
+        run: |
+          echo "Checking for modifications or deletions..."
+          MODIFIED=$(git diff origin/main HEAD -- data/emojis.txt | grep '^-' | grep -v '^---' || true)
+          if [ -n "$MODIFIED" ]; then
+            echo ""
+            echo "😅 既存エントリの保護"
+            echo ""
+            echo "他の人の絵文字が変更または削除されているようです。"
+            echo "自分の絵文字を追加するだけにしてください。"
+            echo ""
+            echo "変更・削除された行:"
+            echo "$MODIFIED" | head -5 | while IFS= read -r line; do
+              echo "  ${line#-}"
+            done
+            TOTAL=$(echo "$MODIFIED" | wc -l)
+            if [ "$TOTAL" -gt 5 ]; then
+              echo "  ...他 $((TOTAL - 5)) 行"
+            fi
+            echo ""
+            echo "わからない場合はそのまま PR を出してください。管理人が確認します。"
+            exit 1
+          fi
+          echo "✅ 削除・変更なし"
+
+      - name: Check addition limit
+        run: |
+          echo "Checking addition count..."
+          ADDED=$(git diff origin/main -- data/emojis.txt | grep -c '^+[^+]' || true)
+          if [ "$ADDED" -gt 1 ]; then
+            echo ""
+            echo "❌ 追加行が多すぎます（${ADDED}行）"
+            echo ""
+            echo "   💡 1回のPRでは絵文字を1行だけ追加してください"
+            exit 1
+          fi
+          echo "✅ 追加行数 OK"
 
       - name: Install dependencies
         run: npm ci

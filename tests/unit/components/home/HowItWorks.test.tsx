@@ -12,7 +12,7 @@ describe('HowItWorks', () => {
   it('各ステップにタイトルが存在する', () => {
     render(<HowItWorks />);
     expect(screen.getByText('Fork してクローン')).toBeInTheDocument();
-    expect(screen.getByText('情報を追加')).toBeInTheDocument();
+    expect(screen.getByText('絵文字を追加')).toBeInTheDocument();
     expect(screen.getByText('PR を作成')).toBeInTheDocument();
   });
 });

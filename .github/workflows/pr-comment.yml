@@ -1,0 +1,39 @@
+name: PR Welcome Comment
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  welcome:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Post welcome comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const tutorialUrl = 'https://git-training-ground.vercel.app/tutorial';
+            const body = [
+              '🎉 PR ありがとうございます！',
+              '',
+              '管理人が確認してマージします。',
+              '反映まで数日かかることがありますが、気長にお待ちください。',
+              '',
+              'コンフリクトがある場合、解決をお願いすることがあります。',
+              'その際はコメントでご案内しますので、よろしくお願いします。',
+              `やり方がわからない場合は [コンフリクト解決ガイド](${tutorialUrl}#conflict-resolution) を参考にしてください。`,
+              '',
+              'CI チェックが実行されます。もしエラーが出ても焦らず、',
+              'エラーメッセージに従って修正してみてください。',
+              'わからない場合はコメントで質問してください！',
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: body,
+            });

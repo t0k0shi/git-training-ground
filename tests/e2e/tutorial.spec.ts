@@ -17,9 +17,9 @@ test.describe('チュートリアルページ', () => {
     await page.goto('/tutorial');
     const question = page.getByText('コンフリクトが起きた場合は？');
     await question.click();
-    await expect(page.getByText('最新のmainブランチから')).toBeVisible();
+    await expect(page.getByText('Forkを最新に同期してから')).toBeVisible();
     await question.click();
-    await expect(page.getByText('最新のmainブランチから')).not.toBeVisible();
+    await expect(page.getByText('Forkを最新に同期してから')).not.toBeVisible();
   });
 
   test('コードブロックにコピーボタンがある', async ({ page }) => {

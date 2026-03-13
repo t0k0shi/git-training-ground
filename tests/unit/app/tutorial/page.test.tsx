@@ -9,32 +9,20 @@ describe('TutorialPage', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'はじめてのPRチュートリアル' })).toBeInTheDocument();
   });
 
-  it('8つのステップが表示される', () => {
+  it('9つのステップが表示される', () => {
     render(<TutorialPage />);
 
-    expect(screen.getByText('Step 1')).toBeInTheDocument();
-    expect(screen.getByText('Step 2')).toBeInTheDocument();
-    expect(screen.getByText('Step 3')).toBeInTheDocument();
-    expect(screen.getByText('Step 4')).toBeInTheDocument();
-    expect(screen.getByText('Step 5')).toBeInTheDocument();
-    expect(screen.getByText('Step 6')).toBeInTheDocument();
-    expect(screen.getByText('Step 7')).toBeInTheDocument();
-    expect(screen.getByText('Step 8')).toBeInTheDocument();
+    for (let i = 1; i <= 9; i++) {
+      expect(screen.getByText(`Step ${i}`)).toBeInTheDocument();
+    }
   });
 
   it('ステップタイトルが表示される', () => {
     render(<TutorialPage />);
 
     expect(screen.getByText('リポジトリをForkする')).toBeInTheDocument();
-    expect(screen.getByText('contributors.json を開く')).toBeInTheDocument();
-    expect(screen.getByText('Pull Requestを作成する')).toBeInTheDocument();
-  });
-
-  it('CLI版への案内セクションが存在する', () => {
-    render(<TutorialPage />);
-
-    expect(screen.getByText('CLIで操作したい方へ')).toBeInTheDocument();
-    expect(screen.getByText('CLI版の手順を見る')).toBeInTheDocument();
+    expect(screen.getByText('emojis.txt を開く')).toBeInTheDocument();
+    expect(screen.getByText('好きな絵文字を追加する')).toBeInTheDocument();
   });
 
   it('FAQセクションが存在する', () => {
@@ -55,5 +43,45 @@ describe('TutorialPage', () => {
     render(<TutorialPage />);
 
     expect(screen.getByText(/Gitのインストールは不要/)).toBeInTheDocument();
+  });
+
+  it('Fork注意喚起が表示される (T-05)', () => {
+    render(<TutorialPage />);
+
+    expect(screen.getByText(/Forkにコミットしただけでは反映されません/)).toBeInTheDocument();
+  });
+
+  it('コンフリクト誘導リンクが存在する (T-05)', () => {
+    render(<TutorialPage />);
+
+    expect(screen.getByText(/コンフリクトについて/)).toBeInTheDocument();
+  });
+
+  it('コンフリクト解決セクションが存在する (T-06)', () => {
+    render(<TutorialPage />);
+
+    expect(screen.getByText('コンフリクトが起きたら')).toBeInTheDocument();
+  });
+
+  it('コンフリクト安心メッセージが表示される (T-06)', () => {
+    render(<TutorialPage />);
+
+    expect(screen.getByText(/心配しないでください/)).toBeInTheDocument();
+    expect(screen.getByText(/管理人がマージ時に調整します/)).toBeInTheDocument();
+  });
+
+  it('コンフリクト解決ステップ A-D が表示される (T-06)', () => {
+    render(<TutorialPage />);
+
+    expect(screen.getByText(/upstream を登録する/)).toBeInTheDocument();
+    expect(screen.getByText(/upstream の最新を取得する/)).toBeInTheDocument();
+    expect(screen.getByText(/コンフリクトを解決する/)).toBeInTheDocument();
+    expect(screen.getByText(/解決をコミットして push する/)).toBeInTheDocument();
+  });
+
+  it('コンフリクトセクションに「やらなくても大丈夫」メッセージがある (T-06)', () => {
+    render(<TutorialPage />);
+
+    expect(screen.getByText(/やらなくても大丈夫/)).toBeInTheDocument();
   });
 });

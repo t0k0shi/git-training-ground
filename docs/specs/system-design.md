@@ -1,4 +1,4 @@
-# システム設計書: Git Training Ground
+# システム設計書: Git Training Ground (v2)
 
 ## 1. アーキテクチャ概要
 
@@ -14,16 +14,17 @@
 │  │    layout.tsx ────── Header + Footer         │ │
 │  │                                             │ │
 │  │  data/                                      │ │
-│  │    contributors.json ── ビルド時に読込      │ │
+│  │    emojis.txt ────── ビルド時に読込          │ │
 │  └─────────────────────────────────────────────┘ │
 └─────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────┐
 │               GitHub Actions (CI)               │
 │  validate-pr.yml                                │
-│    → JSON Schema チェック                        │
-│    → NGワードチェック                             │
-│    → ユニットテスト (vitest)                      │
+│    → ファイルスコープチェック                     │
+│    → 絵文字フォーマット検証 (validate-emojis.mjs) │
+│    → 削除・変更保護                              │
+│    → 追加行数制限                                │
 │    → ビルド確認                                  │
 └─────────────────────────────────────────────────┘
 ```
@@ -36,7 +37,6 @@
 | UI | React | 19.2.3 |
 | スタイリング | Tailwind CSS | v4 |
 | 言語 | TypeScript | 5.x |
-| バリデーション | ajv (JSON Schema) | 8.x |
 | テスト (単体) | vitest + Testing Library | 4.x |
 | テスト (E2E) | Playwright | 1.58.x |
 | ホスティング | Vercel | - |
@@ -54,32 +54,29 @@ git-training-ground/
 ├── components/
 │   ├── common/               # 共通コンポーネント
 │   │   ├── Header.tsx
-│   │   ├── Footer.tsx
-│   │   └── Tooltip.tsx
+│   │   └── Footer.tsx
 │   ├── home/                 # トップページ専用
 │   │   ├── Hero.tsx
 │   │   ├── Features.tsx
 │   │   ├── HowItWorks.tsx
 │   │   ├── EmojiGrid.tsx
 │   │   ├── EmojiCard.tsx
-│   │   ├── Statistics.tsx
 │   │   └── FinalCTA.tsx
 │   └── tutorial/             # チュートリアル専用
 │       ├── StepGuide.tsx
 │       ├── CodeBlock.tsx     # 'use client'
 │       └── FAQ.tsx           # 'use client'
 ├── lib/                      # ユーティリティ
-│   ├── types.ts              # 型定義
-│   ├── contributors.ts       # データ読込・統計計算
-│   └── validation.ts         # バリデーション関数
+│   ├── types.ts              # EmojiCard 型定義
+│   └── contributors.ts       # parseEmojiLine(), getEmojis()
 ├── data/
-│   └── contributors.json     # 貢献者データ (SSOT)
+│   └── emojis.txt            # 絵文字データ (SSOT)
 ├── scripts/                  # CI用スクリプト
-│   ├── validate-contributors.js
-│   └── check-ng-words.js
+│   └── validate-emojis.mjs   # 絵文字フォーマットバリデーション
 ├── tests/
 │   ├── setup.ts              # vitest セットアップ
 │   ├── unit/                 # ユニットテスト
+│   ├── integration/          # インテグレーションテスト
 │   └── e2e/                  # E2Eテスト (Playwright)
 ├── docs/
 │   ├── specs/                # 仕様書
@@ -89,92 +86,82 @@ git-training-ground/
         └── validate-pr.yml   # PR バリデーション
 ```
 
-## 4. レンダリング戦略
+## 4. データモデル (v2)
 
-| ページ | 方式 | 理由 |
-|--------|------|------|
-| `/` | SSG (Static Export) | ビルド時にcontributors.jsonを読込 |
-| `/tutorial` | SSG (Static Export) | 完全に静的コンテンツ |
-
-`next.config.ts` で `output: "export"` を設定。全ページが `out/` に静的HTMLとして出力される。
-
-## 5. コンポーネント設計方針
-
-### Server / Client の使い分け
-
-| 種別 | 基準 | 例 |
-|------|------|-----|
-| Server Component | データ取得、静的表示 | `app/page.tsx`, Hero, Features |
-| Client Component | ユーザーインタラクション | CodeBlock (コピー), FAQ (アコーディオン) |
-
-### Props設計
-
-- データは上位（ページ）から下位（コンポーネント）へ props で渡す
-- グローバルstate管理ライブラリは不使用
-- 各コンポーネントのローカルstateは `useState` のみ
-
-## 6. データモデル
-
-### Contributor
+### EmojiCard
 
 ```typescript
-interface Contributor {
-  name: string;            // 3-20文字、英数字+ハイフン+アンダースコア
-  github: string;          // https://github.com/{username}
-  favoriteColor: string;   // #XXXXXX（16進数6桁）
-  favoriteEmoji: string;   // 絵文字（10文字以内）
-  message?: string;        // 任意、50文字以内
-  joinedAt: string;        // YYYY-MM-DD
-  prNumber: number;        // PR番号（0=未マージ、1+=マージ済み）
+interface EmojiCard {
+  emoji: string;      // 単一絵文字
+  size: 1 | 2 | 3;    // カードサイズ（絵文字の個数に対応）
 }
 ```
 
-### バリデーションルール
-
-| フィールド | ルール | CI チェック |
-|-----------|--------|------------|
-| name | `/^[a-zA-Z0-9_-]{3,20}$/` | JSON Schema + validation.ts |
-| github | `/^https:\/\/github\.com\/[a-zA-Z0-9_-]+$/` | JSON Schema + validation.ts |
-| favoriteColor | `/^#[0-9A-Fa-f]{6}$/` | JSON Schema + validation.ts |
-| favoriteEmoji | 1〜10文字 | JSON Schema + validation.ts |
-| message | 任意、50文字以内 | JSON Schema + validation.ts |
-| joinedAt | `/^\d{4}-\d{2}-\d{2}$/` | JSON Schema + validation.ts |
-| prNumber | 0以上の整数 | JSON Schema + validation.ts |
-
-### NGワードチェック
-
-- 全角・半角を正規化してチェック
-- `scripts/check-ng-words.js` で実行
-- CIで自動実行
-
-## 7. CI パイプライン
-
-### validate-pr.yml（PR時）
+### data/emojis.txt フォーマット
 
 ```
-PR作成/更新
-  → checkout
-  → npm ci
-  → npm test (vitest)
-  → node scripts/validate-contributors.js
-  → node scripts/check-ng-words.js
-  → npm run build
+🚀          → { emoji: '🚀', size: 1 }
+🎉🎉        → { emoji: '🎉', size: 2 }
+🌟🌟🌟      → { emoji: '🌟', size: 3 }
 ```
 
-### Vercel（main push時）
+## 5. データフロー
+
+### ビルド時（SSG）
 
 ```
-main push
-  → Vercel自動検知
-  → npm run build (next build)
-  → out/ を配信
+data/emojis.txt
+  → lib/contributors.ts::getEmojis()
+    → parseEmojiLine() で各行をパース
+    → EmojiCard[] として返却
+      → components/home/EmojiGrid.tsx
+        → components/home/EmojiCard.tsx × N
 ```
 
-## 8. テスト戦略
+### PR 時（CI: validate-pr.yml）
+
+```
+PR 作成/更新
+  → checkout (fetch-depth: 0)
+  → ファイルスコープチェック (emojis.txt 以外の変更検出)
+  → setup Node.js 20
+  → node scripts/validate-emojis.mjs
+  → git diff で削除・変更検出
+  → 追加行数制限チェック (最大1行)
+  → npm ci → npm run build
+```
+
+## 6. validate-emojis.mjs 設計
+
+### エクスポート関数
+
+| 関数 | 引数 | 戻り値 |
+|------|------|--------|
+| `validateLine(line, lineNumber)` | 行文字列, 行番号 | `null` (OK) \| `ErrorObject` |
+| `validateFile(content)` | ファイル全体の文字列 | `ErrorObject[]` |
+
+### ErrorObject
+
+```javascript
+{
+  line: number,       // 行番号
+  content: string,    // 問題の行内容
+  type: string,       // 'not-emoji' | 'too-many' | 'mixed-emoji'
+  message: string     // 日本語のエラーメッセージ（初心者向け）
+}
+```
+
+### 絵文字判定ロジック
+
+1. `Intl.Segmenter` で grapheme cluster に分割
+2. 各 grapheme が `\p{Extended_Pictographic}` を含むか判定
+3. ZWJ 絵文字（👨‍👩‍👧）や肌色修飾子（👋🏽）に正しく対応
+
+## 7. テスト戦略
 
 | レイヤー | ツール | 対象 | 実行タイミング |
 |---------|--------|------|--------------|
-| 単体テスト | vitest + Testing Library | コンポーネント、lib関数 | ローカル + CI |
+| 単体テスト | vitest + Testing Library | コンポーネント、lib関数、validate-emojis.mjs | ローカル + CI |
+| インテグレーション | vitest + Testing Library | 複数コンポーネント連携 | ローカル |
 | E2Eテスト | Playwright | ページ遷移、インタラクション | ローカル |
-| スキーマ検証 | ajv | contributors.json | CI |
-| NGワード | check-ng-words.js | contributors.json | CI |
+| CIバリデーション | validate-emojis.mjs | data/emojis.txt | CI (PR時) |

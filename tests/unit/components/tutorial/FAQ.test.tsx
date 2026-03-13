@@ -10,9 +10,10 @@ describe('FAQ', () => {
     expect(screen.getByText('Forkって何ですか？')).toBeInTheDocument();
     expect(screen.getByText('CIチェックが失敗した場合は？')).toBeInTheDocument();
     expect(screen.getByText('PRがマージされない場合は？')).toBeInTheDocument();
-    expect(screen.getByText('prNumberは何を書けばいいですか？')).toBeInTheDocument();
     expect(screen.getByText('コンフリクトが起きた場合は？')).toBeInTheDocument();
     expect(screen.getByText('CLIでやりたい場合は？')).toBeInTheDocument();
+    expect(screen.getByText('「絵文字以外の文字」エラーが出た')).toBeInTheDocument();
+    expect(screen.getByText('「他の人の絵文字が削除されています」エラーが出た')).toBeInTheDocument();
   });
 
   it('初期状態では回答が表示されない', () => {
