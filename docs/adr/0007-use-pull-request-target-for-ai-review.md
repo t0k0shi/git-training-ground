@@ -1,8 +1,14 @@
 # ADR-0007: AI レビューに `pull_request_target` を採用
 
-- **Status**: Accepted
+- **Status**: **Superseded by [ADR-0008](./0008-coderabbit-over-copilot-for-reviews.md)**（2026-04-24 同日）
 - **Date**: 2026-04-24
 - **Context**: AI レビュー用 GitHub Actions workflow のトリガー選定
+
+> **⚠️ この決定は Superseded されました**
+>
+> ADR-0008 で CodeRabbit を採用したため、Copilot 用 workflow の `pull_request_target` による reviewer 自動アサインは不要に。
+> CodeRabbit は GitHub App として独立して動作するため、workflow 側は CodeRabbit のレビューイベントに反応するだけで済み、
+> `pull_request_review: submitted` トリガーのみで十分。`pull_request_target` のセキュリティリスクを避けられる利点もある。
 
 ## Context
 

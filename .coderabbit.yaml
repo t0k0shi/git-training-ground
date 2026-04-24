@@ -1,0 +1,49 @@
+# CodeRabbit AI レビュー設定
+# https://docs.coderabbit.ai/reference/configuration
+
+language: ja-JP
+
+early_access: false
+
+reviews:
+  # レビュー時の姿勢: chill / assertive / nitpick
+  # 初心者向け OSS 練習場のため "chill" (穏やか) を選択
+  profile: chill
+
+  # CodeRabbit が明確に問題を検出した際に GitHub の "Request changes" を使う
+  # → 我々の post-verdict ジョブで do-not-merge ラベル付与のトリガーになる
+  request_changes_workflow: true
+
+  # PR トップにサマリーを投稿
+  high_level_summary: true
+
+  # walkthrough の折りたたみ
+  collapse_walkthrough: true
+
+  # AI 生成の詩（余計なので無効化）
+  poem: false
+
+  # レビュー全体の結果表示
+  review_status: true
+
+  auto_review:
+    enabled: true
+    # Draft PR はレビューしない
+    drafts: false
+
+  # レビュー対象から除外するパス
+  # (glob パターンは CodeRabbit 独自形式: "!" で除外)
+  path_filters:
+    # contributors.json の検証は validate-pr.yml 側で実施するため CodeRabbit では対象外
+    - "!data/contributors.json"
+    # 純粋なドキュメント変更はレビュー不要
+    - "!**/*.md"
+    - "!docs/**"
+    # ビルド成果物・依存関係
+    - "!package-lock.json"
+    - "!out/**"
+    - "!.next/**"
+
+chat:
+  # コメントへの自動応答を有効化 (@coderabbitai への返信など)
+  auto_reply: true

@@ -1,8 +1,15 @@
 # ADR-0006: AI レビュアーとして GitHub Copilot を採用（Claude API は将来の fallback）
 
-- **Status**: Accepted
+- **Status**: **Superseded by [ADR-0008](./0008-coderabbit-over-copilot-for-reviews.md)**（2026-04-24 同日に逆転）
 - **Date**: 2026-04-24
 - **Context**: git-training-ground PR 自動 AI レビューの実装言語選定
+
+> **⚠️ この決定は Superseded されました**
+>
+> Copilot code review は **リポジトリ所有アカウント／組織** に Copilot Business 以上のサブスクリプションが必要なことが判明。
+> `t0k0shi/git-training-ground` は個人 repo であり、この要件を満たせないため、採用不可と結論。
+>
+> 代替として **CodeRabbit（public 永久無料 + 日本語対応）** を採用。詳細は ADR-0008 参照。
 
 ## Context
 

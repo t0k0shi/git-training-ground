@@ -1,112 +1,30 @@
 name: AI PR Review
 
+# CodeRabbit が review を submit した際に、verdict を解析してラベル管理のみ行う。
+# CodeRabbit 自体のトリガー・レビュー投稿は GitHub App 側で自動実行されるため、
+# assign や レビュー本体の実行はこの workflow では不要。
+
 on:
-  pull_request_target:
-    types: [opened, synchronize, reopened]
   pull_request_review:
     types: [submitted]
 
 permissions:
   pull-requests: write
-  contents: read
 
 concurrency:
   group: ai-review-${{ github.event.pull_request.number }}
   cancel-in-progress: false
 
 env:
-  # Copilot bot handle. 実際の値は事前作業 S-1 で確認済みの値に合わせる。
+  # CodeRabbit bot の GitHub login 名
+  # 実際の値は GitHub App インストール後に 1 度確認して合わせる
   # 参考: gh api 'repos/{owner}/{repo}/pulls/{pr}/reviews' --jq '.[].user.login'
-  COPILOT_BOT_LOGIN: "copilot-pull-request-reviewer[bot]"
+  CODERABBIT_BOT_LOGIN: "coderabbitai[bot]"
 
 jobs:
-  # ──────────────────────────────────────────────
-  # Job 1: Copilot を reviewer として自動アサイン
-  #   - pull_request_target でのみ起動
-  #   - コードを実行しない（gh CLI と git diff のみ）
-  # ──────────────────────────────────────────────
-  assign-copilot:
-    if: github.event_name == 'pull_request_target'
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - name: Checkout PR merge ref
-        uses: actions/checkout@v4
-        with:
-          ref: refs/pull/${{ github.event.pull_request.number }}/merge
-          fetch-depth: 0
-
-      - name: Detect changed files
-        id: files
-        run: |
-          BASE="${{ github.event.pull_request.base.sha }}"
-          CHANGED=$(git diff --name-only "$BASE"..HEAD)
-          # contributors.json のみの PR は既存 validate-pr.yml がカバーするためスキップ
-          NON_JSON=$(echo "$CHANGED" | grep -v '^data/contributors\.json$' || true)
-          if [ -z "$NON_JSON" ]; then
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            echo "reason=contributors-only" >> "$GITHUB_OUTPUT"
-            echo "::notice::data/contributors.json のみの PR のため AI レビューをスキップ"
-          else
-            echo "skip=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Check diff size
-        if: steps.files.outputs.skip == 'false'
-        id: size
-        run: |
-          BASE="${{ github.event.pull_request.base.sha }}"
-          # insertion と deletion の合計行数で判定
-          STAT=$(git diff --shortstat "$BASE"..HEAD)
-          INS=$(echo "$STAT" | grep -oE '[0-9]+ insertion' | grep -oE '[0-9]+' || echo "0")
-          DEL=$(echo "$STAT" | grep -oE '[0-9]+ deletion' | grep -oE '[0-9]+' || echo "0")
-          TOTAL=$((INS + DEL))
-          echo "lines=$TOTAL" >> "$GITHUB_OUTPUT"
-          if [ "$TOTAL" -gt 800 ]; then
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            echo "::notice::Diff が 800 行を超えています ($TOTAL 行)。AI レビューをスキップ"
-          else
-            echo "skip=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Assign Copilot as reviewer
-        if: steps.files.outputs.skip == 'false' && steps.size.outputs.skip == 'false'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-        run: |
-          # gh pr edit は冪等: 既にアサイン済みでも成功する
-          # Copilot が有効化されていない / bot handle が異なる等の場合は warning で通過
-          gh pr edit "$PR" --repo "$REPO" --add-reviewer "@copilot" \
-            || echo "::warning::Copilot アサインに失敗しました。リポジトリ設定で Automatic Copilot code review が有効か確認してください"
-
-      - name: Post size-skip warning comment
-        if: steps.files.outputs.skip == 'false' && steps.size.outputs.skip == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          LINES: ${{ steps.size.outputs.lines }}
-        run: |
-          gh pr comment "$PR" --repo "$REPO" --body "$(cat <<EOF
-          > [!WARNING]
-          > この PR は変更行数が 800 行を超えています（${LINES} 行）。
-          > PR を分割することを検討してください。AI レビューはスキップされました。
-          EOF
-          )"
-
-  # ──────────────────────────────────────────────
-  # Job 2: Copilot のレビュー結果を verdict 化してラベル付与
-  #   - pull_request_review: submitted でのみ起動
-  #   - Copilot bot のレビューのみ処理
-  #   - Phase 1: 2 値判定（CHANGES_REQUESTED / APPROVED）
-  #   - Phase 2 で APPROVED_WITH_WARNINGS を追加予定
-  # ──────────────────────────────────────────────
   post-verdict:
-    if: >
-      github.event_name == 'pull_request_review' &&
-      github.event.review.user.login == 'copilot-pull-request-reviewer[bot]'
+    # CodeRabbit のレビューのみ処理（人間のレビューは無視）
+    if: github.event.review.user.login == 'coderabbitai[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -126,7 +44,7 @@ jobs:
             "repos/${REPO}/pulls/${PR}/reviews/${REVIEW_ID}/comments" \
             --jq 'length' 2>/dev/null || echo "0")
           echo "inline_count=$INLINE" >> "$GITHUB_OUTPUT"
-          echo "::notice::Copilot review: state=$REVIEW_STATE inline_comments=$INLINE"
+          echo "::notice::CodeRabbit review: state=$REVIEW_STATE inline_comments=$INLINE"
 
           # Phase 1: 2 値判定
           case "$REVIEW_STATE" in
