@@ -1,0 +1,20 @@
+# AI レビュー連動ラベル定義
+#
+# 運用: scripts/init-labels.sh を実行して GitHub と同期する
+# 将来的に crazy-max/ghaction-github-labeler による自動同期へ移行を検討
+
+- name: do-not-merge
+  color: "B60205"
+  description: "AI レビューの指摘が未解決。修正してください"
+
+- name: "ai:changes-requested"
+  color: "D93F0B"
+  description: "AI レビューで変更が要求されている"
+
+- name: "ai:approved-with-warnings"
+  color: "FBCA04"
+  description: "AI レビューで軽微な指摘あり"
+
+- name: "ai:approved"
+  color: "0E8A16"
+  description: "AI レビューで承認"

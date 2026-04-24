@@ -71,6 +71,14 @@ Your PR will be automatically validated:
 - Only 1 entry is added per PR
 - The site builds successfully
 
+### 🤖 AI Review
+
+Pull requests that modify code (not just `contributors.json`) will receive an automated review from **GitHub Copilot**.
+
+- Review comments may be posted in English — don't worry about this
+- If the `do-not-merge` label is applied, please check and address the AI's feedback
+- Feel free to ask for help in the PR comments if you're unsure about anything
+
 ### Local Validation
 
 Before submitting, you can validate locally:
