@@ -185,17 +185,6 @@ export function HeroSection({ contributors }: HeroSectionProps) {
         </div>
       </div>
 
-      <div
-        className="absolute left-1/2 bottom-6 -translate-x-1/2 z-10 flex flex-col items-center gap-1 text-muted"
-        aria-hidden="true"
-      >
-        <span className="font-mono text-xs tracking-widest">scroll</span>
-        <span
-          className="inline-block w-px h-6 bg-muted"
-          style={{ animation: 'pulse 1.8s ease-in-out infinite' }}
-        />
-      </div>
-
       <BubbleTooltip contributor={hovered} x={mouse.x} y={mouse.y} />
     </section>
   );
