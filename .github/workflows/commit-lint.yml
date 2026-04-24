@@ -1,0 +1,62 @@
+name: Commit Lint
+
+# PR 内の全 commit メッセージが CONTRIBUTING.md の規約に従っているか検証する。
+# 違反があれば exit 1 で CI を失敗させ、PR のマージをブロックする。
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  commit-lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v4
+        with:
+          ref: refs/pull/${{ github.event.pull_request.number }}/merge
+          fetch-depth: 0
+
+      - name: Validate commit messages
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+
+          # 許可される形式:
+          #   1. Add <name> to contributors   (contributors.json 追加の初心者 PR)
+          #   2. <type>(<scope>)?!?: <subject>  (Conventional Commits)
+          #      type: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
+          REGEX='^((Add [A-Za-z0-9_-]+ to contributors)|((feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([A-Za-z0-9_/.-]+\))?!?:[[:space:]]+\S.+))$'
+
+          INVALID=""
+          while IFS= read -r line; do
+            SHA=$(printf '%s' "$line" | cut -d' ' -f1)
+            SUBJECT=$(printf '%s' "$line" | cut -d' ' -f2-)
+            if ! printf '%s' "$SUBJECT" | grep -qE "$REGEX"; then
+              INVALID="${INVALID}  - ${SHA:0:7}: ${SUBJECT}"$'\n'
+            fi
+          done < <(git log --format='%H %s' "$BASE_SHA"..HEAD)
+
+          if [ -n "$INVALID" ]; then
+            echo "::error::以下の commit メッセージが CONTRIBUTING.md の規約に従っていません:"
+            echo ""
+            printf '%s\n' "$INVALID"
+            echo "許可される形式:"
+            echo "  1. Add <yourname> to contributors   (contributors.json 追加の場合)"
+            echo "  2. <type>(<scope>)?!?: <subject>    (Conventional Commits)"
+            echo "     type: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert"
+            echo ""
+            echo "修正方法:"
+            echo "  - 最新 1 件: git commit --amend -m '新しいメッセージ' && git push --force-with-lease"
+            echo "  - 複数件:   git rebase -i origin/main で reword してから --force-with-lease"
+            echo ""
+            echo "詳細: CONTRIBUTING.md"
+            exit 1
+          fi
+
+          echo "✅ 全 commit メッセージが規約に準拠しています"
