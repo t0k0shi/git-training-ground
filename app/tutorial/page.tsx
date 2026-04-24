@@ -4,6 +4,11 @@ import { CodeBlock } from '@/components/tutorial/CodeBlock';
 import { FAQ } from '@/components/tutorial/FAQ';
 import { asset } from '@/lib/asset';
 
+/**
+ * Renders the complete "PRチュートリアル" page with a hero, prerequisites, a nine-step guided workflow, conflict-resolution help, and a completion section with FAQ.
+ *
+ * @returns The page's JSX element containing the tutorial content, screenshots, command examples, conflict-resolution instructions, and navigation links.
+ */
 export default function TutorialPage() {
   return (
     <main className="min-h-screen bg-[#F8FAFC]">

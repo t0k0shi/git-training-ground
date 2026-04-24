@@ -10,6 +10,12 @@ interface HeroSectionProps {
   contributors: ContributorWithDerived[];
 }
 
+/**
+ * Render the hero section with navigation, headline, CTAs, animated contributor bubbles, counters, avatars, and an interactive tooltip that follows hover.
+ *
+ * @param contributors - Array of contributors used to populate floating bubbles, the live counter, weekly-new count, and the latest avatars
+ * @returns The hero section JSX element containing navigation, introduction content, call-to-action buttons, contributor visuals, and the hover-follow tooltip
+ */
 export function HeroSection({ contributors }: HeroSectionProps) {
   const [hovered, setHovered] = useState<ContributorWithDerived | null>(null);
   const [mouse, setMouse] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
