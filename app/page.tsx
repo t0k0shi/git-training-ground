@@ -1,28 +1,22 @@
-import { Hero } from "@/components/home/Hero";
-import { Features } from "@/components/home/Features";
-import { EmojiGrid } from "@/components/home/EmojiGrid";
-import { HowItWorks } from "@/components/home/HowItWorks";
-import { FinalCTA } from "@/components/home/FinalCTA";
-import { getEmojis } from "@/lib/contributors";
+import { HeroSection } from "@/components/home/HeroSection";
+import { ConceptSection } from "@/components/home/ConceptSection";
+import { HelpWantedSection } from "@/components/home/HelpWantedSection";
+import { StepsSection } from "@/components/home/StepsSection";
+import { ContributorsSection } from "@/components/home/ContributorsSection";
+import { FooterSection } from "@/components/home/FooterSection";
+import { getContributors } from "@/lib/contributors";
 
 export default async function HomePage() {
-  const emojis = await getEmojis();
+  const contributors = await getContributors();
 
   return (
     <main>
-      <Hero />
-      <Features />
-      <HowItWorks />
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold text-center text-[#1E293B] mb-10">貢献者の皆さん</h2>
-          <EmojiGrid emojis={emojis} />
-          <p className="text-center text-gray-500 mt-6">
-            {emojis.length} 人が参加中
-          </p>
-        </div>
-      </section>
-      <FinalCTA />
+      <HeroSection contributors={contributors} />
+      <ConceptSection />
+      <HelpWantedSection />
+      <StepsSection />
+      <ContributorsSection contributors={contributors} />
+      <FooterSection count={contributors.length} />
     </main>
   );
 }

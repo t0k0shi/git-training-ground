@@ -1,24 +1,106 @@
 @import "tailwindcss";
 
+/* ── Design Tokens (SSOT) ── */
 :root {
-  --color-primary: #2563EB;
-  --color-accent: #10B981;
-  --color-bg: #F8FAFC;
-  --color-text: #1E293B;
-  --color-sub: #64748B;
-  --background: #F8FAFC;
-  --foreground: #1E293B;
+  /* Colors */
+  --bg:     #FBF6EE;
+  --bg-2:   #F3ECDE;
+  --ink:    #1C1B1A;
+  --ink-2:  #3A3732;
+  --muted:  #78736A;
+  --line:   #E3DAC6;
+  --paper:  #FFFDF7;
+  --accent: #E63946;
+
+  /* Border radius */
+  --r-sm:   6px;
+  --r-md:   8px;
+  --r-lg:   12px;
+  --r-xl:   14px;
+  --r-2xl:  18px;
+  --r-pill: 999px;
+
+  /* Typography scale (prefixed to avoid @theme inline namespace conflict) */
+  --fs-hero:    clamp(42px, 6.5vw, 84px);
+  --fs-section: clamp(30px, 3.6vw, 44px);
+  --fs-tile:    22px;
+  --fs-step:    20px;
+  --fs-body:    15px;
+  --fs-caption: 12px;
+  --fs-mono:    11px;
 }
 
+/* ── Tailwind v4 theme mapping ── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Colors → bg-bg, text-ink, border-accent, etc. */
+  --color-bg:     var(--bg);
+  --color-bg-2:   var(--bg-2);
+  --color-ink:    var(--ink);
+  --color-ink-2:  var(--ink-2);
+  --color-muted:  var(--muted);
+  --color-line:   var(--line);
+  --color-paper:  var(--paper);
+  --color-accent: var(--accent);
+
+  /* Shadows → shadow-card, shadow-card-lg, shadow-code */
+  --shadow-card:    3px 3px 0 var(--ink);
+  --shadow-card-lg: 4px 4px 0 var(--ink);
+  --shadow-code:    5px 5px 0 var(--ink);
+
+  /* Border radius → rounded-sm, rounded-pill, etc. */
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   var(--r-xl);
+  --radius-2xl:  var(--r-2xl);
+  --radius-pill: var(--r-pill);
+
+  /* Font families → font-sans, font-mono */
+  --font-sans: var(--font-noto), var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  /* Font sizes → text-hero, text-section, etc. */
+  --text-hero:    var(--fs-hero);
+  --text-section: var(--fs-section);
+  --text-tile:    var(--fs-tile);
+  --text-step:    var(--fs-step);
+  --text-body:    var(--fs-body);
+  --text-caption: var(--fs-caption);
+  --text-mono:    var(--fs-mono);
+}
+
+/* ── Keyframes ── */
+@keyframes float {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+  50%       { transform: translate(-50%, -50%) translateY(-12px); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.9); }
+  50%       { opacity: 1;   transform: scale(1.1); }
+}
+
+@keyframes bounce-char {
+  0%, 60%, 100% { transform: translateY(0); }
+  30%            { transform: translateY(-18px); }
+}
+
+/* ── Base ── */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-noto), var(--font-inter), system-ui, sans-serif;
+  font-feature-settings: "palt" 1;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.7;
+}
+
+code, pre, .mono {
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
 }

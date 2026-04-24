@@ -21,8 +21,8 @@ describe('TutorialPage', () => {
     render(<TutorialPage />);
 
     expect(screen.getByText('リポジトリをForkする')).toBeInTheDocument();
-    expect(screen.getByText('emojis.txt を開く')).toBeInTheDocument();
-    expect(screen.getByText('好きな絵文字を追加する')).toBeInTheDocument();
+    expect(screen.getByText('contributors.json を開く')).toBeInTheDocument();
+    expect(screen.getByText('自分のエントリを追加する')).toBeInTheDocument();
   });
 
   it('FAQセクションが存在する', () => {

@@ -4,53 +4,91 @@ Thank you for your interest in contributing! This project is designed for beginn
 
 ## How to Contribute
 
-### Adding your emoji to emojis.txt
+### Adding your entry to `data/contributors.json`
 
 1. **Fork** this repository
-2. Open `data/emojis.txt` in your fork
+2. Open `data/contributors.json` in your fork
 3. Click the **pencil icon** (Edit this file) to enter edit mode
-4. **Add your emoji** at the end of the file:
+4. **Add your entry** to the end of the array:
 
-```
-🚀
-🎉🎉
-🌟🌟🌟
-
-🐱🐱  ← Add your emoji here!
+```json
+[
+  {
+    "name": "ketts",
+    "github": "t0k0shi",
+    "favoriteColor": "#E63946",
+    "favoriteEmoji": "🚀",
+    "message": "はじめてのOSS貢献！",
+    "joinedAt": "2026-04-24"
+  },
+  {
+    "name": "Your Name",
+    "github": "your-github-handle",
+    "favoriteColor": "#FF5E5B",
+    "favoriteEmoji": "🦊",
+    "message": "Nice to meet you!",
+    "joinedAt": "2026-04-24"
+  }
+]
 ```
 
 5. Choose **"Create a new branch for this commit and start a pull request"**
 6. Click **"Propose changes"** to commit
-7. Go to the **original repository** (t0k0shi/git-training-ground) and click **"Compare & pull request"**
+7. Go to the **original repository** (`t0k0shi/git-training-ground`) and click **"Compare & pull request"**
 8. Click **"Create pull request"**
 
-### Emoji Size Guide
+### Required Fields
 
-| Format | Card Size |
-|--------|-----------|
-| `🐱` | Small card |
-| `🐱🐱` | Medium card |
-| `🐱🐱🐱` | Large card |
+| Field | Description | Example |
+|-------|-------------|---------|
+| `name` | Display name | `"ketts"` |
+| `github` | GitHub handle (or full URL) | `"t0k0shi"` |
+| `favoriteColor` | Card border color (`#RRGGBB` hex) | `"#E63946"` |
+| `favoriteEmoji` | A single emoji character | `"🚀"` |
+| `message` | Short introduction | `"Nice to meet you!"` |
+| `joinedAt` | Date you submit the PR (`YYYY-MM-DD`) | `"2026-04-24"` |
 
 ### Rules
 
-- Add your emoji on a **new line at the end** of the file
-- Do **not** delete or modify other people's emojis
-- Each line should contain 1-3 repetitions of the same emoji
+- Add your entry at **the end of the array**
+- Do **not** delete or modify other people's entries
+- Each PR should add **exactly one entry**
+- Don't forget the **comma** after the previous entry's closing `}`
+- `favoriteColor` must match `#RRGGBB` (6 hex characters)
+- `favoriteEmoji` must be a single grapheme (1 character); emoji sequences like `👨‍👩‍👧` count as one
 
 ### CI Checks
 
-Your PR will be automatically checked for:
-- Valid emoji format (1-3 emoji characters per line)
-- No existing entries deleted
-- Build success
+Your PR will be automatically validated:
+
+- JSON parses correctly
+- Required fields are present and non-empty
+- `favoriteColor` matches `#RRGGBB`
+- `joinedAt` matches `YYYY-MM-DD`
+- `github` handle is not a duplicate of an existing entry
+- `favoriteEmoji` is exactly 1 grapheme cluster
+- No existing entries are deleted or modified
+- Only 1 entry is added per PR
+- The site builds successfully
+
+### Local Validation
+
+Before submitting, you can validate locally:
+
+```bash
+npx tsx scripts/validate-contributors.ts
+```
 
 ### Resolving Conflicts
 
 If your PR has conflicts:
-1. Sync your fork with the latest `main`
-2. Re-add your emoji at the end
-3. Create a new PR
+
+1. Open your fork's `data/contributors.json` on GitHub
+2. Edit the file to include both your entry and the latest entries from `main`
+3. Watch out for the trailing comma on the previous entry
+4. Commit the resolution to your branch
+
+If you're unsure, just comment on the PR — a maintainer will help.
 
 ## Code of Conduct
 

@@ -3,7 +3,7 @@ name: Validate PR
 on:
   pull_request:
     paths:
-      - 'data/emojis.txt'
+      - 'data/contributors.json'
 
 jobs:
   validate:
@@ -15,69 +15,77 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check only emojis.txt is changed
+      - name: Check only contributors.json is changed
         run: |
           echo "Checking changed files..."
           CHANGED=$(git diff --name-only origin/main...HEAD)
-          INVALID=$(echo "$CHANGED" | grep -v '^data/emojis\.txt$' || true)
+          INVALID=$(echo "$CHANGED" | grep -v '^data/contributors\.json$' || true)
           if [ -n "$INVALID" ]; then
             echo ""
-            echo "❌ emojis.txt 以外のファイルが変更されています"
+            echo "❌ contributors.json 以外のファイルが変更されています"
             echo "   変更されたファイル: $INVALID"
             echo ""
-            echo "   💡 この PR では data/emojis.txt のみ変更してください"
+            echo "   💡 この PR では data/contributors.json のみ変更してください"
             exit 1
           fi
           echo "✅ 変更対象ファイル OK"
-
-      - name: Check emoji format
-        run: python3 scripts/validate_emojis.py
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
-      - name: Verify no modifications or deletions
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate contributors.json format
+        run: npx tsx scripts/validate-contributors.ts
+
+      - name: Verify no modifications or deletions of existing entries
         run: |
           echo "Checking for modifications or deletions..."
-          MODIFIED=$(git diff origin/main HEAD -- data/emojis.txt | grep '^-' | grep -v '^---' || true)
-          if [ -n "$MODIFIED" ]; then
+          # 既存エントリの github ハンドルが消えていないか確認
+          git show origin/main:data/contributors.json > /tmp/contributors.main.json
+          BEFORE=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/contributors.main.json','utf8')).map(c => c.github).join('\n'))")
+          AFTER=$(node -e "console.log(JSON.parse(require('fs').readFileSync('data/contributors.json','utf8')).map(c => c.github).join('\n'))")
+          MISSING=$(comm -23 <(echo "$BEFORE" | sort) <(echo "$AFTER" | sort) || true)
+          if [ -n "$MISSING" ]; then
             echo ""
             echo "😅 既存エントリの保護"
             echo ""
-            echo "他の人の絵文字が変更または削除されているようです。"
-            echo "自分の絵文字を追加するだけにしてください。"
+            echo "他の人のエントリが削除されているようです。"
+            echo "自分のエントリを追加するだけにしてください。"
             echo ""
-            echo "変更・削除された行:"
-            echo "$MODIFIED" | head -5 | while IFS= read -r line; do
-              echo "  ${line#-}"
+            echo "消失した github ハンドル:"
+            echo "$MISSING" | head -5 | while IFS= read -r handle; do
+              echo "  - $handle"
             done
-            TOTAL=$(echo "$MODIFIED" | wc -l)
-            if [ "$TOTAL" -gt 5 ]; then
-              echo "  ...他 $((TOTAL - 5)) 行"
-            fi
             echo ""
             echo "わからない場合はそのまま PR を出してください。管理人が確認します。"
             exit 1
           fi
-          echo "✅ 削除・変更なし"
+          echo "✅ 既存エントリの削除なし"
 
-      - name: Check addition limit
+      - name: Check addition limit (1 entry per PR)
         run: |
           echo "Checking addition count..."
-          ADDED=$(git diff origin/main -- data/emojis.txt | grep -c '^+[^+]' || true)
-          if [ "$ADDED" -gt 1 ]; then
+          BEFORE_COUNT=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/contributors.main.json','utf8')).length)")
+          AFTER_COUNT=$(node -e "console.log(JSON.parse(require('fs').readFileSync('data/contributors.json','utf8')).length)")
+          DIFF=$((AFTER_COUNT - BEFORE_COUNT))
+          if [ "$DIFF" -gt 1 ]; then
             echo ""
-            echo "❌ 追加行が多すぎます（${ADDED}行）"
+            echo "❌ 追加エントリが多すぎます（+${DIFF} 件）"
             echo ""
-            echo "   💡 1回のPRでは絵文字を1行だけ追加してください"
+            echo "   💡 1 回の PR では 1 エントリだけ追加してください"
             exit 1
           fi
-          echo "✅ 追加行数 OK"
-
-      - name: Install dependencies
-        run: npm ci
+          if [ "$DIFF" -lt 0 ]; then
+            echo ""
+            echo "❌ エントリが減っています（${DIFF} 件）"
+            exit 1
+          fi
+          echo "✅ 追加エントリ数 OK (+${DIFF} 件)"
 
       - name: Build
         run: npm run build

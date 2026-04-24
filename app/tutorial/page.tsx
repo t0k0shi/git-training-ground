@@ -13,7 +13,7 @@ export default function TutorialPage() {
             はじめてのPRチュートリアル
           </h1>
           <p className="text-lg text-[#64748B]">
-            絵文字を1つ追加するだけ！あなたの最初のPull Requestを作成しましょう。
+            contributors.json にあなたのエントリを追加するだけ！最初のPull Requestを作成しましょう。
           </p>
         </div>
       </section>
@@ -60,12 +60,12 @@ export default function TutorialPage() {
             </div>
           </StepGuide>
 
-          <StepGuide step={2} title="emojis.txt を開く">
+          <StepGuide step={2} title="contributors.json を開く">
             <p className="mb-3">
-              Forkしたリポジトリ（自分のアカウントの git-training-ground）で、<code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm">data/emojis.txt</code> を開きます。
+              Forkしたリポジトリ（自分のアカウントの git-training-ground）で、<code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm">data/contributors.json</code> を開きます。
             </p>
             <p>
-              ファイル一覧から <strong>data</strong> フォルダ → <strong>emojis.txt</strong> の順にクリックしてください。
+              ファイル一覧から <strong>data</strong> フォルダ → <strong>contributors.json</strong> の順にクリックしてください。
             </p>
           </StepGuide>
 
@@ -78,31 +78,49 @@ export default function TutorialPage() {
             </p>
           </StepGuide>
 
-          <StepGuide step={4} title="好きな絵文字を追加する">
+          <StepGuide step={4} title="自分のエントリを追加する">
             <p className="mb-4 text-lg font-medium text-[#1E293B]">
-              ファイルの最後に、好きな絵文字を追加するだけ！
+              配列の最後に、自分の情報を追加するだけ！
             </p>
 
             <div className="bg-[#1E293B] rounded-lg p-4 text-sm font-mono text-white overflow-x-auto mb-4">
-              <pre>{`🚀
-🎉🎉
-🌟🌟🌟
-
-🐱🐱  ← 最後に追加！`}</pre>
+              <pre>{`[
+  {
+    "name": "ketts",
+    "github": "t0k0shi",
+    "favoriteColor": "#E63946",
+    "favoriteEmoji": "🚀",
+    "message": "はじめてのOSS貢献！",
+    "joinedAt": "2026-04-24"
+  },
+  {                       ← 最後に追加！
+    "name": "あなたの名前",
+    "github": "your-github-handle",
+    "favoriteColor": "#FF5E5B",
+    "favoriteEmoji": "🦊",
+    "message": "よろしくです！",
+    "joinedAt": "2026-04-24"
+  }
+]`}</pre>
             </div>
 
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm mb-4">
-              <p className="text-blue-800 font-medium mb-2">💡 カードの大きさを選べます</p>
+              <p className="text-blue-800 font-medium mb-2">💡 各フィールドの意味</p>
               <div className="space-y-1 text-blue-700">
-                <p><code className="bg-blue-100 px-1.5 rounded">🐱</code> → 小さいカード</p>
-                <p><code className="bg-blue-100 px-1.5 rounded">🐱🐱</code> → 中くらい</p>
-                <p><code className="bg-blue-100 px-1.5 rounded">🐱🐱🐱</code> → 大きいカード（目立つ！）</p>
+                <p><code className="bg-blue-100 px-1.5 rounded">name</code> — 表示名</p>
+                <p><code className="bg-blue-100 px-1.5 rounded">github</code> — あなたの GitHub ハンドル</p>
+                <p><code className="bg-blue-100 px-1.5 rounded">favoriteColor</code> — カードボーダー色（<code className="bg-blue-100 px-1 rounded">#RRGGBB</code> 形式）</p>
+                <p><code className="bg-blue-100 px-1.5 rounded">favoriteEmoji</code> — 1 文字の絵文字</p>
+                <p><code className="bg-blue-100 px-1.5 rounded">message</code> — 1 行自己紹介</p>
+                <p><code className="bg-blue-100 px-1.5 rounded">joinedAt</code> — PR を出す日付（<code className="bg-blue-100 px-1 rounded">YYYY-MM-DD</code>）</p>
               </div>
             </div>
 
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm">
               <p className="text-amber-800">
-                <strong>⚠️ 注意:</strong> 他の人の絵文字は消さないでください。自分の絵文字を<strong>最後に追加</strong>するだけです。
+                <strong>⚠️ 注意:</strong> 他の人のエントリは消さないでください。
+                前のエントリの末尾に <code className="bg-amber-100 px-1 rounded">,</code>（カンマ）を忘れずに。
+                自分のエントリを<strong>配列の最後に追加</strong>するだけです。
               </p>
             </div>
           </StepGuide>
@@ -112,11 +130,11 @@ export default function TutorialPage() {
               編集が終わったら、ページ右上の「<strong>Commit changes...</strong>」ボタンをクリックします。
             </p>
             <div className="bg-gray-50 rounded-lg p-4 text-sm space-y-2 mb-3">
-              <p><strong className="text-[#1E293B]">Commit message:</strong> Add my emoji 🐱</p>
+              <p><strong className="text-[#1E293B]">Commit message:</strong> Add my entry 🦊</p>
               <p><strong className="text-[#1E293B]">選択:</strong> 「Create a new branch for this commit and start a pull request」を選ぶ</p>
             </div>
             <p className="text-sm text-[#64748B]">
-              ブランチ名は自動で提案されますが、<code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm">add-my-emoji</code> のようにわかりやすい名前に変えてもOKです。
+              ブランチ名は自動で提案されますが、<code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm">add-my-entry</code> のようにわかりやすい名前に変えてもOKです。
             </p>
             <p className="mt-3">
               「<strong>Propose changes</strong>」をクリックしてコミットを完了します。
@@ -156,7 +174,7 @@ export default function TutorialPage() {
               「<strong>Open a pull request</strong>」画面が表示されます。base が <code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm">t0k0shi/git-training-ground</code> になっていることを確認してください。
             </p>
             <div className="bg-gray-50 rounded-lg p-4 text-sm space-y-2 mb-3">
-              <p><strong className="text-[#1E293B]">Title:</strong> Add my emoji 🐱（コミットメッセージが自動入力されます）</p>
+              <p><strong className="text-[#1E293B]">Title:</strong> Add my entry 🦊（コミットメッセージが自動入力されます）</p>
               <p><strong className="text-[#1E293B]">Description:</strong> 空欄でもOKです</p>
             </div>
             <p>
@@ -169,8 +187,9 @@ export default function TutorialPage() {
               PRを作成すると自動テスト（CI）が実行されます。
             </p>
             <ul className="list-disc list-inside space-y-1 text-sm mb-3">
-              <li>絵文字の形式チェック</li>
+              <li>contributors.json の形式チェック（必須フィールド・favoriteColor 形式・重複ハンドルなど）</li>
               <li>既存エントリが削除されていないかチェック</li>
+              <li>1 PR で 1 エントリのみ追加しているかチェック</li>
             </ul>
             <p className="text-sm text-[#64748B]">
               すべてのチェックがパスするのを待ちましょう。
@@ -253,20 +272,23 @@ export default function TutorialPage() {
               コンフリクトを解決する
             </h3>
             <p className="text-[#64748B] mb-3">
-              コンフリクトマーカーを削除して、自分の絵文字と他の人の絵文字の両方を残します。
+              コンフリクトマーカーを削除して、自分のエントリと他の人のエントリの両方を残します。
+              JSON の配列末尾のカンマに注意してください。
             </p>
             <div className="bg-gray-50 rounded-lg p-4 text-sm mb-3">
               <p className="text-[#64748B] font-medium mb-2">変更前（コンフリクトマーカーあり）:</p>
               <pre className="bg-gray-900 text-gray-100 p-3 rounded text-xs leading-relaxed overflow-x-auto">{`<<<<<<< HEAD
-🎉🎉
+  { "name": "自分", "github": "me", ... }
 =======
-🚀🚀🚀
->>>>>>> upstream/main`}</pre>
+  { "name": "他の人", "github": "you", ... }
+>>>>>>> upstream/main
+]`}</pre>
             </div>
             <div className="bg-gray-50 rounded-lg p-4 text-sm">
-              <p className="text-[#64748B] font-medium mb-2">変更後（両方の絵文字を残す）:</p>
-              <pre className="bg-gray-900 text-gray-100 p-3 rounded text-xs leading-relaxed overflow-x-auto">{`🎉🎉
-🚀🚀🚀`}</pre>
+              <p className="text-[#64748B] font-medium mb-2">変更後（両方のエントリを残す）:</p>
+              <pre className="bg-gray-900 text-gray-100 p-3 rounded text-xs leading-relaxed overflow-x-auto">{`  { "name": "他の人", "github": "you", ... },
+  { "name": "自分", "github": "me", ... }
+]`}</pre>
             </div>
           </div>
 
@@ -279,7 +301,7 @@ export default function TutorialPage() {
             <p className="text-[#64748B] mb-3">
               解決した変更をコミットして push します。
             </p>
-            <CodeBlock code="git add data/emojis.txt" />
+            <CodeBlock code="git add data/contributors.json" />
             <CodeBlock code='git commit -m "resolve conflict"' />
             <CodeBlock code="git push origin main" />
           </div>
@@ -299,7 +321,7 @@ export default function TutorialPage() {
         <section className="mt-16 text-center bg-gradient-to-r from-[#2563EB]/5 to-[#10B981]/5 rounded-2xl p-10">
           <h2 className="text-2xl font-bold text-[#1E293B] mb-3">PRがマージされたら...</h2>
           <p className="text-[#64748B] mb-6">
-            おめでとうございます！あなたの絵文字がトップページに表示されます。
+            おめでとうございます！あなたのカードがトップページに表示されます。
           </p>
           <Link
             href="/"
