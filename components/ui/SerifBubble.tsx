@@ -3,51 +3,32 @@ interface SerifBubbleProps {
   children: React.ReactNode;
 }
 
+const TAIL_BASE: React.CSSProperties = {
+  position: 'absolute',
+  top: '50%',
+  transform: 'translateY(-50%)',
+  width: 0,
+  height: 0,
+  borderTop: '8px solid transparent',
+  borderBottom: '8px solid transparent',
+};
+
+const TAIL_LEFT: React.CSSProperties = {
+  ...TAIL_BASE,
+  left: '-10px',
+  borderRight: '10px solid var(--line)',
+};
+
+const TAIL_RIGHT: React.CSSProperties = {
+  ...TAIL_BASE,
+  right: '-10px',
+  borderLeft: '10px solid var(--line)',
+};
+
 export function SerifBubble({ side, children }: SerifBubbleProps) {
-  const tailLeft: React.CSSProperties = {
-    content: '""',
-    position: 'absolute',
-    top: '50%',
-    left: '-10px',
-    transform: 'translateY(-50%)',
-    width: 0,
-    height: 0,
-    borderTop: '8px solid transparent',
-    borderBottom: '8px solid transparent',
-    borderRight: '10px solid var(--line)',
-  };
-
-  const tailRight: React.CSSProperties = {
-    content: '""',
-    position: 'absolute',
-    top: '50%',
-    right: '-10px',
-    transform: 'translateY(-50%)',
-    width: 0,
-    height: 0,
-    borderTop: '8px solid transparent',
-    borderBottom: '8px solid transparent',
-    borderLeft: '10px solid var(--line)',
-  };
-
   return (
     <div style={{ position: 'relative', display: 'inline-block' }}>
-      {side === 'left' && (
-        <span
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '-10px',
-            transform: 'translateY(-50%)',
-            width: 0,
-            height: 0,
-            borderTop: '8px solid transparent',
-            borderBottom: '8px solid transparent',
-            borderRight: '10px solid var(--line)',
-          }}
-        />
-      )}
+      {side === 'left' && <span aria-hidden="true" style={TAIL_LEFT} />}
       <div
         style={{
           background: 'var(--bg)',
@@ -61,22 +42,7 @@ export function SerifBubble({ side, children }: SerifBubbleProps) {
       >
         {children}
       </div>
-      {side === 'right' && (
-        <span
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            top: '50%',
-            right: '-10px',
-            transform: 'translateY(-50%)',
-            width: 0,
-            height: 0,
-            borderTop: '8px solid transparent',
-            borderBottom: '8px solid transparent',
-            borderLeft: '10px solid var(--line)',
-          }}
-        />
-      )}
+      {side === 'right' && <span aria-hidden="true" style={TAIL_RIGHT} />}
     </div>
   );
 }
