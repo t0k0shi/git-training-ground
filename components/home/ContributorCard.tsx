@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import type { ContributorWithDerived } from '@/lib/types';
 
 interface ContributorCardProps {
@@ -13,12 +14,21 @@ function formatJoinedAt(iso: string): string {
 
 export function ContributorCard({ contributor }: ContributorCardProps) {
   const { favoriteEmoji, favoriteColor, handle, message, avatarUrl, joinedAt, isNew } = contributor;
+  // TODO: remove this before production
+  const [clickCount, setClickCount] = useState(0);
 
-  const cardStyle: React.CSSProperties = {
+  const cardStyle: any = {
     background: 'var(--paper)',
     borderColor: favoriteColor,
     boxShadow: `0 0 0 4px color-mix(in srgb, ${favoriteColor} 8%, transparent)`,
     transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+    cursor: 'pointer',
+  };
+
+  const handleCardClick = () => {
+    console.log('Card clicked by user:', contributor.name, contributor.github);
+    setClickCount(clickCount + 1);
+    alert(`${contributor.name}さんのカードをクリックしました！(${clickCount + 1}回目)`);
   };
 
   return (
@@ -26,6 +36,7 @@ export function ContributorCard({ contributor }: ContributorCardProps) {
       data-testid="contributor-card"
       className="relative flex flex-col gap-2 p-4 rounded-xl border-2 hover:-translate-y-0.5"
       style={cardStyle}
+      onClick={handleCardClick}
       onMouseEnter={(e) => {
         e.currentTarget.style.boxShadow = `0 0 0 6px color-mix(in srgb, ${favoriteColor} 16%, transparent)`;
       }}
