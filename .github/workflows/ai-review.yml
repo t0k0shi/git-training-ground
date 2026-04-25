@@ -39,20 +39,32 @@ jobs:
         run: |
           set -euo pipefail
 
-          # inline comment 数を取得（Phase 2 で使う準備）
+          # inline comment 数を取得
           INLINE=$(gh api \
             "repos/${REPO}/pulls/${PR}/reviews/${REVIEW_ID}/comments" \
             --jq 'length' 2>/dev/null || echo "0")
           echo "inline_count=$INLINE" >> "$GITHUB_OUTPUT"
           echo "::notice::CodeRabbit review: state=$REVIEW_STATE inline_comments=$INLINE"
 
-          # Phase 1: 2 値判定
+          # 3 値判定 (Issue #28 対応):
+          # request_changes_workflow を無効化したため CodeRabbit は通常 commented を submit する。
+          # changes_requested は明示的に出されたケース、それ以外は inline_comments 数で判断する。
+          # 閾値: critical / 🔴 / "Potential issue" など重要指摘の検出は CodeRabbit の表記に依存
+          # するため、ここではシンプルに「inline_comments があれば warnings」とする。
+          # 将来的に inline_comments 本文を解析して severity 別判定に拡張可能。
           case "$REVIEW_STATE" in
             changes_requested)
               echo "verdict=CHANGES_REQUESTED" >> "$GITHUB_OUTPUT"
               ;;
-            approved|commented)
+            approved)
               echo "verdict=APPROVED" >> "$GITHUB_OUTPUT"
+              ;;
+            commented)
+              if [ "$INLINE" -gt 0 ]; then
+                echo "verdict=APPROVED_WITH_WARNINGS" >> "$GITHUB_OUTPUT"
+              else
+                echo "verdict=APPROVED" >> "$GITHUB_OUTPUT"
+              fi
               ;;
             *)
               echo "verdict=UNKNOWN" >> "$GITHUB_OUTPUT"
@@ -80,6 +92,10 @@ jobs:
             CHANGES_REQUESTED)
               gh pr edit "$PR" --repo "$REPO" --add-label "do-not-merge,ai:changes-requested"
               echo "::notice::Verdict=CHANGES_REQUESTED → do-not-merge + ai:changes-requested 適用"
+              ;;
+            APPROVED_WITH_WARNINGS)
+              gh pr edit "$PR" --repo "$REPO" --add-label "ai:approved-with-warnings"
+              echo "::notice::Verdict=APPROVED_WITH_WARNINGS → ai:approved-with-warnings 適用"
               ;;
             APPROVED)
               gh pr edit "$PR" --repo "$REPO" --add-label "ai:approved"
