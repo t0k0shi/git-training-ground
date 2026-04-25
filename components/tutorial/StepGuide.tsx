@@ -12,7 +12,7 @@ export function StepGuide({ step, title, children }: StepGuideProps) {
       <div className="absolute -left-5 top-0 w-10 h-10 rounded-full bg-accent text-paper flex items-center justify-center font-bold text-sm">
         {step}
       </div>
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-paper rounded-xl shadow-sm border border-line p-6">
         <h2 className="text-xl font-bold text-ink mb-3">
           <span className="text-accent mr-2">Step {step}</span>
           {title}

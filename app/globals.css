@@ -104,3 +104,21 @@ body {
 code, pre, .mono {
   font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
 }
+
+/* ── 日本語の折返し制御 (Japanese phrase-aware wrapping) ──
+ * 本文用パラグラフ向け。半角英数や記号の途中で折り返されないよう、
+ * フォールバックとして `word-break: keep-all` を指定し、その上で
+ * 対応ブラウザ (Chrome 119+) のみ `auto-phrase` を有効化する。
+ * 非対応ブラウザ (Safari, Firefox 等) では keep-all 挙動になる。
+ */
+.jp-phrase {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  line-break: strict;
+}
+
+@supports (word-break: auto-phrase) {
+  .jp-phrase {
+    word-break: auto-phrase;
+  }
+}

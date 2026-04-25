@@ -45,7 +45,7 @@ describe('StepGuide', () => {
       </StepGuide>
     );
 
-    const card = container.querySelector('.bg-white.rounded-xl.shadow-sm');
+    const card = container.querySelector('.bg-paper.rounded-xl.shadow-sm');
     expect(card).toBeInTheDocument();
   });
 });
