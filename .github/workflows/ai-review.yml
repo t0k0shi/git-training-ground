@@ -39,10 +39,18 @@ jobs:
         run: |
           set -euo pipefail
 
-          # inline comment 数を取得
-          INLINE=$(gh api \
+          # inline comment 数を取得。
+          # 取得失敗時は verdict 判定不能とみなして UNKNOWN に倒し、ラベル更新をスキップする。
+          # 失敗時に 0 にフォールバックすると、実際は指摘があるレビューを誤って APPROVED と
+          # 判定するリスクがある (silent failure)。
+          if ! INLINE=$(gh api \
             "repos/${REPO}/pulls/${PR}/reviews/${REVIEW_ID}/comments" \
-            --jq 'length' 2>/dev/null || echo "0")
+            --jq 'length' 2>/dev/null); then
+            echo "verdict=UNKNOWN" >> "$GITHUB_OUTPUT"
+            echo "inline_count=0" >> "$GITHUB_OUTPUT"
+            echo "::warning::inline comment 数の取得に失敗。verdict 判定をスキップします"
+            exit 0
+          fi
           echo "inline_count=$INLINE" >> "$GITHUB_OUTPUT"
           echo "::notice::CodeRabbit review: state=$REVIEW_STATE inline_comments=$INLINE"
 
