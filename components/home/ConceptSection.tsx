@@ -58,6 +58,7 @@ export function ConceptSection() {
         </h2>
 
         <p
+          className="jp-phrase"
           style={{
             fontSize: 'var(--fs-body)',
             color: 'var(--ink-2)',
