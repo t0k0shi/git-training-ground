@@ -65,10 +65,10 @@ describe('CodeBlock', () => {
   it('ダークテーマのTailwindスタイルが適用される', () => {
     const { container } = render(<CodeBlock code="echo hello" />);
 
-    const header = container.querySelector('.bg-gray-800');
+    const header = container.querySelector('.bg-ink-2');
     expect(header).toBeInTheDocument();
 
-    const pre = container.querySelector('pre.bg-gray-900');
+    const pre = container.querySelector('pre.bg-ink');
     expect(pre).toBeInTheDocument();
   });
 });

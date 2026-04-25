@@ -33,7 +33,7 @@ describe('StepGuide', () => {
       </StepGuide>
     );
 
-    const badge = container.querySelector('.rounded-full.bg-\\[\\#2563EB\\]');
+    const badge = container.querySelector('.rounded-full.bg-accent');
     expect(badge).toBeInTheDocument();
     expect(badge).toHaveTextContent('3');
   });

@@ -54,12 +54,12 @@ export function FAQ() {
 
   return (
     <section className="mt-16">
-      <h2 className="text-2xl font-bold text-[#1E293B] mb-6">よくある質問</h2>
+      <h2 className="text-2xl font-bold text-ink mb-6">よくある質問</h2>
       <div className="space-y-3">
         {faqData.map((item, index) => (
           <div key={index} className="bg-white rounded-lg border border-gray-200 overflow-hidden">
             <button
-              className="w-full text-left px-6 py-4 font-medium text-[#1E293B] hover:bg-gray-50 transition-colors flex items-center justify-between"
+              className="w-full text-left px-6 py-4 font-medium text-ink hover:bg-bg-2 transition-colors flex items-center justify-between"
               onClick={() => setOpenIndex(openIndex === index ? null : index)}
               aria-expanded={openIndex === index}
             >
@@ -69,7 +69,7 @@ export function FAQ() {
               </span>
             </button>
             {openIndex === index && (
-              <div className="px-6 pb-4 text-[#64748B] leading-relaxed">
+              <div className="px-6 pb-4 text-ink-2 leading-relaxed">
                 <p>{item.answer}</p>
               </div>
             )}

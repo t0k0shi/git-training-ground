@@ -63,6 +63,8 @@ export function ConceptSection() {
             color: 'var(--ink-2)',
             maxWidth: '640px',
             marginBottom: '48px',
+            wordBreak: 'auto-phrase',
+            lineBreak: 'strict',
           }}
         >
           「一人でコマンドを打つ練習」ではなく、「リアルな OSS フロー（fork → clone → branch → PR）」を体感する場所です。
