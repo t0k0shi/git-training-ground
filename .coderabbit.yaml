@@ -10,9 +10,15 @@ reviews:
   # 初心者向け OSS 練習場のため "chill" (穏やか) を選択
   profile: chill
 
-  # CodeRabbit が明確に問題を検出した際に GitHub の "Request changes" を使う
-  # → 我々の post-verdict ジョブで do-not-merge ラベル付与のトリガーになる
-  request_changes_workflow: true
+  # request_changes_workflow は無効化する。
+  # 有効時の仕様「全コメントが resolve された時点で自動 APPROVE」は人間レビュアーが
+  # @coderabbitai resolve や "Resolve conversation" ボタンを操作する前提のため、
+  # 修正 push だけでは APPROVE 状態に移行せず、ai-review.yml の post-verdict が
+  # 反応せずに do-not-merge ラベルが永久に残る問題が発生する。
+  # 通常の commented 形式に統一し、verdict 判定は post-verdict 側で inline_comments
+  # 数を見て行う (CHANGES_REQUESTED / APPROVED_WITH_WARNINGS / APPROVED の 3 値)。
+  # 詳細: Issue #28
+  request_changes_workflow: false
 
   # PR トップにサマリーを投稿
   high_level_summary: true
