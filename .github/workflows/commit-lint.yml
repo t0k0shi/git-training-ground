@@ -15,10 +15,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
-      - name: Checkout PR
+      # /merge ref ではなく /head を checkout する。
+      # /merge は GitHub が生成する合成マージコミット (Merge xxx into yyy) を HEAD にするため、
+      # git log "$BASE_SHA"..HEAD の範囲にこのマージコミットが入ってしまい、
+      # Conventional Commits 正規表現に合致せず正常な PR でも CI が誤検知で fail する。
+      - name: Checkout PR head
         uses: actions/checkout@v4
         with:
-          ref: refs/pull/${{ github.event.pull_request.number }}/merge
+          ref: refs/pull/${{ github.event.pull_request.number }}/head
           fetch-depth: 0
 
       - name: Validate commit messages
