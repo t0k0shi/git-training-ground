@@ -26,6 +26,19 @@ reviews:
   # レビュー全体の結果表示
   review_status: true
 
+  # リポジトリ全体に適用するレビュー指示
+  # (commit-lint.yml でも機械的に検証しているが、CodeRabbit にも注意喚起させる)
+  path_instructions:
+    - path: "**/*"
+      instructions: |
+        このリポジトリでは commit メッセージが CONTRIBUTING.md の規約に従っている必要があります。
+        許可される形式:
+          1. "Add <yourname> to contributors" (contributors.json 追加の初心者 PR)
+          2. Conventional Commits: "<type>(<scope>)?!?: <subject>"
+             type: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
+        絵文字プレフィックス (📚, 🐛 等) は使用禁止。
+        もし違反する commit があれば、その旨を明示的に指摘してください。
+
   auto_review:
     enabled: true
     # Draft PR はレビューしない

@@ -86,3 +86,12 @@ jobs:
               echo "::notice::Verdict=APPROVED → ai:approved 適用"
               ;;
           esac
+
+      # GITHUB_TOKEN で付与したラベルは pull_request:labeled イベントを発火しないため、
+      # merge-guard.yml が再実行されない。本ジョブ自身で CI を fail させて merge をブロックする。
+      - name: Fail on CHANGES_REQUESTED
+        if: steps.verdict.outputs.verdict == 'CHANGES_REQUESTED'
+        run: |
+          echo "::error::CodeRabbit のレビューで変更が要求されています (do-not-merge ラベル適用)。"
+          echo "        PR のレビューコメントを確認し、指摘事項を修正してから再 push してください。"
+          exit 1
