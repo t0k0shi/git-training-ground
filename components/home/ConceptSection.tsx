@@ -19,6 +19,7 @@ const TILES = [
 export function ConceptSection() {
   return (
     <section
+      className="concept-section"
       style={{
         background: 'var(--bg)',
         padding: '80px 40px',
@@ -127,7 +128,7 @@ export function ConceptSection() {
           .concept-tiles {
             grid-template-columns: 1fr !important;
           }
-          section {
+          .concept-section {
             padding: 60px 20px !important;
           }
         }
