@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
+import { pathToFileURL } from 'url';
 import { extractHandle } from '../lib/contributors';
 
 export interface ValidationError {
@@ -127,9 +128,25 @@ async function main(): Promise<void> {
   console.log(`✅ contributors.json の検証が完了しました（${count} 件のエントリ）`);
 }
 
-// モジュールとして import された場合は main() を実行しない
-const isMain = process.argv[1]?.endsWith('validate-contributors.ts') ||
-               process.argv[1]?.endsWith('validate-contributors.js');
-if (isMain) {
+// モジュールとして import された場合は main() を実行しない。
+// 旧実装の process.argv[1]?.endsWith('...') は tsx シム経由・シンボリックリンク経由で
+// silent に false negative になる可能性があったため、ESM 標準の import.meta.url ベースに変更。
+// audit-v4 Critical C-3 対応 (Issue #16)
+//
+// 判定方法: 「自分自身が直接実行されているか」を URL レベルで比較する。
+//   - tsx 経由実行時: process.argv[1] は .ts の絶対パス → fileURL に変換して一致確認
+//   - シムや stdin (`-` や空文字) からの呼び出し: argv[1] が無効値 → 直接実行ではないと判定
+function isDirectlyExecuted(): boolean {
+  const argv1 = process.argv[1];
+  if (!argv1) return false;
+  try {
+    const argvUrl = pathToFileURL(path.resolve(argv1)).href;
+    return import.meta.url === argvUrl;
+  } catch {
+    return false;
+  }
+}
+
+if (isDirectlyExecuted()) {
   main();
 }
