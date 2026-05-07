@@ -12,7 +12,8 @@ import os from 'os';
 const SCRIPT_PATH = path.resolve(__dirname, '../../scripts/validate-contributors.ts');
 const ORIGINAL_DATA_PATH = path.resolve(__dirname, '../../data/contributors.json');
 
-let backupContent: string;
+// 元ファイルが存在しないケースでも安全に動くよう、undefined を許容して都度ガードする
+let backupContent: string | undefined;
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'validate-contrib-'));
 
 beforeAll(() => {
@@ -23,7 +24,7 @@ beforeAll(() => {
 });
 
 afterAll(() => {
-  // 元に戻す
+  // 元に戻す (バックアップが取れた場合のみ)
   if (backupContent !== undefined) {
     fs.writeFileSync(ORIGINAL_DATA_PATH, backupContent);
   }
