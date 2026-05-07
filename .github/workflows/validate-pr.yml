@@ -33,7 +33,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '.nvmrc'
           cache: 'npm'
 
       - name: Install dependencies
@@ -87,7 +87,9 @@ jobs:
           fi
           echo "✅ 追加エントリ数 OK (+${DIFF} 件)"
 
-      - name: Build
+      - name: Build (本番デプロイと同じ basePath で検証)
+        env:
+          GITHUB_PAGES: 'true'
         run: npm run build
 
       - name: Success
