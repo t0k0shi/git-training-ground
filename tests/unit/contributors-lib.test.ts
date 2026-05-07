@@ -90,7 +90,6 @@ describe('getContributors', () => {
     ]);
     vi.mocked(fs.readFile).mockResolvedValue(mockData);
 
-    const now = new Date('2026-04-24T12:00:00Z');
     // getContributors の now を注入できないため、最低限の構造チェック
     const result = await getContributors();
 

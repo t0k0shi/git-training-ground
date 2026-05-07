@@ -28,6 +28,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Lint (ESLint)
+        run: npm run lint
+
       - name: Unit tests (Vitest)
         run: npm test -- --run
 
@@ -36,9 +39,6 @@ jobs:
           GITHUB_PAGES: 'true'
         run: npm run build
 
-      # NOTE:
-      # - ESLint は既存エラー (8 件、audit-v4 由来) があるため、
-      #   別 PR (#21 W-3〜W-5,W-8 系) でクリーンアップ後にこの workflow へ追加する。
-      # - GITHUB_PAGES env 名は次のリネーム対象 (NEXT_GITHUB_PAGES 等)。
-      #   現状は既存 deploy.yml / validate-pr.yml / next.config.ts と命名統一を優先。
-      #   一括リネームは別 PR で実施 (関連: CodeRabbit 指摘 PR #30)。
+      # NOTE: GITHUB_PAGES env 名は予約名のためリネーム対象 (NEXT_GITHUB_PAGES 等)。
+      # 現状は既存 deploy.yml / validate-pr.yml / next.config.ts と命名統一を優先。
+      # 一括リネームは別 PR で実施 (関連: CodeRabbit 指摘 PR #30)。
