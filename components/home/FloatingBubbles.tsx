@@ -22,6 +22,20 @@ function randomInRange(min: number, max: number): number {
   return min + Math.random() * (max - min);
 }
 
+/**
+ * Fisher-Yates シャッフルで配列の先頭 sampleSize 件をランダムに置き換える。
+ * 元の順序は保持されないが、毎回呼び出すごとに異なる組み合わせが返る。
+ */
+export function sampleRandom<T>(items: readonly T[], sampleSize: number): T[] {
+  const size = Math.max(0, Math.min(sampleSize, items.length));
+  const copy = items.slice();
+  for (let i = 0; i < size; i++) {
+    const j = i + Math.floor(Math.random() * (copy.length - i));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy.slice(0, size);
+}
+
 interface FloatingBubblesProps {
   contributors: ContributorWithDerived[];
   density?: number;
@@ -34,17 +48,16 @@ export function FloatingBubbles({
   onHover,
 }: FloatingBubblesProps) {
   const [positions, setPositions] = useState<BubblePosition[]>([]);
+  const [visibleContributors, setVisibleContributors] = useState<ContributorWithDerived[]>([]);
   const [mounted, setMounted] = useState(false);
 
-  // 表示するバブルを density に基づいてフィルタ
-  const visibleContributors = contributors.filter((_, i) => {
-    // density=1.0 → 全員表示, density=0.7 → 70% 表示
-    return (i % 10) / 10 < density;
-  });
-
   useEffect(() => {
-    // hydration mismatch 対策: useEffect 後に座標を計算
-    const newPositions: BubblePosition[] = visibleContributors.map((_, index) => {
+    // density に基づいて表示数を決定し、Fisher-Yates でランダムサンプリング
+    // hydration mismatch を避けるため、サンプリングと座標計算は client mount 後に実施
+    const targetCount = Math.ceil(contributors.length * density);
+    const sampled = sampleRandom(contributors, targetCount);
+
+    const newPositions: BubblePosition[] = sampled.map((_, index) => {
       const zone = ZONES[index % 4];
       return {
         x: randomInRange(zone.xMin, zone.xMax),
@@ -54,6 +67,7 @@ export function FloatingBubbles({
       };
     });
 
+    setVisibleContributors(sampled);
     setPositions(newPositions);
     setMounted(true);
   // eslint-disable-next-line react-hooks/exhaustive-deps
