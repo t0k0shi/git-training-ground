@@ -89,7 +89,7 @@ jobs:
 
       - name: Build (本番デプロイと同じ basePath で検証)
         env:
-          GITHUB_PAGES: 'true'
+          NEXT_PUBLIC_GITHUB_PAGES: 'true'
         run: npm run build
 
       - name: Success
