@@ -23,12 +23,20 @@ test.describe('Home page (v4)', () => {
     await expect(page.locator('h1')).toContainText('はじめてのPRチュートリアル');
   });
 
-  test('6 セクションがすべて存在する (h2 見出しから判定)', async ({ page }) => {
-    // ConceptSection / HelpWantedSection / StepsSection / ContributorsSection / FooterSection の見出し
-    // (Hero は h1 のみで h2 を持たないため、h2 の数で 5 セクション + Hero = 6)
-    const headings = page.locator('h2');
-    const count = await headings.count();
-    expect(count).toBeGreaterThanOrEqual(4);
+  test('6 セクション中、h2 を持つ 4 セクションの見出しが存在する', async ({ page }) => {
+    // 構成: Hero(h1) / Concept(h2) / HelpWanted(h2) / Steps(見出しなし) / Contributors(h2) / Footer(h2)
+    // h2 を持つ 4 セクションを名前ベースで個別検証 (StepsSection には見出しがないので別途リスト経由で確認)
+    const expectedH2Patterns: RegExp[] = [
+      /Git に .*?カラダ.*?で慣れる/, // ConceptSection
+      /contributors\.json を編集/,    // HelpWantedSection
+      /一緒に練習中の \d+ 人/,        // ContributorsSection
+      /DOMO・ARIGATO/,                 // FooterSection
+    ];
+    const allH2Text = await page.locator('h2').allTextContents();
+    for (const pattern of expectedH2Patterns) {
+      const matched = allH2Text.some((t) => pattern.test(t));
+      expect(matched, `h2 に "${pattern}" を含む見出しがない (実際: ${JSON.stringify(allH2Text)})`).toBe(true);
+    }
   });
 
   test('ContributorsSection のセグメントコントロールが切り替わる', async ({ page }) => {
