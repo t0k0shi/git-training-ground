@@ -94,7 +94,7 @@ export function HeroSection({ contributors }: HeroSectionProps) {
             className="relative inline-block"
             style={{
               backgroundImage:
-                'linear-gradient(transparent 60%, #FFE066 60%, #FFE066 90%, transparent 90%)',
+                'linear-gradient(transparent 60%, var(--highlight-yellow) 60%, var(--highlight-yellow) 90%, transparent 90%)',
             }}
           >
             ここで。

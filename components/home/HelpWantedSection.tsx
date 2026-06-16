@@ -88,7 +88,7 @@ export function HelpWantedSection() {
         <div>
           <div
             style={{
-              background: '#0F1419',
+              background: 'var(--code-bg)',
               boxShadow: 'var(--shadow-code)',
               borderRadius: 'var(--r-lg)',
               overflow: 'hidden',
@@ -100,7 +100,7 @@ export function HelpWantedSection() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '12px',
-                borderBottom: '1px solid rgba(255,255,255,0.08)',
+                borderBottom: '1px solid color-mix(in srgb, white 8%, transparent)',
               }}
             >
               <div style={{ display: 'flex', gap: '6px' }}>
@@ -109,7 +109,7 @@ export function HelpWantedSection() {
                     width: '12px',
                     height: '12px',
                     borderRadius: '50%',
-                    background: '#FF5F57',
+                    background: 'var(--mac-traffic-red)',
                     display: 'inline-block',
                   }}
                 />
@@ -118,7 +118,7 @@ export function HelpWantedSection() {
                     width: '12px',
                     height: '12px',
                     borderRadius: '50%',
-                    background: '#FFBD2E',
+                    background: 'var(--mac-traffic-yellow)',
                     display: 'inline-block',
                   }}
                 />
@@ -127,7 +127,7 @@ export function HelpWantedSection() {
                     width: '12px',
                     height: '12px',
                     borderRadius: '50%',
-                    background: '#28C840',
+                    background: 'var(--mac-traffic-green)',
                     display: 'inline-block',
                   }}
                 />
@@ -137,7 +137,7 @@ export function HelpWantedSection() {
                   fontFamily: 'var(--font-jetbrains-mono), ui-monospace, monospace',
                   fontSize: 'var(--fs-caption)',
                   color: 'var(--muted)',
-                  border: '1px solid rgba(120,115,106,0.4)',
+                  border: '1px solid color-mix(in srgb, var(--muted) 40%, transparent)',
                   borderRadius: 'var(--r-pill)',
                   padding: '1px 8px',
                 }}
@@ -158,7 +158,7 @@ export function HelpWantedSection() {
                   key={line.n}
                   style={{
                     display: 'flex',
-                    background: 'rgba(40, 200, 80, 0.15)',
+                    background: 'color-mix(in srgb, var(--mac-traffic-green) 15%, transparent)',
                     padding: '1px 0',
                   }}
                 >
@@ -167,15 +167,15 @@ export function HelpWantedSection() {
                       width: '36px',
                       textAlign: 'right',
                       paddingRight: '12px',
-                      color: 'rgba(120,115,106,0.6)',
+                      color: 'color-mix(in srgb, var(--muted) 60%, transparent)',
                       userSelect: 'none',
                       flexShrink: 0,
                     }}
                   >
                     {line.n}
                   </span>
-                  <span style={{ color: '#28C840', paddingRight: '8px', flexShrink: 0 }}>+</span>
-                  <span style={{ color: '#CBD5E1' }}>{line.text}</span>
+                  <span style={{ color: 'var(--mac-traffic-green)', paddingRight: '8px', flexShrink: 0 }}>+</span>
+                  <span style={{ color: 'var(--code-fg)' }}>{line.text}</span>
                 </div>
               ))}
             </div>

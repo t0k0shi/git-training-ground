@@ -28,6 +28,18 @@
   --fs-body:    15px;
   --fs-caption: 12px;
   --fs-mono:    11px;
+
+  /* Code editor mock palette (HelpWantedSection の "コード block 風" 表示用) */
+  --code-bg:            #0F1419;
+  --code-fg:            #CBD5E1;
+
+  /* macOS window traffic lights (Apple 既知色、 diff 追加マークにも転用) */
+  --mac-traffic-red:    #FF5F57;
+  --mac-traffic-yellow: #FFBD2E;
+  --mac-traffic-green:  #28C840;
+
+  /* Inline highlight (HeroSection の下線風ハイライト) */
+  --highlight-yellow:   #FFE066;
 }
 
 /* ── Tailwind v4 theme mapping ── */
