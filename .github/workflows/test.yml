@@ -36,9 +36,5 @@ jobs:
 
       - name: Build (Next.js, GitHub Pages 想定)
         env:
-          GITHUB_PAGES: 'true'
+          NEXT_PUBLIC_GITHUB_PAGES: 'true'
         run: npm run build
-
-      # NOTE: GITHUB_PAGES env 名は予約名のためリネーム対象 (NEXT_GITHUB_PAGES 等)。
-      # 現状は既存 deploy.yml / validate-pr.yml / next.config.ts と命名統一を優先。
-      # 一括リネームは別 PR で実施 (関連: CodeRabbit 指摘 PR #30)。
