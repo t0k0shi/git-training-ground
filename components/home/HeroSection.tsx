@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import type { ContributorWithDerived } from '@/lib/types';
 import { FloatingBubbles } from './FloatingBubbles';
 import { BubbleTooltip } from './BubbleTooltip';
@@ -35,19 +36,19 @@ export function HeroSection({ contributors }: HeroSectionProps) {
       <nav
         className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 py-4 bg-bg/90 backdrop-blur border-b border-line"
       >
-        <a
+        <Link
           href="/"
           className="font-mono font-bold text-ink text-sm tracking-tight"
         >
           git-training-ground
-        </a>
+        </Link>
         <div className="flex items-center gap-4">
-          <a
+          <Link
             href="/tutorial"
             className="hero-nav-link hidden md:inline text-ink-2 text-sm hover:text-accent transition-colors"
           >
             チュートリアル
-          </a>
+          </Link>
           <a
             href="#contributors"
             className="hero-nav-link hidden md:inline text-ink-2 text-sm hover:text-accent transition-colors"
@@ -57,6 +58,8 @@ export function HeroSection({ contributors }: HeroSectionProps) {
           <a
             href="https://github.com/t0k0shi/git-training-ground"
             className="px-4 py-1.5 text-sm rounded-pill border-2 border-ink font-semibold text-ink hover:bg-ink hover:text-bg transition-colors"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             Repo
           </a>

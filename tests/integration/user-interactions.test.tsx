@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { ComponentType, AnchorHTMLAttributes, ReactNode } from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -9,20 +10,21 @@ import userEvent from '@testing-library/user-event';
  * Unlike unit tests, these may test multiple components working together.
  */
 
-// Mock next/link for testing
+// Mock next/link for testing — Link を素の <a> として扱う
+type LinkMockProps = AnchorHTMLAttributes<HTMLAnchorElement> & { children?: ReactNode };
 vi.mock('next/link', () => ({
-  default: ({ children, href, ...props }: any) => {
+  default: ({ children, href, ...props }: LinkMockProps) => {
     return <a href={href} {...props}>{children}</a>;
-  }
+  },
 }));
 
 describe('ユーザーインタラクション: FAQ展開・折りたたみシーケンス', () => {
   // 動的インポートでFAQコンポーネントをロード
-  let FAQ: any;
+  let FAQ: ComponentType;
 
   beforeEach(async () => {
-    const module = await import('@/components/tutorial/FAQ');
-    FAQ = module.FAQ;
+    const mod = await import('@/components/tutorial/FAQ');
+    FAQ = mod.FAQ;
   });
 
   it('ユーザーが複数のFAQを順番に開いて閉じる', async () => {
@@ -104,11 +106,11 @@ describe('ユーザーインタラクション: FAQ展開・折りたたみシ�
 });
 
 describe('ユーザーインタラクション: CodeBlockコピー操作', () => {
-  let CodeBlock: any;
+  let CodeBlock: ComponentType<{ children: ReactNode; lang?: string }>;
 
   beforeEach(async () => {
-    const module = await import('@/components/tutorial/CodeBlock');
-    CodeBlock = module.CodeBlock;
+    const mod = await import('@/components/tutorial/CodeBlock');
+    CodeBlock = mod.CodeBlock;
   });
 
   // userEvent.setup() が navigator.clipboard を上書きするため、
@@ -189,11 +191,11 @@ npm run dev`;
 });
 
 describe('ユーザーインタラクション: StepGuide 展開', () => {
-  let StepGuide: any;
+  let StepGuide: ComponentType<{ step: number; title: string; children?: ReactNode }>;
 
   beforeEach(async () => {
-    const module = await import('@/components/tutorial/StepGuide');
-    StepGuide = module.StepGuide;
+    const mod = await import('@/components/tutorial/StepGuide');
+    StepGuide = mod.StepGuide;
   });
 
   it('ステップタイトルとコンテンツが表示される', () => {
