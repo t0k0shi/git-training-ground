@@ -1,4 +1,5 @@
 import { SerifBubble } from '@/components/ui/SerifBubble';
+import { BP_MOBILE_PX } from '@/lib/breakpoints';
 
 const STEPS = [
   { n: 1, emoji: '🍴', title: 'プロジェクトをフォーク',    hint: 'Fork',   cmd: 'GitHub: Fork ボタン' },
@@ -176,7 +177,7 @@ export function StepsSection() {
       </div>
 
       <style>{`
-        @media (max-width: 820px) {
+        @media (max-width: ${BP_MOBILE_PX}px) {
           .step-row {
             justify-content: flex-start !important;
           }

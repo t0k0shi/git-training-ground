@@ -1,3 +1,5 @@
+import { BP_MOBILE_PX } from '@/lib/breakpoints';
+
 const TILES = [
   {
     n: '01',
@@ -124,7 +126,7 @@ export function ConceptSection() {
       </div>
 
       <style>{`
-        @media (max-width: 820px) {
+        @media (max-width: ${BP_MOBILE_PX}px) {
           .concept-tiles {
             grid-template-columns: 1fr !important;
           }
