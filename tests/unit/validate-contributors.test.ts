@@ -62,6 +62,21 @@ describe('validateContributors', () => {
       const errors = validateContributors([{ ...validEntry, message: undefined }]);
       expect(errors.some((e) => e.check === 'CV-04')).toBe(true);
     });
+
+    it('半角スペースのみの文字列はエラー', () => {
+      const errors = validateContributors([{ ...validEntry, name: '   ' }]);
+      expect(errors.some((e) => e.check === 'CV-04')).toBe(true);
+    });
+
+    it('全角スペース・タブ・改行のみの文字列はエラー', () => {
+      const errors = validateContributors([{ ...validEntry, message: '\u3000\t\n' }]);
+      expect(errors.some((e) => e.check === 'CV-04')).toBe(true);
+    });
+
+    it('前後に空白があっても中身がある文字列はエラーにしない', () => {
+      const errors = validateContributors([{ ...validEntry, name: '  ketts  ' }]);
+      expect(errors.some((e) => e.check === 'CV-04')).toBe(false);
+    });
   });
 
   describe('CV-05: favoriteColor が #RRGGBB 形式', () => {
