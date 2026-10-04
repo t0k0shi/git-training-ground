@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ContributorWithDerived } from '@/lib/types';
 
 interface BubblePosition {
@@ -51,11 +51,20 @@ export function FloatingBubbles({
   const [visibleContributors, setVisibleContributors] = useState<ContributorWithDerived[]>([]);
   const [mounted, setMounted] = useState(false);
 
+  // 配列の参照ではなく handle の並びで「中身が変わったか」を判定する。
+  // 親が毎レンダーで新しい配列を渡しても、再サンプリングで泡が飛び回らないようにするため。
+  const contributorsKey = contributors.map((c) => c.handle).join(',');
+  const contributorsRef = useRef(contributors);
   useEffect(() => {
+    contributorsRef.current = contributors;
+  });
+
+  useEffect(() => {
+    const latest = contributorsRef.current;
     // density に基づいて表示数を決定し、Fisher-Yates でランダムサンプリング
     // hydration mismatch を避けるため、サンプリングと座標計算は client mount 後に実施
-    const targetCount = Math.ceil(contributors.length * density);
-    const sampled = sampleRandom(contributors, targetCount);
+    const targetCount = Math.ceil(latest.length * density);
+    const sampled = sampleRandom(latest, targetCount);
 
     const newPositions: BubblePosition[] = sampled.map((_, index) => {
       const zone = ZONES[index % 4];
@@ -70,8 +79,7 @@ export function FloatingBubbles({
     setVisibleContributors(sampled);
     setPositions(newPositions);
     setMounted(true);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contributors.length, density]);
+  }, [contributorsKey, density]);
 
   return (
     <>
