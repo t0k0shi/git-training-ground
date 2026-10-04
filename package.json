@@ -13,7 +13,8 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:e2e": "npx playwright test",
-    "validate": "tsx scripts/validate-contributors.ts"
+    "validate": "tsx scripts/validate-contributors.ts",
+    "capture:tutorial": "tsx scripts/capture-tutorial-images.ts"
   },
   "dependencies": {
     "next": "16.1.6",
