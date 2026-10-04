@@ -14,24 +14,19 @@ function formatJoinedAt(iso: string): string {
 export function ContributorCard({ contributor }: ContributorCardProps) {
   const { favoriteEmoji, favoriteColor, handle, message, avatarUrl, joinedAt, isNew } = contributor;
 
-  const cardStyle: React.CSSProperties = {
+  // グローの色だけをインラインで渡し、hover 時の濃さ・広がりは globals.css の
+  // .contributor-card:hover が CSS 変数を切り替えて表現する（JS 未ロードでも hover が効く）
+  const cardStyle = {
     background: 'var(--paper)',
     borderColor: favoriteColor,
-    boxShadow: `0 0 0 4px color-mix(in srgb, ${favoriteColor} 8%, transparent)`,
-    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-  };
+    '--glow-color': favoriteColor,
+  } as React.CSSProperties;
 
   return (
     <article
       data-testid="contributor-card"
-      className="relative flex flex-col gap-2 p-4 rounded-xl border-2 hover:-translate-y-0.5"
+      className="contributor-card relative flex flex-col gap-2 p-4 rounded-xl border-2 hover:-translate-y-0.5"
       style={cardStyle}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = `0 0 0 6px color-mix(in srgb, ${favoriteColor} 16%, transparent)`;
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = `0 0 0 4px color-mix(in srgb, ${favoriteColor} 8%, transparent)`;
-      }}
     >
       {isNew && (
         <span
