@@ -1,0 +1,67 @@
+name: Guard Files
+
+# 変更ファイルの検査（ADR-0011）。
+# pull_request_target は base ブランチの定義で動くため、PR 側から書き換えられない。
+# そのため次の安全策を厳守する（ADR-0007 と同じ方針）:
+#   - PR のコードを checkout・実行しない（checkout は base 既定のまま）
+#   - npm install など依存のインストールをしない
+#   - PR 本文・タイトルなどユーザー入力をシェルへ直接埋め込まない（env 経由で渡す）
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: read
+
+jobs:
+  guard-files:
+    name: guard-files
+    runs-on: ubuntu-latest
+
+    steps:
+      # ref を指定しない = base ブランチ。PR の head は取得しない
+      - name: Checkout base branch
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Fetch changed files
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # リネーム元（previous_filename）も対象に含める
+          gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" \
+            --paginate \
+            --jq '.[] | .filename, (.previous_filename // empty)' > "$RUNNER_TEMP/changed-files.txt"
+          echo "変更ファイル:"
+          cat "$RUNNER_TEMP/changed-files.txt"
+
+      - name: Check linked contribution-welcome issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          LINKED_OPEN_ISSUE=false
+          for N in $(node scripts/check-changed-files.mjs extract-issues); do
+            # 数字だけを受け付ける（念のため）
+            case "$N" in ''|*[!0-9]*) continue ;; esac
+            ISSUE=$(gh api "repos/${{ github.repository }}/issues/$N" 2>/dev/null || true)
+            [ -z "$ISSUE" ] && continue
+            # PR 番号を指していないこと、ラベルが付いていること
+            if echo "$ISSUE" | jq -e '(has("pull_request") | not) and any(.labels[]?; .name == "contribution-welcome")' > /dev/null; then
+              echo "contribution-welcome の Issue #$N を参照しています"
+              LINKED_OPEN_ISSUE=true
+            fi
+          done
+          echo "LINKED_OPEN_ISSUE=$LINKED_OPEN_ISSUE" >> "$GITHUB_ENV"
+
+      - name: Check only contributors.json is changed
+        env:
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          REPO_OWNER: ${{ github.repository_owner }}
+        run: node scripts/check-changed-files.mjs < "$RUNNER_TEMP/changed-files.txt"

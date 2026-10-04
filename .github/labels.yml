@@ -18,3 +18,7 @@
 - name: "ai:approved"
   color: "0E8A16"
   description: "AI レビューで承認"
+
+- name: contribution-welcome
+  color: "7057FF"
+  description: "コードの貢献を歓迎する課題。この Issue を参照する PR はコード変更も可"
