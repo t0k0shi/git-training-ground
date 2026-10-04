@@ -1,7 +1,7 @@
 # ADR-0001: Hosting Platform Selection
 
 ## Status
-Accepted
+Superseded by [ADR-0010](./0010-github-pages-as-primary-hosting.md)
 
 ## Context
 Git Training Ground is a static site (SSG) that needs reliable, free hosting for an OSS project. Key requirements: automatic deployment on merge, custom domain support, and good performance.
