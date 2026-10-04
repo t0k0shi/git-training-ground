@@ -54,6 +54,8 @@
 
 詳しくは [チュートリアル](https://t0k0shi.github.io/git-training-ground/tutorial) を参照。
 
+正式なサイトは [GitHub Pages](https://t0k0shi.github.io/git-training-ground/) で公開しています。Vercel は PR ごとのプレビューにだけ使っています。
+
 ## 技術スタック
 
 - [Next.js 15](https://nextjs.org/) - App Router / Static Export

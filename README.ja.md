@@ -17,7 +17,9 @@
 5. コミット＆プッシュ
 6. Pull Requestを作成
 
-詳しくは[チュートリアル](https://git-training-ground.vercel.app/tutorial)をご覧ください。
+詳しくは[チュートリアル](https://t0k0shi.github.io/git-training-ground/tutorial)をご覧ください。
+
+正式なサイトは [GitHub Pages](https://t0k0shi.github.io/git-training-ground/) で公開しています。Vercel は PR ごとのプレビューにだけ使っています。
 
 ## 技術スタック
 
