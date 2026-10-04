@@ -2,7 +2,8 @@
 
 > [!IMPORTANT]
 > はじめての PR を練習したい方は [README](./README.md) または [/tutorial ページ](./app/tutorial/page.tsx) を参照してください。
-> このガイドは継続的な貢献やメンテナー向けです。
+> コードの貢献は、`contribution-welcome` ラベルで開放された Issue に対してのみ受け付けます。改善の提案は Issue でお願いします。
+> 以下のブランチ名・コミットのルールは、開放された Issue に取り組む方とメンテナー向けです。
 
 ## Commit Message
 
