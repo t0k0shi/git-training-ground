@@ -1,4 +1,5 @@
 import { SerifBubble } from '@/components/ui/SerifBubble';
+import { BP_MOBILE_PX } from '@/lib/breakpoints';
 
 const DIFF_LINES = [
   { n: 30, text: '  {' },
@@ -190,7 +191,7 @@ export function HelpWantedSection() {
       </div>
 
       <style>{`
-        @media (max-width: 820px) {
+        @media (max-width: ${BP_MOBILE_PX}px) {
           .help-wanted-grid {
             grid-template-columns: 1fr !important;
           }
