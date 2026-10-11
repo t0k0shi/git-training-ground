@@ -61,11 +61,11 @@ describe('ContributorCard', () => {
     expect(card.style.borderColor).toBe('rgb(170, 187, 204)'); // #AABBCC
   });
 
-  it('favoriteColor がグロー box-shadow に反映される', () => {
+  it('favoriteColor がグロー用 CSS 変数 --glow-color に反映される', () => {
     const { container } = render(
       <ContributorCard contributor={makeContributor({ favoriteColor: '#112233' })} />,
     );
     const card = container.querySelector('[data-testid="contributor-card"]') as HTMLElement;
-    expect(card.style.boxShadow).toContain('#112233');
+    expect(card.style.getPropertyValue('--glow-color')).toBe('#112233');
   });
 });

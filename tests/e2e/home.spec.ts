@@ -74,18 +74,13 @@ test.describe('Home page (v4)', () => {
     await expect(page.locator('h1').first()).toBeVisible();
   });
 
-  test('console error が出ない (画像 404 を除く)', async ({ page }) => {
-    // Issue #23 (tutorial 画像 12 枚) が未対応のため、Next.js Link prefetch で
-    // tutorial ページの画像へのアクセスが発生し画像 404 が出る。これは既知。
-    // 画像以外 (JS/CSS/API) の 404 はエラーとして検出する。
+  test('console error と 404 が出ない', async ({ page }) => {
+    // Next.js Link の prefetch で tutorial ページの画像も取得されるため、画像の 404 も検出対象にする
     const errors: string[] = [];
-    const non404FailedUrls: string[] = [];
+    const failedUrls: string[] = [];
 
     page.on('response', (resp) => {
-      if (resp.status() !== 404) return;
-      const url = resp.url();
-      if (/\.(png|jpe?g|gif|webp|svg)(\?.*)?$/i.test(url)) return;
-      non404FailedUrls.push(`404: ${url}`);
+      if (resp.status() === 404) failedUrls.push(`404: ${resp.url()}`);
     });
 
     page.on('console', (msg) => {
@@ -97,7 +92,7 @@ test.describe('Home page (v4)', () => {
 
     await page.goto('/');
     await page.waitForLoadState('networkidle');
-    const allIssues = [...errors, ...non404FailedUrls];
+    const allIssues = [...errors, ...failedUrls];
     expect(allIssues, allIssues.join('\n')).toEqual([]);
   });
 });

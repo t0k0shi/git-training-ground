@@ -15,21 +15,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check only contributors.json is changed
-        run: |
-          echo "Checking changed files..."
-          CHANGED=$(git diff --name-only origin/main...HEAD)
-          INVALID=$(echo "$CHANGED" | grep -v '^data/contributors\.json$' || true)
-          if [ -n "$INVALID" ]; then
-            echo ""
-            echo "❌ contributors.json 以外のファイルが変更されています"
-            echo "   変更されたファイル: $INVALID"
-            echo ""
-            echo "   💡 この PR では data/contributors.json のみ変更してください"
-            exit 1
-          fi
-          echo "✅ 変更対象ファイル OK"
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:

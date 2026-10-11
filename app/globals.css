@@ -81,6 +81,19 @@
   --text-mono:    var(--fs-mono);
 }
 
+/* ── ContributorCard のグロー ── */
+.contributor-card {
+  --glow-spread: 4px;
+  --glow-alpha: 8%;
+  box-shadow: 0 0 0 var(--glow-spread) color-mix(in srgb, var(--glow-color) var(--glow-alpha), transparent);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contributor-card:hover {
+  --glow-spread: 6px;
+  --glow-alpha: 16%;
+}
+
 /* ── Keyframes ── */
 @keyframes float {
   0%, 100% { transform: translate(-50%, -50%) translateY(0); }

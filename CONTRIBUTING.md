@@ -2,11 +2,13 @@
 
 > [!IMPORTANT]
 > はじめての PR を練習したい方は [README](./README.md) または [/tutorial ページ](./app/tutorial/page.tsx) を参照してください。
-> このガイドは継続的な貢献やメンテナー向けです。
+> コードの貢献は、`contribution-welcome` ラベルで開放された Issue に対してのみ受け付けます。改善の提案は Issue でお願いします。
+> 以下のブランチ名・コミットのルールは、開放された Issue に取り組む方とメンテナー向けです。
 
 ## Commit Message
 
-[Conventional Commits](https://www.conventionalcommits.org/ja/v1.0.0/) 形式を採用します。**CI で検証されるため、規約違反があると merge できません**。
+[Conventional Commits](https://www.conventionalcommits.org/ja/v1.0.0/) 形式を推奨します。CI では検証しません。
+PR は squash でマージし、main に残るのは PR のタイトルだけです。形式が違っていても、マージのときにメンテナーがタイトルを整えるので、直し直す必要はありません。
 
 ### 形式
 
@@ -38,9 +40,9 @@
 - `feat: add floating bubbles to hero`
 - `fix(ContributorCard): prevent overflow on small screens`
 - `docs: update README.ja.md`
-- `ci: add commit-lint workflow`
+- `ci: add e2e workflow`
 
-悪い例（CI で弾かれます）:
+避けたい例:
 - `added new feature` — prefix なし
 - `feat add feature` — コロンなし
 - `feat:` — subject が空
@@ -48,7 +50,7 @@
 
 ### 特例: contributors.json のみの PR
 
-チュートリアル参加者は次の簡易形式も許容されます:
+チュートリアル参加者は次の簡易形式を推奨します:
 
 ```
 Add <yourname> to contributors
@@ -68,7 +70,7 @@ Add <yourname> to contributors
 ## Pull Request
 
 - 1 Issue に対して 1 PR を基本とする
-- PR タイトルも Commit Message と同じ形式を推奨
+- PR タイトルも Commit Message と同じ形式を推奨（squash マージで main に残るのはタイトル）
 - CI がすべて pass するまで修正
 - AI レビュー（CodeRabbit）の指摘を確認
 

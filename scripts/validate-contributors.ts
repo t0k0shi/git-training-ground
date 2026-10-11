@@ -42,10 +42,11 @@ export function validateContributors(data: unknown): ValidationError[] {
     // CV-04: 空値チェック
     for (const field of REQUIRED_FIELDS) {
       const val = entry[field];
-      if (val === null || val === undefined || val === '') {
+      const isBlankString = typeof val === 'string' && val.trim() === '';
+      if (val === null || val === undefined || isBlankString) {
         errors.push({
           check: 'CV-04',
-          message: `❌ CV-04: ${idx} の "${field}" が空です。null / undefined / 空文字列は使えません。`,
+          message: `❌ CV-04: ${idx} の "${field}" が空です。null / undefined / 空文字列 / 空白だけの文字列は使えません。`,
         });
       }
     }

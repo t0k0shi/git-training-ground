@@ -70,6 +70,33 @@ describe('daysAgo', () => {
     const today = new Date('2026-05-02T12:00:00Z');
     expect(daysAgo('2026-04-24', today)).toBe(8);
   });
+
+  describe('UTC 暦日基準（タイムゾーンに依存しない）', () => {
+    it('UTC 日付が変わる直前（23:59:59.999Z）はまだ 0 日前', () => {
+      const now = new Date('2026-04-24T23:59:59.999Z');
+      expect(daysAgo('2026-04-24', now)).toBe(0);
+    });
+
+    it('UTC 日付が変わった直後（00:00:00Z）は 1 日前', () => {
+      const now = new Date('2026-04-25T00:00:00.000Z');
+      expect(daysAgo('2026-04-24', now)).toBe(1);
+    });
+
+    it('時刻付きの日付でも UTC の暦日で数える（23:00Z 参加の 2 時間後は翌日で 1 日前）', () => {
+      const now = new Date('2026-04-25T01:00:00.000Z');
+      expect(daysAgo('2026-04-24T23:00:00Z', now)).toBe(1);
+    });
+
+    it('UTC+9 の深夜表記でも UTC の暦日に正規化する（+09:00 の 04-25 08:00 は UTC の 04-24）', () => {
+      const now = new Date('2026-04-25T00:00:00.000Z');
+      expect(daysAgo('2026-04-25T08:00:00+09:00', now)).toBe(1);
+    });
+
+    it('未来の日付は負の値を返す', () => {
+      const now = new Date('2026-04-24T12:00:00.000Z');
+      expect(daysAgo('2026-04-26', now)).toBe(-2);
+    });
+  });
 });
 
 describe('getContributors', () => {

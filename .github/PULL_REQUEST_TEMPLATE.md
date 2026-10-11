@@ -1,14 +1,14 @@
 <!--
   ⚠️ PR を出す前に [CONTRIBUTING.md](../blob/main/CONTRIBUTING.md) を必ず読んでください。
-  特に以下の規約に違反すると CI で弾かれます:
+  Commit Message・PR タイトルの形式は推奨です（CI では検証しません）:
 
-  - Commit Message: Conventional Commits 形式 (例: feat: xxx / fix(scope): yyy)
-  - 初心者の contributors.json 追加 PR は "Add <yourname> to contributors" 形式も可
+  - contributors.json 追加 PR: "Add <yourname> to contributors"
+  - コード・ドキュメント変更 PR: Conventional Commits 形式 (例: feat: xxx / fix(scope): yyy)
 -->
 
 > [!IMPORTANT]
 > PR を出す前に [CONTRIBUTING.md](../blob/main/CONTRIBUTING.md) に目を通してください。
-> 特に **Commit Message の規約**（Conventional Commits）は CI で自動検証されます。
+> Commit Message の形式は推奨です。違っていても、マージのときにメンテナーが PR タイトルを整えます。
 
 ## 変更内容
 
@@ -24,7 +24,7 @@
 - [ ] `favoriteColor` は `#RRGGBB` 形式、`joinedAt` は `YYYY-MM-DD` 形式
 
 **コード・ドキュメント変更 PR の場合:**
-- [ ] Commit Message が Conventional Commits 形式に従っている
+- [ ] PR タイトルが Conventional Commits 形式に近い（推奨）
 - [ ] 関連する Issue 番号を記載している（あれば）
 - [ ] ローカルで `npm test` / `npm run build` が成功することを確認した
 
