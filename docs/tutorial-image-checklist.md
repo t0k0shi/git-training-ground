@@ -77,6 +77,25 @@ npm run capture:tutorial -- --login --only step7-open-pr
 - `--login` では撮影者のアカウントに Fork と撮影用ブランチ（`<アカウント名>-patch-N`）を作ります。`step6-compare-banner` はチュートリアル本文に合わせて元リポジトリのトップでバナーを探し、出なければ Fork のトップで探します。PR は作りません（作成画面で止めます）。撮影後、不要なら GitHub 上で削除してください。メインのアカウントではなくサブアカウントを使ってください。
 - アバター、ヘッダーのユーザーメニュー、撮影者のアカウント名は自動でぼかします（`--no-mask` で無効化）。エディタ内の撮影用エントリはチュートリアルの例と同じダミー値なので、ぼかしません。GitHub の画面構造に依存するので、**撮影後は全画像を開いて、ぼかし漏れがないか目で確認してください**。漏れていたら画像編集ソフトで手で隠します。
 - `--login --all` を付けると、ログイン不要の画像もログイン状態で撮り直します。
+- 撮影中は、開いたブラウザのキーボード・マウス操作をしないでください。キー入力がブラウザに入ると、ページが閉じたりエディタの内容が変わったりして撮影が止まります。止まったら、失敗した画像だけを `--only` で撮り直します（作成済みの Fork は再利用されます）。
+
+### `--login` で開いたブラウザでログインできない場合
+
+Playwright が操作しているブラウザでは、GitHub へのログインが通らないことがあります。その場合は、同じプロファイルを Playwright を通さずに起動して先にログインしておきます。`--login` は起動時にログイン済みかを確かめ、ログイン済みならログイン画面を飛ばして撮影に進みます。
+
+```bash
+CHROMIUM=$(node -e "console.log(require('@playwright/test').chromium.executablePath())")
+
+# macOS / Linux
+"$CHROMIUM" --user-data-dir="$(pwd)/playwright/.auth/github" https://github.com/login
+
+# Windows（Git Bash）。$(pwd) の /c/... 形式は Chromium が読めないため pwd -W を使う
+"$CHROMIUM" --user-data-dir="$(pwd -W)/playwright/.auth/github" https://github.com/login
+```
+
+1. リポジトリのルートで実行する（`playwright/.auth/github` はリポジトリからの相対パス）
+2. 開いた Chromium でサブアカウントにログインし、その Chromium のウィンドウをすべて閉じる（開いたままだとプロファイルが使用中になり、スクリプトが起動できない）
+3. `npm run capture:tutorial -- --login` を実行する
 
 ## 追加時の確認項目
 
