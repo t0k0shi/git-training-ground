@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import type { ContributorWithDerived } from '@/lib/types';
 import { shareSite } from '@/lib/share';
 import { FloatingBubbles } from './FloatingBubbles';
@@ -35,39 +34,6 @@ export function HeroSection({ contributors }: HeroSectionProps) {
       className="relative min-h-screen overflow-hidden"
       style={{ padding: '80px 40px 120px' }}
     >
-      <nav
-        className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 py-4 bg-bg/90 backdrop-blur border-b border-line"
-      >
-        <Link
-          href="/"
-          className="font-mono font-bold text-ink text-sm tracking-tight"
-        >
-          git-training-ground
-        </Link>
-        <div className="flex items-center gap-4">
-          <Link
-            href="/tutorial"
-            className="hero-nav-link hidden md:inline text-ink-2 text-sm hover:text-accent transition-colors"
-          >
-            チュートリアル
-          </Link>
-          <a
-            href="#contributors"
-            className="hero-nav-link hidden md:inline text-ink-2 text-sm hover:text-accent transition-colors"
-          >
-            参加者
-          </a>
-          <a
-            href="https://github.com/t0k0shi/git-training-ground"
-            className="px-4 py-1.5 text-sm rounded-pill border-2 border-ink font-semibold text-ink hover:bg-ink hover:text-bg transition-colors"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Repo
-          </a>
-        </div>
-      </nav>
-
       <div
         aria-hidden="true"
         className="absolute inset-0 pointer-events-none"

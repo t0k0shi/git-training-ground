@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_JP, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { SiteHeader } from "@/components/layout/SiteHeader";
 
 const notoSansJP = Noto_Sans_JP({
   variable: "--font-noto",
@@ -44,6 +45,7 @@ export default function RootLayout({
       <body
         className={`${notoSansJP.variable} ${inter.variable} ${jetbrainsMono.variable} antialiased`}
       >
+        <SiteHeader />
         {children}
       </body>
     </html>
