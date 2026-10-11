@@ -16,13 +16,25 @@ export function extractHandle(github: string): string {
   return github.trim();
 }
 
+const MS_PER_DAY = 86400000;
+
+/**
+ * UTC の暦日（その日の 00:00:00 UTC）をミリ秒で返す
+ */
+function utcDayStart(d: Date): number {
+  return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+}
+
 /**
  * 基準日から何日経過したかを返す
+ *
+ * UTC の暦日を基準に数える。実行環境のタイムゾーンには依存しない。
+ * 'YYYY-MM-DD' は UTC 0 時として解釈され、時刻やオフセット付きの値も UTC の暦日に正規化する。
  * テスト容易性のため now を引数に取る（デフォルトは現在日時）
  */
 export function daysAgo(isoDate: string, now: Date = new Date()): number {
   const d = new Date(isoDate);
-  return Math.floor((now.getTime() - d.getTime()) / 86400000);
+  return Math.round((utcDayStart(now) - utcDayStart(d)) / MS_PER_DAY);
 }
 
 /**
