@@ -233,9 +233,12 @@ export function computeClip(
   return { x, y, width, height };
 }
 
-/** app/tutorial/page.tsx から「① そのままコピー」のコード例を取り出す */
+/**
+ * app/tutorial/page.tsx から「① そのままコピー」のコード例を取り出す。
+ * Windows の checkout では CRLF になり、そのまま挿入すると \r でも改行されて行が倍になるため LF にそろえる
+ */
 export function extractTutorialSnippet(pageSource: string): string | null {
-  const match = pageSource.match(/<pre>\{`(\s*,\s*\n[\s\S]*?)`\}<\/pre>/);
+  const match = pageSource.replace(/\r\n?/g, '\n').match(/<pre>\{`(\s*,\s*\n[\s\S]*?)`\}<\/pre>/);
   return match ? match[1] : null;
 }
 
@@ -475,7 +478,16 @@ const EDITOR_CONTENT: Candidate[] = [
   (page) => page.getByRole('textbox', { name: /editing|file content/i }),
 ];
 
-const ACTIVE_LINE: Candidate[] = [sel('.cm-editor .cm-activeLine'), sel('.cm-editor .cm-line')];
+// GitHub のエディタはカーソル行に .cm-activeLine を付けないことがある。その場合は、
+// placeCursorAfterLastEntry() がカーソルを置く「最後のエントリの } の行」を対象にする
+const ACTIVE_LINE: Candidate[] = [
+  sel('.cm-editor .cm-activeLine'),
+  (page) =>
+    page
+      .locator('.cm-editor .cm-line')
+      .filter({ hasText: /^\s*\}\s*$/ })
+      .last(),
+];
 
 const EDITOR_AREA: Candidate[] = [sel('.cm-editor'), sel('[data-testid="code-editor"]')];
 
@@ -672,16 +684,28 @@ async function placeCursorAfterLastEntry(page: Page): Promise<void> {
   const modifier = process.platform === 'darwin' ? 'Meta' : 'Control';
   await page.keyboard.press(`${modifier}+End`);
   for (let i = 0; i < 5; i++) {
-    const active = (await page.locator('.cm-editor .cm-activeLine').first().textContent().catch(() => '')) ?? '';
-    if (active.trim() === ']') break;
+    if ((await cursorLineText(page)).trim() === ']') break;
     await page.keyboard.press('ArrowUp');
   }
   await page.keyboard.press('Home');
   await page.keyboard.press('ArrowLeft');
-  const active = (await page.locator('.cm-editor .cm-activeLine').first().textContent().catch(() => '')) ?? '';
-  if (active.trim() !== '}') {
-    throw new FlowStop(`カーソルを最後のエントリの } の直後に置けませんでした（現在の行: "${active.trim()}"）`);
+  const current = (await cursorLineText(page)).trim();
+  if (current !== '}') {
+    throw new FlowStop(`カーソルを最後のエントリの } の直後に置けませんでした（現在の行: "${current}"）`);
   }
+}
+
+/**
+ * カーソルのある行の文字列を返す。.cm-activeLine は GitHub のエディタで付かないことがあるため、
+ * CodeMirror がフォーカス中に同期しているブラウザの選択範囲から .cm-line をたどる
+ */
+async function cursorLineText(page: Page): Promise<string> {
+  return page.evaluate(() => {
+    const node = window.getSelection()?.focusNode;
+    if (!node) return '';
+    const element = node.nodeType === Node.ELEMENT_NODE ? (node as Element) : node.parentElement;
+    return element?.closest('.cm-line')?.textContent ?? '';
+  });
 }
 
 // ---------------------------------------------------------------------------

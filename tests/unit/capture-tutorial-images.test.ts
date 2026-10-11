@@ -34,6 +34,11 @@ describe('capture-tutorial-images: 撮影定義', () => {
     expect(extractTutorialSnippet(pageSource)).toBe(FALLBACK_TUTORIAL_SNIPPET);
   });
 
+  it('page.tsx が CRLF でも撮影用エントリは LF になる（Windows の checkout で行が倍になるのを防ぐ）', () => {
+    const crlfSource = pageSource.replace(/\r?\n/g, '\r\n');
+    expect(extractTutorialSnippet(crlfSource)).toBe(FALLBACK_TUTORIAL_SNIPPET);
+  });
+
   it('撮影用エントリ（ダミー値）はぼかさない。ぼかしはアバター・ユーザーメニューが対象', () => {
     const afterPaste = SHOTS.find((s) => s.file === 'step4-after-paste');
     expect(afterPaste?.mask ?? []).toEqual([]);
