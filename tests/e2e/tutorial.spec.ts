@@ -91,33 +91,41 @@ test.describe('Tutorial page (v4)', () => {
     await expect(page.getByText('github.com で無料アカウント')).toBeVisible();
   });
 
-  test('console error が出ない (画像 404 を除く)', async ({ page }) => {
-    // Issue #23 (tutorial 画像 12 枚) が未対応のため、画像の 404 は既知。
-    // console error の text には URL が含まれないため、response イベント側で URL を判定する:
-    //   - 画像拡張子 (.png/.jpg/.jpeg/.gif/.webp/.svg) の 404 → スキップ件数を計上
-    //   - それ以外の 404 → エラー扱い
-    //   - 画像以外の console error → エラー扱い
+  test('チュートリアル画像 12 枚がすべて読み込まれる', async ({ page }) => {
+    const images = page.locator('img[src*="/tutorial/"]');
+    await expect(images).toHaveCount(12);
+
+    for (const image of await images.all()) {
+      const src = await image.getAttribute('src');
+      await image.scrollIntoViewIfNeeded();
+      await expect
+        .poll(() => image.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0), {
+          message: `${src} が読み込まれていない`,
+        })
+        .toBe(true);
+    }
+  });
+
+  test('console error と 404 が出ない', async ({ page }) => {
+    // console error の text には URL が含まれないため、404 は response イベント側で URL ごと記録する
     const errors: string[] = [];
-    const non404FailedUrls: string[] = [];
+    const failedUrls: string[] = [];
 
     page.on('response', (resp) => {
-      if (resp.status() !== 404) return;
-      const url = resp.url();
-      if (/\.(png|jpe?g|gif|webp|svg)(\?.*)?$/i.test(url)) return; // 既知の画像 404
-      non404FailedUrls.push(`404: ${url}`);
+      if (resp.status() === 404) failedUrls.push(`404: ${resp.url()}`);
     });
 
     page.on('console', (msg) => {
       if (msg.type() !== 'error') return;
       const text = msg.text();
-      // "Failed to load resource ... 404" は response イベント側で振り分けるため、ここでは無視
+      // "Failed to load resource ... 404" は response イベント側で URL 付きで記録するため、ここでは除く
       if (/Failed to load resource.*404/i.test(text)) return;
       errors.push(text);
     });
 
     await page.goto('/tutorial');
     await page.waitForLoadState('networkidle');
-    const allIssues = [...errors, ...non404FailedUrls];
+    const allIssues = [...errors, ...failedUrls];
     expect(allIssues, allIssues.join('\n')).toEqual([]);
   });
 });
