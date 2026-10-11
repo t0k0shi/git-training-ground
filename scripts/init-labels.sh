@@ -12,7 +12,7 @@ set -euo pipefail
 
 REPO="${1:-$(gh repo view --json nameWithOwner --jq .nameWithOwner)}"
 
-echo "🎨 Creating / updating AI review labels on $REPO"
+echo "🎨 Creating / updating labels on $REPO"
 echo ""
 
 # name|color|description の連想配列
@@ -21,6 +21,7 @@ declare -A LABELS=(
   ["ai:changes-requested"]="D93F0B|AI レビューで変更が要求されている"
   ["ai:approved-with-warnings"]="FBCA04|AI レビューで軽微な指摘あり"
   ["ai:approved"]="0E8A16|AI レビューで承認"
+  ["contribution-welcome"]="7057FF|コードの貢献を歓迎する課題。この Issue を参照する PR はコード変更も可"
 )
 
 for name in "${!LABELS[@]}"; do
@@ -34,4 +35,4 @@ for name in "${!LABELS[@]}"; do
 done
 
 echo ""
-echo "🎉 Done. Verify with: gh label list --repo $REPO | grep -E '(do-not-merge|^ai:)'"
+echo "🎉 Done. Verify with: gh label list --repo $REPO | grep -E '(do-not-merge|^ai:|contribution-welcome)'"
