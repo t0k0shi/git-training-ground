@@ -1,5 +1,7 @@
 'use client';
 
+import { shareSite } from '@/lib/share';
+
 interface FooterSectionProps {
   count: number;
 }
@@ -83,16 +85,7 @@ export function FooterSection({ count }: FooterSectionProps) {
           </a>
           <button
             type="button"
-            onClick={() => {
-              if (typeof navigator !== 'undefined' && navigator.share) {
-                navigator
-                  .share({
-                    title: 'git-training-ground',
-                    url: typeof window !== 'undefined' ? window.location.href : '',
-                  })
-                  .catch(() => { });
-              }
-            }}
+            onClick={shareSite}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-pill border-2 border-ink font-semibold text-ink hover:bg-ink hover:text-bg transition-colors"
           >
             このページをシェア

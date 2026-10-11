@@ -28,6 +28,14 @@ export function StepsSection() {
           position: 'relative',
         }}
       >
+        {/*
+          既知の制約（W-8 / #21）: path の座標は 1800px 固定で、コンテンツ高に追従しない。
+          viewBox + preserveAspectRatio="none" + vector-effect="non-scaling-stroke" で
+          破線の間隔は保てたが、線がコンテンツ全体に引き伸ばされて最終ステップ下の
+          「README で詳しく見る」ボタンまで伸び、見た目が変わるため採用しなかった。
+          現状は viewBox なしのため preserveAspectRatio は実質無効で、座標は等倍のまま。
+          ステップ数やカード高を変えたら、path の長さを合わせ直すこと。
+        */}
         <svg
           aria-hidden="true"
           style={{

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import type { ContributorWithDerived } from '@/lib/types';
+import { shareSite } from '@/lib/share';
 import { FloatingBubbles } from './FloatingBubbles';
 import { BubbleTooltip } from './BubbleTooltip';
 import { LiveCounter } from './LiveCounter';
@@ -131,14 +132,7 @@ export function HeroSection({ contributors }: HeroSectionProps) {
             type="button"
             aria-label="シェア"
             className="w-11 h-11 flex items-center justify-center rounded-full border-2 border-ink text-ink hover:bg-ink hover:text-bg transition-colors"
-            onClick={() => {
-              if (typeof navigator !== 'undefined' && navigator.share) {
-                navigator.share({
-                  title: 'git-training-ground',
-                  url: typeof window !== 'undefined' ? window.location.href : '',
-                }).catch(() => { });
-              }
-            }}
+            onClick={shareSite}
           >
             <svg
               width="18"
