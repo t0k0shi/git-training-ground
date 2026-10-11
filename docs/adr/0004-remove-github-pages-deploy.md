@@ -1,7 +1,7 @@
 # ADR-0004: GitHub Pages デプロイワークフローの削除
 
 ## Status
-Accepted
+Superseded by [ADR-0010](./0010-github-pages-as-primary-hosting.md)
 
 ## Context
 ADR-0001 で Vercel をホスティングに決定していたが、`deploy.yml` に GitHub Pages へのデプロイワークフローが残っていた。GitHub Pages は有効化されておらず、mainへの push ごとにワークフローが失敗していた。
