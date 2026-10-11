@@ -52,8 +52,8 @@ jobs:
             case "$N" in ''|*[!0-9]*) continue ;; esac
             ISSUE=$(gh api "repos/${{ github.repository }}/issues/$N" 2>/dev/null || true)
             [ -z "$ISSUE" ] && continue
-            # PR 番号を指していないこと、ラベルが付いていること
-            if echo "$ISSUE" | jq -e '(has("pull_request") | not) and any(.labels[]?; .name == "contribution-welcome")' > /dev/null; then
+            # PR 番号を指していないこと、開いていること、ラベルが付いていること
+            if echo "$ISSUE" | jq -e '(has("pull_request") | not) and .state == "open" and any(.labels[]?; .name == "contribution-welcome")' > /dev/null; then
               echo "contribution-welcome の Issue #$N を参照しています"
               LINKED_OPEN_ISSUE=true
             fi

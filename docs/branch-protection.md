@@ -16,7 +16,7 @@
 - Pull Request 必須（承認 1 件、コードオーナーのレビュー必須）
 - 必須ステータスチェック: `guard-files`、`test`、`e2e`、`merge-guard`、`commit-lint`
 - 強制 push の禁止、ブランチ削除の禁止
-- 管理者にも適用する（Do not allow bypassing）
+- 管理者（オーナー）は例外とする。オーナーは自分の PR を自分で承認できないため（「オーナー自身の PR」参照）
 
 ## 事前準備
 
@@ -42,8 +42,10 @@
      - 必要に応じて **Require branches to be up to date before merging**
    - **Block force pushes**
    - **Restrict deletions**（classic では「Allow deletions」を無効のままにする）
-   - **Do not allow bypassing the above settings**（classic では **Do not allow bypassing**／管理者にも適用）
-4. **Create** / **Save changes** を押す
+4. オーナーを例外にする
+   - ruleset の場合: **Bypass list** に **Repository admin** を追加する
+   - classic の場合: **Do not allow bypassing the above settings** を**有効にしない**
+5. **Create** / **Save changes** を押す
 
 ## 手順 B: `gh api` で設定する
 
@@ -58,7 +60,7 @@ gh api -X PUT repos/t0k0shi/git-training-ground/branches/main/protection \
     "strict": false,
     "contexts": ["guard-files", "test", "e2e", "merge-guard", "commit-lint"]
   },
-  "enforce_admins": true,
+  "enforce_admins": false,
   "required_pull_request_reviews": {
     "required_approving_review_count": 1,
     "require_code_owner_reviews": true,
@@ -86,14 +88,15 @@ gh api repos/t0k0shi/git-training-ground/branches/main/protection \
 `contributors.json` を含まない PR では実行されず、必須にするとマージできなくなります。
 全 PR で動く `guard-files` が変更ファイルの検査を担います。
 
-### 緊急時の対応
-
-`enforce_admins` を有効にすると、オーナーも保護を回避できません。緊急対応が必要な場合は、一時的に **Do not allow bypassing** を外す（手順 B なら `"enforce_admins": false` で再実行する）、対応後に必ず戻してください。
-
 ### オーナー自身の PR
 
-ブランチ保護で承認 1 件を必須にすると、オーナー自身の PR は自分で承認できません。
-1 人で運用する場合は、承認数を `0` にして「コードオーナーのレビュー必須」だけを外すか、緊急時の手順で一時的に回避してください。
+PR の作者は自分の PR を承認できません。コードオーナーはオーナー 1 人なので、管理者も保護の対象にすると、オーナーがコードを変えた PR はマージできなくなります。
+そのため、本書ではオーナー（管理者）を例外にしています。参加者の PR には、引き続きコードオーナーの承認と必須チェックがかかります。
+
+オーナーは保護を回避してマージできるので、自分の PR でも必須チェックがすべて通ってからマージしてください。
+
+承認数を `0` にして「コードオーナーのレビュー必須」を外す方法でもオーナーの PR はマージできますが、第 2 層（CODEOWNERS）が効かなくなるので採りません。
+
 `data/contributors.json` だけを変更する PR は CODEOWNERS の対象外のため、コードオーナーの承認なしでマージできます。
 
 ### 動作確認
