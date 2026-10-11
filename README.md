@@ -45,7 +45,7 @@
 
 | フィールド | 説明 | 例 |
 |---|---|---|
-| `name` | 表示名 | `"ketts"` |
+| `name` | 名前（ニックネーム可）。サイトには表示されず、カードには `github` のハンドル名が表示されます | `"ketts"` |
 | `github` | GitHub ハンドル | `"t0k0shi"` |
 | `favoriteColor` | カードのボーダー色（`#RRGGBB`）| `"#E63946"` |
 | `favoriteEmoji` | 絵文字 1 文字 | `"🚀"` |

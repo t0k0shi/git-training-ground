@@ -216,7 +216,7 @@ export default function TutorialPage() {
             <div className="bg-bg-2 border border-line rounded-lg p-4 text-sm mb-4">
               <p className="text-ink-2 font-medium mb-2">各フィールドの意味</p>
               <div className="space-y-1 text-ink-2">
-                <p><code className="bg-paper border border-line px-1.5 rounded">name</code> — 表示名（ハンドルネーム可）</p>
+                <p><code className="bg-paper border border-line px-1.5 rounded">name</code> — 名前（ニックネーム可）。サイトには表示されません。カードには <code className="bg-paper border border-line px-1 rounded">github</code> のハンドル名が表示されます</p>
                 <p><code className="bg-paper border border-line px-1.5 rounded">github</code> — GitHub ハンドルまたは URL</p>
                 <p><code className="bg-paper border border-line px-1.5 rounded">favoriteColor</code> — カードボーダー色（<code className="bg-paper border border-line px-1 rounded">#RRGGBB</code> 形式）</p>
                 <p><code className="bg-paper border border-line px-1.5 rounded">favoriteEmoji</code> — 1 文字の絵文字</p>
