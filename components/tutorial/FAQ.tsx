@@ -44,6 +44,10 @@ const faqData: FAQItem[] = [
     answer: '#RRGGBB 形式の 16 進数カラーコード（例: #FF5E5B）を入力してください。NIPPON COLORS や原色大辞典などのサイトから選べます。',
   },
   {
+    question: 'Vercel のチェックが赤い ×（Authorization required to deploy.）になっている',
+    answer: '気にしなくて大丈夫です。Fork からの PR では、管理人が許可するまで Vercel がプレビューを作らないため、× になります。Vercel からの英語のコメントも管理人向けのお知らせです。マージには影響しません。',
+  },
+  {
     question: 'CI はすべて通ったのに、マージされない',
     answer: 'PR の画面に「Update branch」ボタンが出ていたら押してください。ほかの人の PR が先にマージされて、あなたの PR が古くなっていると、最新の内容に追いつくまでマージできません。押すと CI がもう一度動きます。',
   },

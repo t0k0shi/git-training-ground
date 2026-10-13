@@ -400,6 +400,9 @@ export default function TutorialPage() {
             <p className="text-sm text-ink-2 mt-3">
               PR の画面に <strong>「Update branch」</strong> ボタンが出たら押してください。ほかの人の PR が先にマージされて、あなたの PR が古くなっている、という意味です。押すと最新の内容に追いつき、CI がもう一度動きます。
             </p>
+            <p className="text-sm text-ink-2 mt-3">
+              <strong>Vercel</strong> の赤い ×（Authorization required to deploy.）と、Vercel からの英語のコメントは、管理人向けのお知らせです。気にしなくて大丈夫です。マージには影響しません。
+            </p>
           </StepGuide>
 
           {/* Step 9 */}
