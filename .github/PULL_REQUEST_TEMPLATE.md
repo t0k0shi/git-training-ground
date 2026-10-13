@@ -20,6 +20,8 @@
 
 **contributors.json への追加 PR の場合:**
 - [ ] `data/contributors.json` に自分のエントリを 1 つだけ追加した
+- [ ] `github` は PR を出す自分の GitHub のユーザー名にした（2 回目以降の参加は、後ろに `+2`、`+3` を付ける）
+- [ ] `favoriteEmoji` の絵文字は 1 つだけ
 - [ ] 他の人のエントリは変更・削除していない
 - [ ] `favoriteColor` は `#RRGGBB` 形式、`joinedAt` は `YYYY-MM-DD` 形式
 
