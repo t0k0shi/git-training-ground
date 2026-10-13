@@ -102,3 +102,29 @@ jobs:
             comments: .
           }' "$RUNNER_TEMP/suggestions.json" > "$RUNNER_TEMP/review.json"
           gh api -X POST "repos/$REPO/pulls/$PR_NUMBER/reviews" --input "$RUNNER_TEMP/review.json"
+
+      # 検査が通ったら、Bot が付けた提案のスレッドを解決済みにする。
+      # 会話の解決を必須にしているため、残っていると直したあとでもマージできない
+      - name: Resolve handle suggestions after the fix
+        if: success() && env.CHANGED == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OWNER: ${{ github.repository_owner }}
+          NAME: ${{ github.event.repository.name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          gh api graphql -F owner="$OWNER" -F name="$NAME" -F number="$PR_NUMBER" -f query='
+            query($owner: String!, $name: String!, $number: Int!) {
+              repository(owner: $owner, name: $name) {
+                pullRequest(number: $number) {
+                  reviewThreads(first: 100) {
+                    nodes { id isResolved path comments(first: 1) { nodes { author { login } body } } }
+                  }
+                }
+              }
+            }' > "$RUNNER_TEMP/threads.json"
+          for ID in $(node scripts/check-contributor-handle.mjs threads-to-resolve "$RUNNER_TEMP/threads.json"); do
+            gh api graphql -f id="$ID" -f query='
+              mutation($id: ID!) { resolveReviewThread(input: { threadId: $id }) { thread { isResolved } } }' > /dev/null
+            echo "提案のスレッド $ID を解決済みにしました"
+          done
