@@ -1,9 +1,9 @@
 name: Validate PR
 
+# 必須チェックにするため、全 PR で動かす。contributors.json を変更していない PR では検証を飛ばして成功にする
+# （パス条件で起動しないと、必須チェックが「待ち」のままになり、マージできなくなるため）
 on:
   pull_request:
-    paths:
-      - 'data/contributors.json'
 
 jobs:
   validate:
@@ -15,21 +15,36 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check whether contributors.json is changed
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if git diff --quiet "$BASE_SHA" HEAD -- data/contributors.json; then
+            echo "contributors.json の変更がないため検証しません"
+            echo "CHANGED=false" >> "$GITHUB_ENV"
+          else
+            echo "CHANGED=true" >> "$GITHUB_ENV"
+          fi
+
       - name: Setup Node.js
+        if: env.CHANGED == 'true'
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
       - name: Install dependencies
+        if: env.CHANGED == 'true'
         run: npm ci
 
       - name: Validate contributors.json format
+        if: env.CHANGED == 'true'
         env:
           PR_AUTHOR: ${{ github.event.pull_request.user.login }}
         run: npx tsx scripts/validate-contributors.ts
 
       - name: Verify no modifications or deletions of existing entries
+        if: env.CHANGED == 'true'
         run: |
           echo "Checking for modifications or deletions..."
           # 既存エントリの github ハンドルが消えていないか確認
@@ -55,6 +70,7 @@ jobs:
           echo "✅ 既存エントリの削除なし"
 
       - name: Check addition limit (1 entry per PR)
+        if: env.CHANGED == 'true'
         run: |
           echo "Checking addition count..."
           BEFORE_COUNT=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/contributors.main.json','utf8')).length)")
@@ -75,9 +91,11 @@ jobs:
           echo "✅ 追加エントリ数 OK (+${DIFF} 件)"
 
       - name: Build (本番デプロイと同じ basePath で検証)
+        if: env.CHANGED == 'true'
         env:
           NEXT_PUBLIC_GITHUB_PAGES: 'true'
         run: npm run build
 
       - name: Success
+        if: env.CHANGED == 'true'
         run: echo "✅ All checks passed!"
