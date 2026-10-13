@@ -9,6 +9,7 @@ import {
   expectedGithubValue,
   checkContributorHandle,
   buildSuggestions,
+  toReviewComments,
   formatFailureMessage,
 } from '@/scripts/check-contributor-handle.mjs';
 import { extractHandle as libExtractHandle } from '@/lib/contributors';
@@ -147,6 +148,37 @@ describe('buildSuggestions', () => {
   });
 });
 
+describe('toReviewComments', () => {
+  const suggestion = { line: 22, replacement: '    "github": "alice",' };
+  const body = '```suggestion\n    "github": "alice",\n```';
+  const existing = (over: Record<string, unknown> = {}) => ({
+    user: { login: 'github-actions[bot]' },
+    path: 'data/contributors.json',
+    line: 22,
+    body,
+    ...over,
+  });
+
+  it('提案をレビューコメントの形にする', () => {
+    expect(toReviewComments([suggestion], [])).toEqual([
+      { path: 'data/contributors.json', line: 22, side: 'RIGHT', body },
+    ]);
+  });
+
+  it('Bot が同じ行に同じ提案をすでに付けていれば、付けない（push のたびに増やさない）', () => {
+    expect(toReviewComments([suggestion], [existing()])).toEqual([]);
+  });
+
+  it('古くなった提案（line が null）や、ほかの人のコメントは、すでにあるものとみなさない', () => {
+    expect(toReviewComments([suggestion], [existing({ line: null })])).toHaveLength(1);
+    expect(toReviewComments([suggestion], [existing({ user: { login: 'someone' } })])).toHaveLength(1);
+  });
+
+  it('同じ行でも、提案の中身が違えば付ける', () => {
+    expect(toReviewComments([suggestion], [existing({ body: '```suggestion\n    "github": "bob",\n```' })])).toHaveLength(1);
+  });
+});
+
 describe('formatFailureMessage', () => {
   it('貼り付けられる正しい値と、提案のボタンの案内を出す', () => {
     const msg = formatFailureMessage('alice', [{ index: 1, github: 'your-github-handle', expected: 'alice' }]);
@@ -178,9 +210,28 @@ describe('CLI', () => {
     const r = run({ PR_AUTHOR: 'alice', REPO_OWNER: owner, SUGGESTIONS_OUT: out }, basePath, headPath);
     expect(r.status).toBe(1);
     expect(r.stdout).toContain('"github": "alice"');
-    const suggestions = JSON.parse(fs.readFileSync(out, 'utf-8'));
-    expect(suggestions).toHaveLength(1);
-    expect(suggestions[0].replacement).toContain('"alice"');
+    const comments = JSON.parse(fs.readFileSync(out, 'utf-8'));
+    expect(comments).toHaveLength(1);
+    expect(comments[0].body).toContain('"github": "alice"');
+  });
+
+  it('EXISTING_COMMENTS に同じ提案があれば、SUGGESTIONS_OUT は空になる', () => {
+    const headPath = write('head-ng2.json', [entry('t0k0shi'), entry('your-github-handle')]);
+    const first = path.join(dir, 'first.json');
+    run({ PR_AUTHOR: 'alice', REPO_OWNER: owner, SUGGESTIONS_OUT: first }, basePath, headPath);
+    const posted = JSON.parse(fs.readFileSync(first, 'utf-8')).map((c: Record<string, unknown>) => ({
+      ...c,
+      user: { login: 'github-actions[bot]' },
+    }));
+    const existingPath = write('existing.json', posted);
+    const second = path.join(dir, 'second.json');
+    const r = run(
+      { PR_AUTHOR: 'alice', REPO_OWNER: owner, SUGGESTIONS_OUT: second, EXISTING_COMMENTS: existingPath },
+      basePath,
+      headPath,
+    );
+    expect(r.status).toBe(1);
+    expect(JSON.parse(fs.readFileSync(second, 'utf-8'))).toEqual([]);
   });
 
   it('一致していれば exit 0', () => {

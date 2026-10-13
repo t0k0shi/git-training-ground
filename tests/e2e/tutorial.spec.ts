@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 // Issue #22 対応: v4 チュートリアルページの E2E テスト
-// app/tutorial/page.tsx は Step 1〜9 + FAQ 12 問 + 完了 CTA で構成される
+// app/tutorial/page.tsx は Step 1〜9 + FAQ 13 問 + 完了 CTA で構成される
 
 test.describe('Tutorial page (v4)', () => {
   test.beforeEach(async ({ page }) => {

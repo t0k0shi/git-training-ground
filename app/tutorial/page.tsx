@@ -247,6 +247,7 @@ export default function TutorialPage() {
               <p className="text-ink-2">
                 <strong>⚠️ 注意:</strong> 他の人のエントリは消さないでください。
                 コピペしたコードの先頭の <code className="bg-ink/5 px-1 rounded">,</code> は必ず残してください（JSON の構文ルール）。
+                <code className="bg-ink/5 px-1 rounded">favoriteEmoji</code> に入れる絵文字は<strong>1つだけ</strong>です（<code className="bg-ink/5 px-1 rounded">&quot;🦊🦊&quot;</code> のように2つ並べると CI で止まります）。
               </p>
             </div>
           </StepGuide>
@@ -395,6 +396,9 @@ export default function TutorialPage() {
             </ul>
             <p className="text-sm text-ink-2">
               すべてのチェックがパスするのを待ちましょう。もしエラーが出たら、エラーメッセージに従って修正してください。
+            </p>
+            <p className="text-sm text-ink-2 mt-3">
+              PR の画面に <strong>「Update branch」</strong> ボタンが出たら押してください。ほかの人の PR が先にマージされて、あなたの PR が古くなっている、という意味です。押すと最新の内容に追いつき、CI がもう一度動きます。
             </p>
           </StepGuide>
 

@@ -7,13 +7,16 @@
 // CLI:
 //   node scripts/check-contributor-handle.mjs <base の contributors.json> <PR 側の contributors.json>
 //     env: PR_AUTHOR, REPO_OWNER
-//          SUGGESTIONS_OUT（任意）: 修正の提案（[{ line, replacement }]）を書き出す先
+//          SUGGESTIONS_OUT（任意）: PR に付けるレビューコメント（[{ path, line, side, body }]）を書き出す先
+//          EXISTING_COMMENTS（任意）: PR の既存のレビューコメント（API の結果）のパス。同じ提案を二重に付けないために使う
 
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { readFileSync, writeFileSync } from 'node:fs';
 
 const TRUSTED_BOTS = ['dependabot[bot]'];
+const CONTRIBUTORS_PATH = 'data/contributors.json';
+const SUGGESTION_BOT = 'github-actions[bot]';
 
 // lib/contributors.ts の entryKey・extractHandle と同じ規則（同じ結果になることをテストで確かめている）
 const URL_PATTERN = /github\.com\/([^/?#]+)/;
@@ -123,6 +126,25 @@ export function buildSuggestions(text, mismatches) {
   return suggestions;
 }
 
+// 提案を PR のレビューコメントの形にする。
+// Bot が同じ行に同じ提案をすでに付けていれば除く（push のたびに同じ提案を増やさない）。
+// 古くなったコメント（line が null）は、今の行を指していないので、すでにあるものとみなさない
+export function toReviewComments(suggestions, existingComments) {
+  const posted = new Set(
+    existingComments
+      .filter((c) => c.user?.login === SUGGESTION_BOT && c.path === CONTRIBUTORS_PATH && c.line != null)
+      .map((c) => `${c.line}\n${c.body}`)
+  );
+  return suggestions
+    .map((s) => ({
+      path: CONTRIBUTORS_PATH,
+      line: s.line,
+      side: 'RIGHT',
+      body: '```suggestion\n' + s.replacement + '\n```',
+    }))
+    .filter((c) => !posted.has(`${c.line}\n${c.body}`));
+}
+
 export function formatFailureMessage(author, mismatches) {
   const lines = [`❌ github のハンドル名が、PR を出した人（${author}）と違います`];
   for (const m of mismatches) {
@@ -172,7 +194,11 @@ function runCheck(basePath, headPath) {
 
   console.log(formatFailureMessage(author, result.mismatches));
   if (process.env.SUGGESTIONS_OUT) {
-    writeFileSync(process.env.SUGGESTIONS_OUT, JSON.stringify(buildSuggestions(headText, result.mismatches)));
+    const existing = process.env.EXISTING_COMMENTS
+      ? JSON.parse(readFileSync(process.env.EXISTING_COMMENTS, 'utf8'))
+      : [];
+    const comments = toReviewComments(buildSuggestions(headText, result.mismatches), existing);
+    writeFileSync(process.env.SUGGESTIONS_OUT, JSON.stringify(comments));
   }
   return 1;
 }

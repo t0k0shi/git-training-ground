@@ -12,7 +12,26 @@ const REQUIRED_FIELDS = ['name', 'github', 'favoriteColor', 'favoriteEmoji', 'me
 const COLOR_PATTERN = /^#[0-9A-Fa-f]{6}$/;
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
-export function validateContributors(data: unknown): ValidationError[] {
+export interface ValidateOptions {
+  /** PR を出した人の GitHub のログイン名。わかるときは、CV-07 の直し方をその人のハンドル名で案内する */
+  author?: string;
+}
+
+// data の中で、author が使うべき github の値（未登録なら author、登録済みなら +2、+3）
+function nextValueFor(author: string, data: unknown[]): string {
+  const keys = new Set(
+    data
+      .map((e) => (e as Record<string, unknown>)?.github)
+      .filter((g): g is string => typeof g === 'string')
+      .map((g) => entryKey(g).toLowerCase())
+  );
+  if (!keys.has(author.toLowerCase())) return author;
+  let n = 2;
+  while (keys.has(`${author}+${n}`.toLowerCase())) n++;
+  return `${author}+${n}`;
+}
+
+export function validateContributors(data: unknown, options: ValidateOptions = {}): ValidationError[] {
   const errors: ValidationError[] = [];
 
   if (!Array.isArray(data)) {
@@ -76,12 +95,21 @@ export function validateContributors(data: unknown): ValidationError[] {
       const key = entryKey(entry.github);
       if (handles.has(key)) {
         const handle = extractHandle(entry.github);
-        let n = 2;
-        while (handles.has(`${handle}+${n}`)) n++;
-        errors.push({
-          check: 'CV-07',
-          message: `❌ CV-07: github ハンドル "${key}" はすでに登録されています（${idx}）。\n   2回目以降の参加なら、後ろに +${n} を付けてください（例: "${handle}+${n}"）。アバターと表示は同じハンドルのままです。`,
-        });
+        const { author } = options;
+        if (author && handle.toLowerCase() !== author.toLowerCase()) {
+          // 他人のハンドル名を使っている。+2 ではなく、自分のハンドル名を案内する（check-handle と案内をそろえる）
+          errors.push({
+            check: 'CV-07',
+            message: `❌ CV-07: github ハンドル "${key}" はすでに登録されています（${idx}）。\n   github には、PR を出す自分のハンドル名を入れてください（例: "${nextValueFor(author, data)}"）。`,
+          });
+        } else {
+          let n = 2;
+          while (handles.has(`${handle}+${n}`)) n++;
+          errors.push({
+            check: 'CV-07',
+            message: `❌ CV-07: github ハンドル "${key}" はすでに登録されています（${idx}）。\n   2回目以降の参加なら、後ろに +${n} を付けてください（例: "${handle}+${n}"）。アバターと表示は同じハンドルのままです。`,
+          });
+        }
       }
       handles.add(key);
     }
@@ -118,7 +146,8 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  const errors = validateContributors(raw);
+  // validate-pr.yml から PR を出した人のログイン名を受け取る（ローカル実行では未設定）
+  const errors = validateContributors(raw, { author: process.env.PR_AUTHOR || undefined });
 
   if (errors.length > 0) {
     for (const err of errors) {
