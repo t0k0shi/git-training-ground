@@ -1,4 +1,5 @@
 import { SerifBubble } from '@/components/ui/SerifBubble';
+import Link from 'next/link';
 import { BP_MOBILE_PX } from '@/lib/breakpoints';
 
 const STEPS = [
@@ -161,7 +162,7 @@ export function StepsSection() {
             marginTop: '16px',
           }}
         >
-          <a
+          <Link
             href="/tutorial"
             style={{
               display: 'inline-block',
@@ -176,7 +177,7 @@ export function StepsSection() {
             }}
           >
             README で詳しく見る
-          </a>
+          </Link>
 
           <SerifBubble side="left">
             思ったより簡単だった…！✨ さっそく PR 投げてみる💨
