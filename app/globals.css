@@ -2,6 +2,11 @@
 
 /* ── Design Tokens (SSOT) ── */
 :root {
+  /* Fonts（app/fonts/fonts.css。予備のフォントの指定も、next/font が付けていたものと同じ） */
+  --font-noto: 'Noto Sans JP', 'Noto Sans JP Fallback';
+  --font-inter: 'Inter', 'Inter Fallback';
+  --font-jetbrains-mono: 'JetBrains Mono', 'JetBrains Mono Fallback';
+
   /* Colors */
   --bg:     #FBF6EE;
   --bg-2:   #F3ECDE;

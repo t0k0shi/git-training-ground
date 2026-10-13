@@ -88,6 +88,33 @@ test.describe('Home page (v4)', () => {
     }
   });
 
+  test('フォントはサイト自身から配信され、Google Fonts に取りに行かない（ADR-0014）', async ({ page }) => {
+    const external: string[] = [];
+    page.on('request', (req) => {
+      if (/fonts\.(googleapis|gstatic)\.com/.test(req.url())) external.push(req.url());
+    });
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+    // document.fonts.check() は、その名前のフォントが登録されていなくても true を返すため使わない。
+    // 登録された FontFace のうち、実際に読み込まれたものがあるかを見る
+    // Inter は Noto Sans JP の後ろの予備で、ページの文字によっては読み込まれないことがある。
+    // そのため Inter は登録だけを確かめ、必ず使う 2 つは読み込まれたことまで確かめる
+    const fonts = await page.evaluate(async () => {
+      await document.fonts.ready;
+      const faces = Array.from(document.fonts);
+      const name = (f: FontFace) => f.family.replace(/["']/g, '');
+      return ['Noto Sans JP', 'Inter', 'JetBrains Mono'].map((family) => ({
+        family,
+        registered: faces.some((f) => name(f) === family),
+        loaded: faces.some((f) => name(f) === family && f.status === 'loaded'),
+      }));
+    });
+    const summary = JSON.stringify(fonts);
+    expect(fonts.every((f) => f.registered), summary).toBe(true);
+    expect(fonts.filter((f) => f.family !== 'Inter').every((f) => f.loaded), summary).toBe(true);
+    expect(external).toEqual([]);
+  });
+
   test('console error と 404 が出ない', async ({ page }) => {
     // Next.js Link の prefetch で tutorial ページの画像も取得されるため、画像の 404 も検出対象にする
     const errors: string[] = [];

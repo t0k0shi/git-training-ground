@@ -1,28 +1,9 @@
 import type { Metadata } from "next";
-import { Noto_Sans_JP, Inter, JetBrains_Mono } from "next/font/google";
+// フォントは app/fonts/ に置いたものを読み込む。next/font/google はビルドのたびに
+// Google Fonts から数百のファイルを取得し、取得に失敗するとビルドが落ちていたため（ADR-0014）
+import "./fonts/fonts.css";
 import "./globals.css";
 import { SiteHeader } from "@/components/layout/SiteHeader";
-
-const notoSansJP = Noto_Sans_JP({
-  variable: "--font-noto",
-  subsets: ["latin"],
-  weight: ["400", "700", "900"],
-  display: "swap",
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  weight: ["400", "600"],
-  display: "swap",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "Git Training Ground - はじめてのPRを、ここで。",
@@ -42,9 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body
-        className={`${notoSansJP.variable} ${inter.variable} ${jetbrainsMono.variable} antialiased`}
-      >
+      <body className="antialiased">
         <SiteHeader />
         {children}
       </body>
