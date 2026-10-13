@@ -217,7 +217,7 @@ export default function TutorialPage() {
               <p className="text-ink-2 font-medium mb-2">各フィールドの意味</p>
               <div className="space-y-1 text-ink-2">
                 <p><code className="bg-paper border border-line px-1.5 rounded">name</code> — 名前（ニックネーム可）。サイトには表示されません。カードには <code className="bg-paper border border-line px-1 rounded">github</code> のハンドル名が表示されます</p>
-                <p><code className="bg-paper border border-line px-1.5 rounded">github</code> — GitHub ハンドルまたは URL</p>
+                <p><code className="bg-paper border border-line px-1.5 rounded">github</code> — <strong>PR を出す自分の</strong> GitHub のユーザー名（URL でも可）。アバターとトップの泡に使います。違っていると CI で止まり、Bot が正しい値を提案します</p>
                 <p><code className="bg-paper border border-line px-1.5 rounded">favoriteColor</code> — カードボーダー色（<code className="bg-paper border border-line px-1 rounded">#RRGGBB</code> 形式）</p>
                 <p><code className="bg-paper border border-line px-1.5 rounded">favoriteEmoji</code> — 1 文字の絵文字</p>
                 <p><code className="bg-paper border border-line px-1.5 rounded">message</code> — 1 行自己紹介</p>

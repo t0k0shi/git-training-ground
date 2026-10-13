@@ -26,7 +26,7 @@ const owner = 't0k0shi';
 
 describe('extractHandle', () => {
   it('lib/contributors.ts と同じ結果を返す（サイトの表示と CI の判定をそろえる）', () => {
-    for (const input of ['t0k0shi', '  someuser  ', 'https://github.com/t0k0shi/', 'github.com/a-b?tab=x']) {
+    for (const input of ['t0k0shi', '  someuser  ', 'https://github.com/t0k0shi/', 'github.com/a-b?tab=x', 'alice+2', '  alice+2  ', 'https://github.com/alice+3', 'alice+']) {
       expect(extractHandle(input), input).toBe(libExtractHandle(input));
     }
   });
