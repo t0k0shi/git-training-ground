@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { AnchorHTMLAttributes, ReactNode } from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 
 // Link を素の <a> として扱う
@@ -51,6 +51,25 @@ describe('SiteHeader', () => {
     expect(screen.getByRole('link', { name: 'git-training-ground' })).toHaveAttribute('aria-current', 'page');
     expect(screen.getByRole('link', { name: 'チュートリアル' })).not.toHaveAttribute('aria-current');
     expect(screen.getByRole('link', { name: '参加者' })).not.toHaveAttribute('aria-current');
+  });
+
+  it('トップにいるときの「参加者」は、ページを移らずに参加者の一覧までスクロールする', () => {
+    const target = document.createElement('section');
+    target.id = 'contributors';
+    target.scrollIntoView = vi.fn();
+    document.body.appendChild(target);
+    render(<SiteHeader />);
+    const clicked = fireEvent.click(screen.getByRole('link', { name: '参加者' }));
+    expect(clicked).toBe(false); // preventDefault された
+    expect(target.scrollIntoView).toHaveBeenCalled();
+    target.remove();
+  });
+
+  it('トップ以外では「参加者」のクリックを横取りしない（トップに移ってから移動する）', () => {
+    mockPathname.mockReturnValue('/tutorial');
+    render(<SiteHeader />);
+    const clicked = fireEvent.click(screen.getByRole('link', { name: '参加者' }));
+    expect(clicked).toBe(true);
   });
 
   it('リンクを navigation のランドマークで囲む', () => {
