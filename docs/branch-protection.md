@@ -14,7 +14,7 @@
 ## 設定する内容
 
 - Pull Request 必須（承認 1 件、コードオーナーのレビュー必須）
-- 必須ステータスチェック: `guard-files`、`check-handle`、`test`、`e2e`、`merge-guard`
+- 必須ステータスチェック: `guard-files`、`check-handle`、`validate`、`test`、`e2e`、`merge-guard`
 - 強制 push の禁止、ブランチ削除の禁止
 - 管理者（オーナー）は例外とする。オーナーは自分の PR を自分で承認できないため（「オーナー自身の PR」参照）
 
@@ -38,7 +38,7 @@
      - Required approvals: `1`
      - **Require review from Code Owners**
    - **Require status checks to pass before merging**
-     - 検索して次の 5 つを追加: `guard-files`、`check-handle`、`test`、`e2e`、`merge-guard`
+     - 検索して次の 6 つを追加: `guard-files`、`check-handle`、`validate`、`test`、`e2e`、`merge-guard`
      - 必要に応じて **Require branches to be up to date before merging**
    - **Block force pushes**
    - **Restrict deletions**（classic では「Allow deletions」を無効のままにする）
@@ -58,7 +58,7 @@ gh api -X PUT repos/t0k0shi/git-training-ground/branches/main/protection \
 {
   "required_status_checks": {
     "strict": false,
-    "contexts": ["guard-files", "check-handle", "test", "e2e", "merge-guard"]
+    "contexts": ["guard-files", "check-handle", "validate", "test", "e2e", "merge-guard"]
   },
   "enforce_admins": false,
   "required_pull_request_reviews": {
@@ -82,11 +82,11 @@ gh api repos/t0k0shi/git-training-ground/branches/main/protection \
 
 ## 注意事項
 
-### `validate` は必須チェックにしない
+### `validate` を必須チェックにする理由
 
-`validate`（`validate-pr.yml`）は `data/contributors.json` を変更した PR だけで起動するパス条件付きのワークフローです。
-`contributors.json` を含まない PR では実行されず、必須にするとマージできなくなります。
-全 PR で動く `guard-files` が変更ファイルの検査を担います。
+`validate`（`validate-pr.yml`）は、`contributors.json` の形式・重複・既存エントリの削除・追加数を確かめます。
+必須でないと、validate が失敗していてもマージでき、誤ったデータが main に入ります（PR #63 で、2 回目の参加の `+2` の付け忘れがマージできる状態になった）。
+全 PR で動き、`contributors.json` を変更していない PR では検証を飛ばして成功にするため、必須にしてもほかの PR は止まりません。
 
 ### オーナー自身の PR
 
