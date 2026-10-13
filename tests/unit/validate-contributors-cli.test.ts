@@ -12,6 +12,23 @@ import os from 'os';
 const SCRIPT_PATH = path.resolve(__dirname, '../../scripts/validate-contributors.ts');
 const ORIGINAL_DATA_PATH = path.resolve(__dirname, '../../data/contributors.json');
 
+// 正常系は、参加者が編集する data/contributors.json の中身に左右されないよう、固定のデータで確かめる。
+// 本物のデータの検証は validate-pr.yml の役割（参加者の誤りで単体テストまで落ちないようにする）
+const VALID_FIXTURE = JSON.stringify(
+  [
+    {
+      name: 'ketts',
+      github: 't0k0shi',
+      favoriteColor: '#E63946',
+      favoriteEmoji: '🚀',
+      message: 'はじめてのOSS貢献！',
+      joinedAt: '2026-04-24',
+    },
+  ],
+  null,
+  2,
+);
+
 // 元ファイルが存在しないケースでも安全に動くよう、undefined を許容して都度ガードする
 let backupContent: string | undefined;
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'validate-contrib-'));
@@ -46,8 +63,7 @@ function runCli(): { status: number | null; stdout: string; stderr: string } {
 
 describe('validate-contributors CLI (smoke)', () => {
   it('正常な contributors.json では exit 0 を返す', () => {
-    // backupContent (元データ) を使って実行
-    fs.writeFileSync(ORIGINAL_DATA_PATH, backupContent);
+    fs.writeFileSync(ORIGINAL_DATA_PATH, VALID_FIXTURE);
     const { status, stdout } = runCli();
     expect(status, `stdout: ${stdout}`).toBe(0);
     expect(stdout).toMatch(/✅|検証が完了しました/);
