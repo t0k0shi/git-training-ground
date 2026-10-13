@@ -1,6 +1,7 @@
 'use client';
 
 import { shareSite } from '@/lib/share';
+import Link from 'next/link';
 
 interface FooterSectionProps {
   count: number;
@@ -76,13 +77,13 @@ export function FooterSection({ count }: FooterSectionProps) {
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-3">
-          <a
+          <Link
             href="/tutorial"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-pill bg-accent text-paper font-bold shadow-card hover:-translate-y-0.5 transition-transform"
           >
             いますぐ参加する
             <span aria-hidden="true">→</span>
-          </a>
+          </Link>
           <button
             type="button"
             onClick={shareSite}

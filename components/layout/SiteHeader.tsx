@@ -1,5 +1,6 @@
 'use client';
 
+import type { MouseEvent } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -18,6 +19,19 @@ export function SiteHeader() {
   const current = normalize(usePathname() ?? '/');
   const ariaCurrent = (path: string) => (current === path ? 'page' : undefined);
 
+  // トップにいるときの「参加者」は、Link に任せるとスクロールしないことがある
+  // （公開サイトでは 1 回目から、URL がすでに #contributors のときは毎回）。自分でスクロールする
+  const scrollToContributors = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (current !== '/') return;
+    const target = document.getElementById('contributors');
+    if (!target) return;
+    event.preventDefault();
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (window.location.hash !== '#contributors') {
+      window.history.pushState(null, '', '#contributors');
+    }
+  };
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between gap-2 px-4 md:px-6 py-4 bg-bg/90 backdrop-blur border-b border-line">
       <Link
@@ -31,7 +45,7 @@ export function SiteHeader() {
         <Link href="/tutorial" aria-current={ariaCurrent('/tutorial')} className={linkClass}>
           チュートリアル
         </Link>
-        <Link href="/#contributors" className={linkClass}>
+        <Link href="/#contributors" onClick={scrollToContributors} className={linkClass}>
           参加者
         </Link>
         <a

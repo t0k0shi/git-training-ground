@@ -20,6 +20,21 @@ test.describe('Site header', () => {
     await expect(page.getByRole('heading', { name: /一緒に練習中の \d+ 人/ })).toBeInViewport();
   });
 
+  test('トップにいるときも、ヘッダーの「参加者」で参加者の一覧に移動する（何度押しても動く）', async ({ page }) => {
+    await page.goto('/');
+    const heading = page.getByRole('heading', { name: /一緒に練習中の \d+ 人/ });
+    const link = page.getByRole('navigation').getByRole('link', { name: '参加者' });
+    await link.click();
+    await expect(page).toHaveURL(/\/#contributors$/);
+    await expect(heading).toBeInViewport();
+
+    // URL がすでに #contributors のまま、上に戻ってもう一度押す
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expect(heading).not.toBeInViewport();
+    await link.click();
+    await expect(heading).toBeInViewport();
+  });
+
   for (const path of ['/', '/tutorial']) {
     test(`T5: スマホの幅（375px）の ${path} で、3 つのリンクが表示され、横にはみ出さない`, async ({ page }) => {
       await page.setViewportSize({ width: 375, height: 800 });

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import type { ContributorWithDerived } from '@/lib/types';
 import { shareSite } from '@/lib/share';
 import { FloatingBubbles } from './FloatingBubbles';
@@ -82,13 +83,13 @@ export function HeroSection({ contributors }: HeroSectionProps) {
         </p>
 
         <div className="flex flex-wrap items-center justify-center gap-3 mb-14">
-          <a
+          <Link
             href="/tutorial"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-pill bg-accent text-paper font-bold shadow-card hover:-translate-y-0.5 transition-transform"
           >
             参加する
             <span aria-hidden="true">→</span>
-          </a>
+          </Link>
           <a
             href="https://github.com/t0k0shi/git-training-ground"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-pill border-2 border-ink font-semibold text-ink hover:bg-ink hover:text-bg transition-colors"

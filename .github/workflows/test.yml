@@ -38,3 +38,7 @@ jobs:
         env:
           NEXT_PUBLIC_GITHUB_PAGES: 'true'
         run: npm run build
+
+      # 素の <a href="/..."> は GitHub Pages で basePath が付かず 404 になる。通常のビルドの E2E では見つからないため、ここで確かめる
+      - name: Check links have the basePath
+        run: node scripts/check-base-path-links.mjs out /git-training-ground
