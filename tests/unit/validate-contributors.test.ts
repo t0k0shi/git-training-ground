@@ -135,6 +135,49 @@ describe('validateContributors', () => {
       expect(errors.some((e) => e.check === 'CV-07')).toBe(true);
     });
 
+    it('2回目の参加として +2 を付けたハンドルはOK', () => {
+      const errors = validateContributors([validEntry, { ...validEntry, github: 't0k0shi+2' }]);
+      expect(errors.some((e) => e.check === 'CV-07')).toBe(false);
+    });
+
+    it('+2 を付けたハンドルが 2 件あるとエラー', () => {
+      const entry2 = { ...validEntry, github: 't0k0shi+2' };
+      const errors = validateContributors([validEntry, entry2, entry2]);
+      expect(errors.some((e) => e.check === 'CV-07')).toBe(true);
+    });
+
+    it('重複したときのメッセージで、+2 を付ける直し方を案内する', () => {
+      const errors = validateContributors([validEntry, validEntry]);
+      const message = errors.find((e) => e.check === 'CV-07')?.message ?? '';
+      expect(message).toContain('"t0k0shi+2"');
+    });
+
+    it('+2 がすでにあるときは、+3 を案内する', () => {
+      const errors = validateContributors([validEntry, { ...validEntry, github: 't0k0shi+2' }, validEntry]);
+      const message = errors.find((e) => e.check === 'CV-07')?.message ?? '';
+      expect(message).toContain('"t0k0shi+3"');
+    });
+
+    it('PR を出した人がわかるとき、他人のハンドル名の重複には、その人のハンドル名を案内する', () => {
+      const errors = validateContributors([validEntry, validEntry], { author: 'alice' });
+      const message = errors.find((e) => e.check === 'CV-07')?.message ?? '';
+      expect(message).toContain('"alice"');
+      expect(message).not.toContain('t0k0shi+2');
+    });
+
+    it('PR を出した人がすでに登録済みなら、その人のハンドル名に +2 を付けた値を案内する', () => {
+      const alice = { ...validEntry, github: 'alice' };
+      const errors = validateContributors([validEntry, alice, validEntry], { author: 'alice' });
+      const message = errors.find((e) => e.check === 'CV-07')?.message ?? '';
+      expect(message).toContain('"alice+2"');
+    });
+
+    it('重複したハンドル名が PR を出した人のものなら、今までどおり +2 を案内する（大文字小文字は区別しない）', () => {
+      const errors = validateContributors([validEntry, validEntry], { author: 'T0k0shi' });
+      const message = errors.find((e) => e.check === 'CV-07')?.message ?? '';
+      expect(message).toContain('"t0k0shi+2"');
+    });
+
     it('異なるハンドルはOK', () => {
       const entry2 = { ...validEntry, github: 'otheruser' };
       const errors = validateContributors([validEntry, entry2]);

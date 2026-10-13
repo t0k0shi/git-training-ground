@@ -1,0 +1,104 @@
+name: Check Handle
+
+# 追加したエントリの github が、PR を出した人のハンドル名と同じかを確かめる（ADR-0013）。
+# 違っていれば、PR の該当の行に修正の提案（suggestion）を付ける。
+# pull_request_target は base ブランチの定義で動くため、次の安全策を厳守する（ADR-0007・ADR-0011 と同じ方針）:
+#   - PR のコードを checkout・実行しない（checkout は base 既定のまま）
+#   - PR 側の contributors.json は API で取得し、データとして読むだけにする
+#   - npm install など依存のインストールをしない
+#   - PR のタイトル・本文などユーザー入力をシェルへ直接埋め込まない（env 経由で渡す）
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  check-handle:
+    name: check-handle
+    runs-on: ubuntu-latest
+
+    steps:
+      # ref を指定しない = base ブランチ。PR の head は取得しない
+      - name: Checkout base branch
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Check whether contributors.json is changed
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          if gh api "repos/$REPO/pulls/$PR_NUMBER/files" --paginate --jq '.[].filename' | grep -qx 'data/contributors.json'; then
+            echo "CHANGED=true" >> "$GITHUB_ENV"
+          else
+            echo "contributors.json の変更がないため検査しません"
+            echo "CHANGED=false" >> "$GITHUB_ENV"
+          fi
+
+      - name: Fetch base and PR contributors.json
+        if: env.CHANGED == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASE_REPO: ${{ github.repository }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          gh api "repos/$BASE_REPO/contents/data/contributors.json?ref=$BASE_SHA" \
+            -H 'Accept: application/vnd.github.raw' > "$RUNNER_TEMP/base.json"
+          gh api "repos/$HEAD_REPO/contents/data/contributors.json?ref=$HEAD_SHA" \
+            -H 'Accept: application/vnd.github.raw' > "$RUNNER_TEMP/head.json"
+
+      # 同じ提案を二重に付けないよう、今あるレビューコメントを取得する
+      - name: Fetch existing review comments
+        if: env.CHANGED == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          gh api "repos/$REPO/pulls/$PR_NUMBER/comments" --paginate --jq '.[]' \
+            | jq -s '.' > "$RUNNER_TEMP/existing-comments.json"
+
+      - name: Check handle matches PR author
+        id: check
+        if: env.CHANGED == 'true'
+        env:
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          SUGGESTIONS_OUT: ${{ runner.temp }}/suggestions.json
+          EXISTING_COMMENTS: ${{ runner.temp }}/existing-comments.json
+        run: node scripts/check-contributor-handle.mjs "$RUNNER_TEMP/base.json" "$RUNNER_TEMP/head.json"
+
+      - name: Suggest the correct handle on the PR
+        if: failure() && steps.check.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if [ ! -s "$RUNNER_TEMP/suggestions.json" ]; then
+            echo "提案のファイルがないため、メッセージだけにします"
+            exit 0
+          fi
+          COUNT=$(jq 'length' "$RUNNER_TEMP/suggestions.json")
+          if [ "$COUNT" -eq 0 ]; then
+            echo "新しく付ける提案がない（提案できる行がない、または同じ提案を付け済み）ため、メッセージだけにします"
+            exit 0
+          fi
+          jq --arg sha "$HEAD_SHA" '{
+            commit_id: $sha,
+            event: "COMMENT",
+            body: "github には、PR を出した人の GitHub のユーザー名を入れてください（アバターとトップの泡に使います）。下の提案の「Commit suggestion」を押すと、そのまま直せます。",
+            comments: .
+          }' "$RUNNER_TEMP/suggestions.json" > "$RUNNER_TEMP/review.json"
+          gh api -X POST "repos/$REPO/pulls/$PR_NUMBER/reviews" --input "$RUNNER_TEMP/review.json"

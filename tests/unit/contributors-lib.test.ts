@@ -8,7 +8,7 @@ vi.mock('fs/promises', () => ({
 }));
 
 import fs from 'fs/promises';
-import { extractHandle, daysAgo, getContributors } from '@/lib/contributors';
+import { extractHandle, entryKey, daysAgo, getContributors } from '@/lib/contributors';
 
 describe('extractHandle', () => {
   describe('ハンドル直指定', () => {
@@ -36,6 +36,24 @@ describe('extractHandle', () => {
 
     it('クエリパラメータ付き URL から handle を抽出する', () => {
       expect(extractHandle('https://github.com/t0k0shi?tab=repositories')).toBe('t0k0shi');
+    });
+  });
+
+  describe('2回目以降の参加（末尾の +数字）', () => {
+    it('末尾の +2 を取り除いてハンドルを返す', () => {
+      expect(extractHandle('t0k0shi+2')).toBe('t0k0shi');
+    });
+
+    it('URL 形式でも末尾の +3 を取り除く', () => {
+      expect(extractHandle('https://github.com/t0k0shi+3')).toBe('t0k0shi');
+    });
+
+    it('前後の空白があっても +2 を取り除く', () => {
+      expect(extractHandle('  t0k0shi+2  ')).toBe('t0k0shi');
+    });
+
+    it('数字が続かない + は取り除かない', () => {
+      expect(extractHandle('t0k0shi+')).toBe('t0k0shi+');
     });
   });
 
@@ -99,6 +117,17 @@ describe('daysAgo', () => {
   });
 });
 
+describe('entryKey', () => {
+  it('末尾の +数字を残して返す（エントリごとに一意にするため）', () => {
+    expect(entryKey('t0k0shi+2')).toBe('t0k0shi+2');
+  });
+
+  it('URL 形式はハンドルの形にそろえる', () => {
+    expect(entryKey('https://github.com/t0k0shi/')).toBe('t0k0shi');
+    expect(entryKey('https://github.com/t0k0shi+2')).toBe('t0k0shi+2');
+  });
+});
+
 describe('getContributors', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -144,6 +173,28 @@ describe('getContributors', () => {
 
     expect(result[0].handle).toBe('testuser');
     expect(result[0].avatarUrl).toBe('https://github.com/testuser.png?size=80');
+  });
+
+  it('2回目の参加（+2）は、同じハンドルとアバターで、別の id になる', async () => {
+    const base = {
+      name: 'ketts',
+      favoriteColor: '#E63946',
+      favoriteEmoji: '🚀',
+      message: 'hi',
+      joinedAt: '2026-04-24',
+    };
+    vi.mocked(fs.readFile).mockResolvedValue(
+      JSON.stringify([
+        { ...base, github: 't0k0shi' },
+        { ...base, github: 't0k0shi+2' },
+      ]),
+    );
+
+    const result = await getContributors();
+
+    expect(result.map((c) => c.handle)).toEqual(['t0k0shi', 't0k0shi']);
+    expect(result[1].avatarUrl).toBe('https://github.com/t0k0shi.png?size=80');
+    expect(result.map((c) => c.id)).toEqual(['t0k0shi', 't0k0shi+2']);
   });
 
   it('joinedAt が 7 日以内の場合 isNew が true になる', async () => {

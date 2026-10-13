@@ -217,7 +217,7 @@ export default function TutorialPage() {
               <p className="text-ink-2 font-medium mb-2">各フィールドの意味</p>
               <div className="space-y-1 text-ink-2">
                 <p><code className="bg-paper border border-line px-1.5 rounded">name</code> — 名前（ニックネーム可）。サイトには表示されません。カードには <code className="bg-paper border border-line px-1 rounded">github</code> のハンドル名が表示されます</p>
-                <p><code className="bg-paper border border-line px-1.5 rounded">github</code> — GitHub ハンドルまたは URL</p>
+                <p><code className="bg-paper border border-line px-1.5 rounded">github</code> — <strong>PR を出す自分の</strong> GitHub のユーザー名（URL でも可）。アバターとトップの泡に使います。違っていると CI で止まり、Bot が正しい値を提案します</p>
                 <p><code className="bg-paper border border-line px-1.5 rounded">favoriteColor</code> — カードボーダー色（<code className="bg-paper border border-line px-1 rounded">#RRGGBB</code> 形式）</p>
                 <p><code className="bg-paper border border-line px-1.5 rounded">favoriteEmoji</code> — 1 文字の絵文字</p>
                 <p><code className="bg-paper border border-line px-1.5 rounded">message</code> — 1 行自己紹介</p>
@@ -234,10 +234,20 @@ export default function TutorialPage() {
               </ul>
             </div>
 
+            <div className="bg-bg-2 border border-line rounded-lg p-4 text-sm mb-4">
+              <p className="text-ink-2 font-medium mb-2">2回目以降の参加の場合</p>
+              <p className="text-ink-2">
+                同じハンドル名は1回しか登録できません。2回目は <code className="bg-paper border border-line px-1 rounded">github</code> の値の後ろに <code className="bg-paper border border-line px-1 rounded">+2</code>（3回目は <code className="bg-paper border border-line px-1 rounded">+3</code>）を付けてください。
+                例: <code className="bg-paper border border-line px-1 rounded">&quot;github&quot;: &quot;your-github-handle+2&quot;</code>。
+                サイトには、これまでと同じアバターとハンドル名で表示されます。
+              </p>
+            </div>
+
             <div className="bg-paper border-l-4 border-accent rounded-lg p-4 text-sm">
               <p className="text-ink-2">
                 <strong>⚠️ 注意:</strong> 他の人のエントリは消さないでください。
                 コピペしたコードの先頭の <code className="bg-ink/5 px-1 rounded">,</code> は必ず残してください（JSON の構文ルール）。
+                <code className="bg-ink/5 px-1 rounded">favoriteEmoji</code> に入れる絵文字は<strong>1つだけ</strong>です（<code className="bg-ink/5 px-1 rounded">&quot;🦊🦊&quot;</code> のように2つ並べると CI で止まります）。
               </p>
             </div>
           </StepGuide>
@@ -386,6 +396,9 @@ export default function TutorialPage() {
             </ul>
             <p className="text-sm text-ink-2">
               すべてのチェックがパスするのを待ちましょう。もしエラーが出たら、エラーメッセージに従って修正してください。
+            </p>
+            <p className="text-sm text-ink-2 mt-3">
+              PR の画面に <strong>「Update branch」</strong> ボタンが出たら押してください。ほかの人の PR が先にマージされて、あなたの PR が古くなっている、という意味です。押すと最新の内容に追いつき、CI がもう一度動きます。
             </p>
           </StepGuide>
 

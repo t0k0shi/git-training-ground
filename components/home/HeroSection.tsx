@@ -113,7 +113,7 @@ export function HeroSection({ contributors }: HeroSectionProps) {
             <div className="flex items-center gap-1 mt-2">
               {contributors.slice(-6).map((c) => (
                 <img
-                  key={c.handle}
+                  key={c.id}
                   src={c.avatarUrl}
                   alt={c.handle}
                   loading="lazy"

@@ -51,9 +51,9 @@ export function FloatingBubbles({
   const [visibleContributors, setVisibleContributors] = useState<ContributorWithDerived[]>([]);
   const [mounted, setMounted] = useState(false);
 
-  // 配列の参照ではなく handle の並びで「中身が変わったか」を判定する。
+  // 配列の参照ではなく id の並びで「中身が変わったか」を判定する。
   // 親が毎レンダーで新しい配列を渡しても、再サンプリングで泡が飛び回らないようにするため。
-  const contributorsKey = contributors.map((c) => c.handle).join(',');
+  const contributorsKey = contributors.map((c) => c.id).join(',');
   const contributorsRef = useRef(contributors);
   useEffect(() => {
     contributorsRef.current = contributors;
@@ -103,7 +103,7 @@ export function FloatingBubbles({
 
         return (
           <div
-            key={contributor.handle}
+            key={contributor.id}
             style={style}
             onMouseEnter={(e) => onHover(contributor, e.nativeEvent)}
             onMouseLeave={(e) => onHover(null, e.nativeEvent)}

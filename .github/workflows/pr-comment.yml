@@ -1,7 +1,9 @@
 name: PR Welcome Comment
 
+# Fork からの PR では、pull_request のトークンが読み取り専用になり、コメントを書けない。
+# そのため pull_request_target で動かす。PR のコードは checkout も実行もしない（ADR-0007）
 on:
-  pull_request:
+  pull_request_target:
     types: [opened]
 
 jobs:
@@ -21,7 +23,6 @@ jobs:
               '',
               '管理人が確認してマージします。',
               '反映まで数日かかることがありますが、気長にお待ちください。',
-              'PR ページの Vercel プレビューで、マージ前に自分のカードを確認できます。',
               '',
               'コンフリクトがある場合、解決をお願いすることがあります。',
               'その際はコメントでご案内しますので、よろしくお願いします。',
