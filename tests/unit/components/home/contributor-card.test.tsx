@@ -10,6 +10,7 @@ const makeContributor = (overrides: Partial<ContributorWithDerived> = {}): Contr
   favoriteEmoji: '🚀',
   message: 'はじめてのOSS貢献！',
   joinedAt: '2026-04-24',
+  id: 't0k0shi',
   handle: 't0k0shi',
   avatarUrl: 'https://github.com/t0k0shi.png?size=80',
   isNew: false,

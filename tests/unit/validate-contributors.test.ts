@@ -135,6 +135,29 @@ describe('validateContributors', () => {
       expect(errors.some((e) => e.check === 'CV-07')).toBe(true);
     });
 
+    it('2回目の参加として +2 を付けたハンドルはOK', () => {
+      const errors = validateContributors([validEntry, { ...validEntry, github: 't0k0shi+2' }]);
+      expect(errors.some((e) => e.check === 'CV-07')).toBe(false);
+    });
+
+    it('+2 を付けたハンドルが 2 件あるとエラー', () => {
+      const entry2 = { ...validEntry, github: 't0k0shi+2' };
+      const errors = validateContributors([validEntry, entry2, entry2]);
+      expect(errors.some((e) => e.check === 'CV-07')).toBe(true);
+    });
+
+    it('重複したときのメッセージで、+2 を付ける直し方を案内する', () => {
+      const errors = validateContributors([validEntry, validEntry]);
+      const message = errors.find((e) => e.check === 'CV-07')?.message ?? '';
+      expect(message).toContain('"t0k0shi+2"');
+    });
+
+    it('+2 がすでにあるときは、+3 を案内する', () => {
+      const errors = validateContributors([validEntry, { ...validEntry, github: 't0k0shi+2' }, validEntry]);
+      const message = errors.find((e) => e.check === 'CV-07')?.message ?? '';
+      expect(message).toContain('"t0k0shi+3"');
+    });
+
     it('異なるハンドルはOK', () => {
       const entry2 = { ...validEntry, github: 'otheruser' };
       const errors = validateContributors([validEntry, entry2]);

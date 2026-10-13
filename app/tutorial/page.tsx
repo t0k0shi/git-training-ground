@@ -234,6 +234,15 @@ export default function TutorialPage() {
               </ul>
             </div>
 
+            <div className="bg-bg-2 border border-line rounded-lg p-4 text-sm mb-4">
+              <p className="text-ink-2 font-medium mb-2">2回目以降の参加の場合</p>
+              <p className="text-ink-2">
+                同じハンドル名は1回しか登録できません。2回目は <code className="bg-paper border border-line px-1 rounded">github</code> の値の後ろに <code className="bg-paper border border-line px-1 rounded">+2</code>（3回目は <code className="bg-paper border border-line px-1 rounded">+3</code>）を付けてください。
+                例: <code className="bg-paper border border-line px-1 rounded">&quot;github&quot;: &quot;your-github-handle+2&quot;</code>。
+                サイトには、これまでと同じアバターとハンドル名で表示されます。
+              </p>
+            </div>
+
             <div className="bg-paper border-l-4 border-accent rounded-lg p-4 text-sm">
               <p className="text-ink-2">
                 <strong>⚠️ 注意:</strong> 他の人のエントリは消さないでください。

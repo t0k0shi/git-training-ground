@@ -7,13 +7,28 @@ import { Contributor, ContributorWithDerived } from './types';
  * "https://github.com/t0k0shi" → "t0k0shi"
  * "t0k0shi" → "t0k0shi"（そのまま返す）
  */
-export function extractHandle(github: string): string {
+/**
+ * github フィールドを、エントリを見分けるキーにそろえる
+ * URL 形式はハンドルの形にし、2回目以降の参加を示す末尾の +数字（例: "t0k0shi+2"）は残す
+ */
+export function entryKey(github: string): string {
   const urlPattern = /github\.com\/([^/?#]+)/;
   const match = github.match(urlPattern);
   if (match) {
     return match[1].replace(/\/$/, '');
   }
   return github.trim();
+}
+
+// 2回目以降の参加を示す末尾の +数字。GitHub のユーザー名には + を使えないため、他人のハンドルと重ならない
+const REPEAT_SUFFIX = /\+\d+$/;
+
+/**
+ * github フィールドから、アバターと表示に使う GitHub のハンドルを取り出す
+ * 末尾の +数字は取り除く（"t0k0shi+2" → "t0k0shi"）
+ */
+export function extractHandle(github: string): string {
+  return entryKey(github).replace(REPEAT_SUFFIX, '');
 }
 
 const MS_PER_DAY = 86400000;
@@ -50,6 +65,7 @@ export async function getContributors(): Promise<ContributorWithDerived[]> {
     const handle = extractHandle(c.github);
     return {
       ...c,
+      id: entryKey(c.github),
       handle,
       avatarUrl: `https://github.com/${handle}.png?size=80`,
       isNew: daysAgo(c.joinedAt) <= 7,

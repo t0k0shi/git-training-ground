@@ -76,7 +76,7 @@ export function ContributorsSection({ contributors }: ContributorsSectionProps) 
           style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))' }}
         >
           {visible.map((c) => (
-            <ContributorCard key={c.handle} contributor={c} />
+            <ContributorCard key={c.id} contributor={c} />
           ))}
         </div>
 

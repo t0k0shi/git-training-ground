@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { pathToFileURL } from 'url';
-import { extractHandle } from '../lib/contributors';
+import { entryKey, extractHandle } from '../lib/contributors';
 
 export interface ValidationError {
   check: string;
@@ -71,16 +71,19 @@ export function validateContributors(data: unknown): ValidationError[] {
       }
     }
 
-    // CV-07: github ハンドル重複チェック
+    // CV-07: github ハンドル重複チェック（2回目以降の参加は末尾に +2、+3 を付けて区別する）
     if (typeof entry.github === 'string' && entry.github !== '') {
-      const handle = extractHandle(entry.github);
-      if (handles.has(handle)) {
+      const key = entryKey(entry.github);
+      if (handles.has(key)) {
+        const handle = extractHandle(entry.github);
+        let n = 2;
+        while (handles.has(`${handle}+${n}`)) n++;
         errors.push({
           check: 'CV-07',
-          message: `❌ CV-07: github ハンドル "${handle}" が重複しています（${idx}）。1人1エントリのみ登録できます。`,
+          message: `❌ CV-07: github ハンドル "${key}" はすでに登録されています（${idx}）。\n   2回目以降の参加なら、後ろに +${n} を付けてください（例: "${handle}+${n}"）。アバターと表示は同じハンドルのままです。`,
         });
       }
-      handles.add(handle);
+      handles.add(key);
     }
 
     // CV-08: favoriteEmoji が grapheme cluster 1 文字チェック

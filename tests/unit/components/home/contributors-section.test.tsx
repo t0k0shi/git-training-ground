@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ContributorsSection } from '@/components/home/ContributorsSection';
@@ -11,6 +11,7 @@ const makeContributor = (overrides: Partial<ContributorWithDerived> = {}): Contr
   favoriteEmoji: '🎉',
   message: 'hi',
   joinedAt: '2026-04-24',
+  id: 'user',
   handle: 'user',
   avatarUrl: 'https://github.com/user.png?size=80',
   isNew: false,
@@ -18,13 +19,26 @@ const makeContributor = (overrides: Partial<ContributorWithDerived> = {}): Contr
 });
 
 const mixed: ContributorWithDerived[] = [
-  makeContributor({ handle: 'alice', github: 'alice', isNew: true }),
-  makeContributor({ handle: 'bob', github: 'bob', isNew: false }),
-  makeContributor({ handle: 'carol', github: 'carol', isNew: true }),
-  makeContributor({ handle: 'dave', github: 'dave', isNew: false }),
+  makeContributor({ id: 'alice', handle: 'alice', github: 'alice', isNew: true }),
+  makeContributor({ id: 'bob', handle: 'bob', github: 'bob', isNew: false }),
+  makeContributor({ id: 'carol', handle: 'carol', github: 'carol', isNew: true }),
+  makeContributor({ id: 'dave', handle: 'dave', github: 'dave', isNew: false }),
 ];
 
 describe('ContributorsSection', () => {
+  it('同じ人の 2 回目の参加（+2）も別のカードとして表示し、key がぶつからない', () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const twice = [
+      makeContributor({ id: 'alice', handle: 'alice', github: 'alice', message: '1回目' }),
+      makeContributor({ id: 'alice+2', handle: 'alice', github: 'alice+2', message: '2回目' }),
+    ];
+    render(<ContributorsSection contributors={twice} />);
+    expect(screen.getAllByText('@alice')).toHaveLength(2);
+    const keyWarnings = errorSpy.mock.calls.filter((args) => String(args[0]).includes('same key'));
+    errorSpy.mockRestore();
+    expect(keyWarnings).toEqual([]);
+  });
+
   it('見出しに contributors の人数が含まれる', () => {
     render(<ContributorsSection contributors={mixed} />);
     expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('4');

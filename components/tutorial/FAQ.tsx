@@ -47,6 +47,10 @@ const faqData: FAQItem[] = [
     question: 'favoriteEmoji に複数の絵文字を入れたい',
     answer: '1 つだけ入れてください（ZWJ シーケンスなど「見た目 1 文字」の絵文字は OK）。複数は CV-08 のバリデーションで弾かれます。',
   },
+  {
+    question: '2回目も参加できますか？',
+    answer: 'できます。同じハンドル名は1回しか登録できないので、github の値の後ろに +2（3回目は +3）を付けてください（例: "your-github-handle+2"）。付け忘れると CV-07 のエラーになります。サイトには同じアバターとハンドル名で表示されます。',
+  },
 ];
 
 export function FAQ() {
