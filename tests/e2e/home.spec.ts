@@ -74,6 +74,20 @@ test.describe('Home page (v4)', () => {
     await expect(page.locator('h1').first()).toBeVisible();
   });
 
+  test('サイトのアイコン（SVG・ICO・Apple 用）が head にあり、読み込める', async ({ page, request }) => {
+    const selectors = [
+      'link[rel="icon"][type="image/svg+xml"]',
+      'link[rel="icon"][href*="favicon.ico"]',
+      'link[rel="apple-touch-icon"]',
+    ];
+    for (const selector of selectors) {
+      const href = await page.locator(selector).first().getAttribute('href');
+      expect(href, `${selector} がない`).toBeTruthy();
+      const res = await request.get(new URL(href!, page.url()).toString());
+      expect(res.status(), `${href} が読み込めない`).toBe(200);
+    }
+  });
+
   test('console error と 404 が出ない', async ({ page }) => {
     // Next.js Link の prefetch で tutorial ページの画像も取得されるため、画像の 404 も検出対象にする
     const errors: string[] = [];
