@@ -9,6 +9,8 @@
 //     env: PR_AUTHOR, REPO_OWNER
 //          SUGGESTIONS_OUT（任意）: PR に付けるレビューコメント（[{ path, line, side, body }]）を書き出す先
 //          EXISTING_COMMENTS（任意）: PR の既存のレビューコメント（API の結果）のパス。同じ提案を二重に付けないために使う
+//   node scripts/check-contributor-handle.mjs threads-to-resolve <GraphQL の reviewThreads の結果>
+//     -> 検査が通ったあとに閉じる、Bot の提案のスレッドの id を 1 行 1 件で出力
 
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -17,6 +19,8 @@ import { readFileSync, writeFileSync } from 'node:fs';
 const TRUSTED_BOTS = ['dependabot[bot]'];
 const CONTRIBUTORS_PATH = 'data/contributors.json';
 const SUGGESTION_BOT = 'github-actions[bot]';
+// GraphQL では、同じ Bot のログイン名が [bot] なしで返る
+const SUGGESTION_BOT_LOGINS = [SUGGESTION_BOT, 'github-actions'];
 
 // lib/contributors.ts の entryKey・extractHandle と同じ規則（同じ結果になることをテストで確かめている）
 const URL_PATTERN = /github\.com\/([^/?#]+)/;
@@ -145,6 +149,18 @@ export function toReviewComments(suggestions, existingComments) {
     .filter((c) => !posted.has(`${c.line}\n${c.body}`));
 }
 
+// 検査が通ったあとに閉じるスレッド。ブランチ保護で会話の解決を必須にしているため、
+// Bot の提案のスレッドが残っていると、直したあとでもマージできない
+export function threadsToResolve(threads) {
+  return threads
+    .filter((t) => !t.isResolved && t.path === CONTRIBUTORS_PATH)
+    .filter((t) => {
+      const first = t.comments?.nodes?.[0];
+      return SUGGESTION_BOT_LOGINS.includes(first?.author?.login) && String(first?.body ?? '').startsWith('```suggestion');
+    })
+    .map((t) => t.id);
+}
+
 export function formatFailureMessage(author, mismatches) {
   const lines = [`❌ github のハンドル名が、PR を出した人（${author}）と違います`];
   for (const m of mismatches) {
@@ -214,6 +230,18 @@ function isDirectlyExecuted() {
   }
 }
 
+function runThreadsToResolve(graphqlPath) {
+  const result = JSON.parse(readFileSync(graphqlPath, 'utf8'));
+  const threads = result?.data?.repository?.pullRequest?.reviewThreads?.nodes ?? [];
+  for (const id of threadsToResolve(threads)) {
+    console.log(id);
+  }
+  return 0;
+}
+
 if (isDirectlyExecuted()) {
-  process.exit(runCheck(process.argv[2], process.argv[3]));
+  const command = process.argv[2];
+  process.exit(
+    command === 'threads-to-resolve' ? runThreadsToResolve(process.argv[3]) : runCheck(process.argv[2], process.argv[3])
+  );
 }

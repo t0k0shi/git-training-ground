@@ -10,6 +10,7 @@ import {
   checkContributorHandle,
   buildSuggestions,
   toReviewComments,
+  threadsToResolve,
   formatFailureMessage,
 } from '@/scripts/check-contributor-handle.mjs';
 import { extractHandle as libExtractHandle } from '@/lib/contributors';
@@ -179,6 +180,33 @@ describe('toReviewComments', () => {
   });
 });
 
+describe('threadsToResolve', () => {
+  const thread = (over: Record<string, unknown> = {}, author = 'github-actions', body = '```suggestion\n    "github": "alice",\n```') => ({
+    id: 'T1',
+    isResolved: false,
+    path: 'data/contributors.json',
+    comments: { nodes: [{ author: { login: author }, body }] },
+    ...over,
+  });
+
+  it('Bot が付けた、未解決の提案のスレッドを返す（GraphQL では Bot のログイン名に [bot] が付かない）', () => {
+    expect(threadsToResolve([thread()])).toEqual(['T1']);
+  });
+
+  it('解決済みのスレッドは返さない', () => {
+    expect(threadsToResolve([thread({ isResolved: true })])).toEqual([]);
+  });
+
+  it('ほかの人のスレッドや、提案ではない Bot のコメントは閉じない', () => {
+    expect(threadsToResolve([thread({}, 'someone')])).toEqual([]);
+    expect(threadsToResolve([thread({}, 'github-actions', 'ふつうのコメント')])).toEqual([]);
+  });
+
+  it('contributors.json 以外のファイルのスレッドは閉じない', () => {
+    expect(threadsToResolve([thread({ path: 'app/page.tsx' })])).toEqual([]);
+  });
+});
+
 describe('formatFailureMessage', () => {
   it('貼り付けられる正しい値と、提案のボタンの案内を出す', () => {
     const msg = formatFailureMessage('alice', [{ index: 1, github: 'your-github-handle', expected: 'alice' }]);
@@ -243,6 +271,27 @@ describe('CLI', () => {
     const headPath = write('head-broken.json', '[{');
     const r = run({ PR_AUTHOR: 'alice', REPO_OWNER: owner }, basePath, headPath);
     expect(r.status).toBe(0);
+  });
+
+  it('threads-to-resolve サブコマンドは、GraphQL の結果から閉じるスレッドの id を 1 行 1 件で出す', () => {
+    const graphql = {
+      data: {
+        repository: {
+          pullRequest: {
+            reviewThreads: {
+              nodes: [
+                { id: 'A', isResolved: false, path: 'data/contributors.json', comments: { nodes: [{ author: { login: 'github-actions' }, body: '```suggestion\nx\n```' }] } },
+                { id: 'B', isResolved: true, path: 'data/contributors.json', comments: { nodes: [{ author: { login: 'github-actions' }, body: '```suggestion\nx\n```' }] } },
+              ],
+            },
+          },
+        },
+      },
+    };
+    const p = write('threads.json', graphql);
+    const r = spawnSync('node', [script, 'threads-to-resolve', p], { encoding: 'utf-8', env: { PATH: process.env.PATH ?? '' } });
+    expect(r.status).toBe(0);
+    expect(r.stdout.trim()).toBe('A');
   });
 
   it('PR_AUTHOR / REPO_OWNER が未設定なら exit 1（安全側に倒す）', () => {
