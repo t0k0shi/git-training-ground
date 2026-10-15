@@ -368,7 +368,7 @@ export default function TutorialPage() {
 
             <div className="bg-bg-2 rounded-lg border border-line p-4 text-sm space-y-2 mb-3">
               <p><strong className="text-ink">Title:</strong> <code className="bg-white px-1.5 py-0.5 rounded">Add &lt;yourname&gt; to contributors</code>（コミットメッセージが自動入力されます）</p>
-              <p><strong className="text-ink">Description:</strong> 空欄でもOKです</p>
+              <p><strong className="text-ink">Description:</strong> テンプレートが入っています。「チェックリスト」の項目を確かめて、当てはまるものの <code className="bg-white px-1.5 py-0.5 rounded">[ ]</code> を <code className="bg-white px-1.5 py-0.5 rounded">[x]</code> に書き換えてください（PR を作ったあとでも、チェックボックスをクリックすれば付けられます）。「変更内容」は空欄でもOKです</p>
             </div>
             <p>
               内容を確認して「<strong>Create pull request</strong>」をクリックしてください。
