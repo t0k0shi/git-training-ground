@@ -8,65 +8,7 @@ vi.mock('fs/promises', () => ({
 }));
 
 import fs from 'fs/promises';
-import { extractHandle, entryKey, daysAgo, getContributors } from '@/lib/contributors';
-
-describe('extractHandle', () => {
-  describe('ハンドル直指定', () => {
-    it('ハンドルをそのまま返す', () => {
-      expect(extractHandle('t0k0shi')).toBe('t0k0shi');
-    });
-
-    it('数字・ハイフンを含むハンドルをそのまま返す', () => {
-      expect(extractHandle('john-doe123')).toBe('john-doe123');
-    });
-  });
-
-  describe('URL 形式', () => {
-    it('https://github.com/handle から handle を抽出する', () => {
-      expect(extractHandle('https://github.com/t0k0shi')).toBe('t0k0shi');
-    });
-
-    it('末尾スラッシュ付き URL から handle を抽出する', () => {
-      expect(extractHandle('https://github.com/t0k0shi/')).toBe('t0k0shi');
-    });
-
-    it('スキームなし URL から handle を抽出する', () => {
-      expect(extractHandle('github.com/t0k0shi')).toBe('t0k0shi');
-    });
-
-    it('クエリパラメータ付き URL から handle を抽出する', () => {
-      expect(extractHandle('https://github.com/t0k0shi?tab=repositories')).toBe('t0k0shi');
-    });
-  });
-
-  describe('2回目以降の参加（末尾の +数字）', () => {
-    it('末尾の +2 を取り除いてハンドルを返す', () => {
-      expect(extractHandle('t0k0shi+2')).toBe('t0k0shi');
-    });
-
-    it('URL 形式でも末尾の +3 を取り除く', () => {
-      expect(extractHandle('https://github.com/t0k0shi+3')).toBe('t0k0shi');
-    });
-
-    it('前後の空白があっても +2 を取り除く', () => {
-      expect(extractHandle('  t0k0shi+2  ')).toBe('t0k0shi');
-    });
-
-    it('数字が続かない + は取り除かない', () => {
-      expect(extractHandle('t0k0shi+')).toBe('t0k0shi+');
-    });
-  });
-
-  describe('フォールバック', () => {
-    it('空文字列はそのまま返す（トリム後）', () => {
-      expect(extractHandle('  ')).toBe('');
-    });
-
-    it('github.com を含まない文字列はトリムして返す', () => {
-      expect(extractHandle('  someuser  ')).toBe('someuser');
-    });
-  });
-});
+import { daysAgo, getContributors } from '@/lib/contributors';
 
 describe('daysAgo', () => {
   it('今日（0日前）は 0 を返す', () => {
@@ -114,17 +56,6 @@ describe('daysAgo', () => {
       const now = new Date('2026-04-24T12:00:00.000Z');
       expect(daysAgo('2026-04-26', now)).toBe(-2);
     });
-  });
-});
-
-describe('entryKey', () => {
-  it('末尾の +数字を残して返す（エントリごとに一意にするため）', () => {
-    expect(entryKey('t0k0shi+2')).toBe('t0k0shi+2');
-  });
-
-  it('URL 形式はハンドルの形にそろえる', () => {
-    expect(entryKey('https://github.com/t0k0shi/')).toBe('t0k0shi');
-    expect(entryKey('https://github.com/t0k0shi+2')).toBe('t0k0shi+2');
   });
 });
 

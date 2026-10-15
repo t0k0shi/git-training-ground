@@ -2,30 +2,6 @@ import fs from 'fs/promises';
 import path from 'path';
 import { AvatarEntry, Contributor, ContributorWithDerived } from './types';
 
-/**
- * github フィールドを、エントリを見分けるキーにそろえる
- * URL 形式はハンドルの形にし、2回目以降の参加を示す末尾の +数字（例: "t0k0shi+2"）は残す
- */
-export function entryKey(github: string): string {
-  const urlPattern = /github\.com\/([^/?#]+)/;
-  const match = github.match(urlPattern);
-  if (match) {
-    return match[1].replace(/\/$/, '');
-  }
-  return github.trim();
-}
-
-// 2回目以降の参加を示す末尾の +数字。GitHub のユーザー名には + を使えないため、他人のハンドルと重ならない
-const REPEAT_SUFFIX = /\+\d+$/;
-
-/**
- * github フィールドから GitHub のハンドルを取り出す（validate-contributors の重複チェックで使う。表示には使わない）
- * 末尾の +数字は取り除く（"t0k0shi+2" → "t0k0shi"）
- */
-export function extractHandle(github: string): string {
-  return entryKey(github).replace(REPEAT_SUFFIX, '');
-}
-
 const MS_PER_DAY = 86400000;
 
 /**

@@ -14,7 +14,7 @@
 ## 設定する内容
 
 - Pull Request 必須（承認 1 件、コードオーナーのレビュー必須）
-- 必須ステータスチェック: `guard-files`、`check-handle`、`validate`、`test`、`e2e`、`merge-guard`
+- 必須ステータスチェック: `guard-files`、`validate`、`test`、`e2e`、`merge-guard`
 - 強制 push の禁止、ブランチ削除の禁止
 - 管理者（オーナー）は例外とする。オーナーは自分の PR を自分で承認できないため（「オーナー自身の PR」参照）
 
@@ -38,7 +38,7 @@
      - Required approvals: `1`
      - **Require review from Code Owners**
    - **Require status checks to pass before merging**
-     - 検索して次の 6 つを追加: `guard-files`、`check-handle`、`validate`、`test`、`e2e`、`merge-guard`
+     - 検索して次の 5 つを追加: `guard-files`、`validate`、`test`、`e2e`、`merge-guard`
      - 必要に応じて **Require branches to be up to date before merging**
    - **Block force pushes**
    - **Restrict deletions**（classic では「Allow deletions」を無効のままにする）
@@ -58,7 +58,7 @@ gh api -X PUT repos/t0k0shi/git-training-ground/branches/main/protection \
 {
   "required_status_checks": {
     "strict": false,
-    "contexts": ["guard-files", "check-handle", "validate", "test", "e2e", "merge-guard"]
+    "contexts": ["guard-files", "validate", "test", "e2e", "merge-guard"]
   },
   "enforce_admins": false,
   "required_pull_request_reviews": {

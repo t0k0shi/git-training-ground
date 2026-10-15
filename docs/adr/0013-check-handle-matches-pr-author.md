@@ -1,6 +1,6 @@
 # ADR-0013: 追加したエントリの github が、PR を出した人と同じかを確かめる
 
-- **Status**: Accepted
+- **Status**: Superseded by [ADR-0016](./0016-avatar-from-pr-author.md)（2026-10-15。`github` 欄をなくし、アバターは PR の作成者から取るため、この検査は不要になった。`check-handle.yml` とスクリプトは削除済み）
 - **Date**: 2026-10-13
 - **Related**: [ADR-0007](./0007-use-pull-request-target-for-ai-review.md)（`pull_request_target` の安全策）、[ADR-0011](./0011-guard-changed-files-on-pull-request-target.md)（変更ファイルの検査）
 
