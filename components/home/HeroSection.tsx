@@ -8,6 +8,7 @@ import { FloatingBubbles } from './FloatingBubbles';
 import { BubbleTooltip } from './BubbleTooltip';
 import { LiveCounter } from './LiveCounter';
 import { ShareIcon } from '@/components/ui/ShareIcon';
+import { Avatar } from './Avatar';
 
 interface HeroSectionProps {
   contributors: ContributorWithDerived[];
@@ -113,18 +114,7 @@ export function HeroSection({ contributors }: HeroSectionProps) {
             <p>今週 <span className="font-bold text-accent">+{newThisWeek}</span> 人</p>
             <div className="flex items-center gap-1 mt-2">
               {contributors.slice(-6).map((c) => (
-                <img
-                  key={c.id}
-                  src={c.avatarUrl}
-                  alt={c.handle}
-                  loading="lazy"
-                  width={24}
-                  height={24}
-                  className="rounded-full border border-line"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                  }}
-                />
+                <Avatar key={c.id} src={c.avatarUrl} alt={c.name} size={24} className="rounded-full border border-line" />
               ))}
               {contributors.length > 6 && (
                 <span className="text-xs text-muted ml-1">…</span>

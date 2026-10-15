@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { ContributorWithDerived } from '@/lib/types';
+import { Avatar } from './Avatar';
 
 interface BubblePosition {
   x: number;
@@ -17,6 +18,14 @@ const ZONES = [
   { xMin: 0.22, xMax: 0.78, yMin: 0.02, yMax: 0.12 }, // 上帯
   { xMin: 0.22, xMax: 0.78, yMin: 0.88, yMax: 0.98 }, // 下帯
 ] as const;
+
+const BUBBLE_STYLE: React.CSSProperties = {
+  width: 48,
+  height: 48,
+  borderRadius: '50%',
+  display: 'block',
+  boxSizing: 'border-box',
+};
 
 function randomInRange(min: number, max: number): number {
   return min + Math.random() * (max - min);
@@ -108,20 +117,8 @@ export function FloatingBubbles({
             onMouseEnter={(e) => onHover(contributor, e.nativeEvent)}
             onMouseLeave={(e) => onHover(null, e.nativeEvent)}
           >
-            <img
-              src={contributor.avatarUrl}
-              alt={contributor.handle}
-              loading="lazy"
-              width={48}
-              height={48}
-              style={{
-                width: 48,
-                height: 48,
-                borderRadius: '50%',
-                border: `2px solid ${contributor.favoriteColor}`,
-                cursor: 'pointer',
-                display: 'block',
-              }}
+            <div
+              style={{ transition: 'transform 0.15s ease, filter 0.15s ease', cursor: 'pointer' }}
               onMouseEnter={(e) => {
                 const el = e.currentTarget;
                 el.style.transform = 'scale(1.08)';
@@ -132,10 +129,33 @@ export function FloatingBubbles({
                 el.style.transform = '';
                 el.style.filter = '';
               }}
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-              }}
-            />
+            >
+              <Avatar
+                src={contributor.avatarUrl}
+                alt={contributor.name}
+                size={48}
+                style={{ ...BUBBLE_STYLE, border: `2px solid ${contributor.favoriteColor}` }}
+                fallback={
+                  // アバターがない人は、好きな色の縁の丸に絵文字を入れる（設計 DQ-1）
+                  <span
+                    role="img"
+                    aria-label={contributor.name}
+                    data-testid="bubble-emoji"
+                    style={{
+                      ...BUBBLE_STYLE,
+                      border: `2px solid ${contributor.favoriteColor}`,
+                      background: 'var(--paper)',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: 24,
+                      display: 'flex',
+                    }}
+                  >
+                    {contributor.favoriteEmoji}
+                  </span>
+                }
+              />
+            </div>
           </div>
         );
       })}

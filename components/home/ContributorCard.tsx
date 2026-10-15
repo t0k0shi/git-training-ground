@@ -1,6 +1,7 @@
 'use client';
 
 import type { ContributorWithDerived } from '@/lib/types';
+import { Avatar } from './Avatar';
 
 interface ContributorCardProps {
   contributor: ContributorWithDerived;
@@ -12,7 +13,7 @@ function formatJoinedAt(iso: string): string {
 }
 
 export function ContributorCard({ contributor }: ContributorCardProps) {
-  const { favoriteEmoji, favoriteColor, handle, message, avatarUrl, joinedAt, isNew } = contributor;
+  const { name, favoriteEmoji, favoriteColor, message, avatarUrl, joinedAt, isNew } = contributor;
 
   // グローの色だけをインラインで渡し、hover 時の濃さ・広がりは globals.css の
   // .contributor-card:hover が CSS 変数を切り替えて表現する（JS 未ロードでも hover が効く）
@@ -40,21 +41,11 @@ export function ContributorCard({ contributor }: ContributorCardProps) {
         <span className="text-3xl leading-none" aria-hidden="true">
           {favoriteEmoji}
         </span>
-        <img
-          src={avatarUrl}
-          alt={handle}
-          loading="lazy"
-          width={40}
-          height={40}
-          className="rounded-full border border-line"
-          onError={(e) => {
-            e.currentTarget.style.display = 'none';
-          }}
-        />
+        <Avatar src={avatarUrl} alt={name} size={40} className="rounded-full border border-line" />
       </div>
 
-      <p className="font-mono text-sm font-semibold text-ink">
-        @{handle}
+      <p className="text-sm font-semibold text-ink truncate">
+        {name}
       </p>
 
       <p className="text-xs text-ink-2 leading-snug line-clamp-2">

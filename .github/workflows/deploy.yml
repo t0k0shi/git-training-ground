@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read # build-avatars.mjs が、エントリを追加した PR の作成者を引く
   pages: write
   id-token: write
 
@@ -24,6 +25,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # build-avatars.mjs が contributors.json の全履歴をたどる
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -36,6 +39,13 @@ jobs:
 
       - name: Validate contributors.json
         run: npx tsx scripts/validate-contributors.ts
+
+      # アバターは、エントリを追加した PR の作成者から作る（ADR-0016）。失敗してもビルドは止めない（全員アバターなし）
+      - name: Find who added each entry
+        run: node scripts/build-avatars.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
 
       - name: Build
         run: npm run build
