@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import fs from 'node:fs';
 import contributors from '../../data/contributors.json';
 
 // Issue #22 対応: v4 トップページの E2E テスト
@@ -138,10 +139,12 @@ test.describe('Home page (v4)', () => {
     expect(allIssues, allIssues.join('\n')).toEqual([]);
   });
   // ハンドル名が本名に近い人もいるため、サイトに出すのは name だけにする（カード・泡・ツールチップ・画像の alt）
-  test('github のハンドル名をページに出さず、name を出す', async ({ page }) => {
-    const handles = contributors
-      .filter((c) => c.name !== c.github)
-      .map((c) => c.github.replace(/\+\d+$/, ''));
+  // GitHub のユーザー名は、公開のビルドで作る生成ファイルにしかない。あればその名前がページに出ていないかも確かめる
+  test('GitHub のユーザー名をページに出さず、name を出す', async ({ page }) => {
+    const generated = 'data/avatars.generated.json';
+    const logins: string[] = fs.existsSync(generated)
+      ? JSON.parse(fs.readFileSync(generated, 'utf8')).entries.map((e: { login: string | null }) => e.login).filter(Boolean)
+      : [];
     await page.waitForLoadState('networkidle');
     const cards = page.getByTestId('contributor-card');
     await expect(cards.first()).toBeVisible();
@@ -150,9 +153,9 @@ test.describe('Home page (v4)', () => {
     }
     const text = await page.locator('body').innerText();
     const alts = await page.locator('img[alt]').evaluateAll((imgs) => imgs.map((img) => img.getAttribute('alt')));
-    for (const handle of handles) {
-      expect(text, `本文に ${handle} が出ている`).not.toContain(`@${handle}`);
-      expect(alts, `alt に ${handle} が出ている`).not.toContain(handle);
+    for (const login of logins) {
+      expect(text, `本文に ${login} が出ている`).not.toContain(`@${login}`);
+      expect(alts, `alt に ${login} が出ている`).not.toContain(login);
     }
   });
 });

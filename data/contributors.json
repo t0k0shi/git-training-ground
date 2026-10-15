@@ -1,7 +1,6 @@
 [
   {
     "name": "ketts",
-    "github": "t0k0shi",
     "favoriteColor": "#E63946",
     "favoriteEmoji": "🚀",
     "message": "はじめてのOSS貢献！",
@@ -10,7 +9,6 @@
   ,
   {
     "name": "washoiTaro",
-    "github": "Swsafsaij-github-8uhbgv",
     "favoriteColor": "#FF5E5B",
     "favoriteEmoji": "🥹",
     "message": "為せば成る、なさねばならぬ、なにごとも！",
@@ -19,7 +17,6 @@
   ,
   {
     "name": "washoiTaro",
-    "github": "takashi-tsujimoto-uz",
     "favoriteColor": "#FF5E5B",
     "favoriteEmoji": "🦊",
     "message": "さっちゃんはね、サチコっていうんだ、ほんとはね。だけど小っちゃいから自分のこと、さっちゃんってよーぶんだよ",
@@ -28,7 +25,6 @@
   ,
   {
     "name": "washoiTaro",
-    "github": "takashi-tsujimoto-uz+2",
     "favoriteColor": "#FF5E5B",
     "favoriteEmoji": "🦊",
     "message": "時間外",
@@ -37,7 +33,6 @@
   ,
   {
     "name": "mori",
-    "github": "takayuki-mori-ae",
     "favoriteColor": "#F28500",
     "favoriteEmoji": "🫠",
     "message": "日本の夏はとってもあつい",
@@ -46,7 +41,6 @@
   ,
   {
     "name": "otsuka",
-    "github": "SeijiOtsuka-vd",
     "favoriteColor": "#FF0000",
     "favoriteEmoji": "🐱",
     "message": "GitHubに慣れていきたいです",
@@ -54,8 +48,7 @@
   }
   ,
   {
-    "name": "fujii",
-    "github": "MissuN.uy",
+    "name": "MissuN.uy",
     "favoriteColor": "#113285",
     "favoriteEmoji": "🦊",
     "message": "サッカー大好き人間",

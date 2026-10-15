@@ -1,37 +1,18 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { pathToFileURL } from 'url';
-import { entryKey, extractHandle } from '../lib/contributors';
 
 export interface ValidationError {
   check: string;
   message: string;
 }
 
-const REQUIRED_FIELDS = ['name', 'github', 'favoriteColor', 'favoriteEmoji', 'message', 'joinedAt'] as const;
+// github 欄は v6 でなくした（ADR-0016）。入っていても検査せず、使わない
+const REQUIRED_FIELDS = ['name', 'favoriteColor', 'favoriteEmoji', 'message', 'joinedAt'] as const;
 const COLOR_PATTERN = /^#[0-9A-Fa-f]{6}$/;
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
-export interface ValidateOptions {
-  /** PR を出した人の GitHub のログイン名。わかるときは、CV-07 の直し方をその人のハンドル名で案内する */
-  author?: string;
-}
-
-// data の中で、author が使うべき github の値（未登録なら author、登録済みなら +2、+3）
-function nextValueFor(author: string, data: unknown[]): string {
-  const keys = new Set(
-    data
-      .map((e) => (e as Record<string, unknown>)?.github)
-      .filter((g): g is string => typeof g === 'string')
-      .map((g) => entryKey(g).toLowerCase())
-  );
-  if (!keys.has(author.toLowerCase())) return author;
-  let n = 2;
-  while (keys.has(`${author}+${n}`.toLowerCase())) n++;
-  return `${author}+${n}`;
-}
-
-export function validateContributors(data: unknown, options: ValidateOptions = {}): ValidationError[] {
+export function validateContributors(data: unknown): ValidationError[] {
   const errors: ValidationError[] = [];
 
   if (!Array.isArray(data)) {
@@ -41,8 +22,6 @@ export function validateContributors(data: unknown, options: ValidateOptions = {
     });
     return errors;
   }
-
-  const handles = new Set<string>();
 
   for (let i = 0; i < data.length; i++) {
     const entry = data[i] as Record<string, unknown>;
@@ -75,7 +54,7 @@ export function validateContributors(data: unknown, options: ValidateOptions = {
       if (!COLOR_PATTERN.test(entry.favoriteColor)) {
         errors.push({
           check: 'CV-05',
-          message: `❌ CV-05: ${idx} (github: "${entry.github}") の favoriteColor が不正です: "${entry.favoriteColor}"\n   期待: "#RRGGBB" 形式（例: "#E63946"）`,
+          message: `❌ CV-05: ${idx} (name: "${entry.name}") の favoriteColor が不正です: "${entry.favoriteColor}"\n   期待: "#RRGGBB" 形式（例: "#E63946"）`,
         });
       }
     }
@@ -90,29 +69,7 @@ export function validateContributors(data: unknown, options: ValidateOptions = {
       }
     }
 
-    // CV-07: github ハンドル重複チェック（2回目以降の参加は末尾に +2、+3 を付けて区別する）
-    if (typeof entry.github === 'string' && entry.github !== '') {
-      const key = entryKey(entry.github);
-      if (handles.has(key)) {
-        const handle = extractHandle(entry.github);
-        const { author } = options;
-        if (author && handle.toLowerCase() !== author.toLowerCase()) {
-          // 他人のハンドル名を使っている。+2 ではなく、自分のハンドル名を案内する（check-handle と案内をそろえる）
-          errors.push({
-            check: 'CV-07',
-            message: `❌ CV-07: github ハンドル "${key}" はすでに登録されています（${idx}）。\n   github には、PR を出す自分のハンドル名を入れてください（例: "${nextValueFor(author, data)}"）。`,
-          });
-        } else {
-          let n = 2;
-          while (handles.has(`${handle}+${n}`)) n++;
-          errors.push({
-            check: 'CV-07',
-            message: `❌ CV-07: github ハンドル "${key}" はすでに登録されています（${idx}）。\n   2回目以降の参加なら、後ろに +${n} を付けてください（例: "${handle}+${n}"）。アバターと表示は同じハンドルのままです。`,
-          });
-        }
-      }
-      handles.add(key);
-    }
+    // CV-07（github ハンドルの重複）は v6 でなくした。番号は詰めない（過去の案内と食い違わないように）
 
     // CV-08: favoriteEmoji が grapheme cluster 1 文字チェック
     if (typeof entry.favoriteEmoji === 'string' && entry.favoriteEmoji !== '') {
@@ -146,8 +103,7 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  // validate-pr.yml から PR を出した人のログイン名を受け取る（ローカル実行では未設定）
-  const errors = validateContributors(raw, { author: process.env.PR_AUTHOR || undefined });
+  const errors = validateContributors(raw);
 
   if (errors.length > 0) {
     for (const err of errors) {

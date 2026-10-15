@@ -3,7 +3,6 @@ import { validateContributors } from '@/scripts/validate-contributors';
 
 const validEntry = {
   name: 'ketts',
-  github: 't0k0shi',
   favoriteColor: '#E63946',
   favoriteEmoji: '🚀',
   message: 'はじめてのOSS貢献！',
@@ -35,7 +34,7 @@ describe('validateContributors', () => {
   });
 
   describe('CV-03: 全フィールド存在', () => {
-    const requiredFields = ['name', 'github', 'favoriteColor', 'favoriteEmoji', 'message', 'joinedAt'];
+    const requiredFields = ['name', 'favoriteColor', 'favoriteEmoji', 'message', 'joinedAt'];
 
     for (const field of requiredFields) {
       it(`${field} が欠けているとエラー`, () => {
@@ -123,65 +122,30 @@ describe('validateContributors', () => {
     });
   });
 
-  describe('CV-07: github ハンドルの重複禁止', () => {
-    it('同一ハンドルが 2 件あるとエラー', () => {
-      const errors = validateContributors([validEntry, { ...validEntry, name: 'other' }]);
-      expect(errors.some((e) => e.check === 'CV-07')).toBe(true);
+  // v6 で github 欄をなくした（ADR-0016）。CV-07（重複）は欠番
+  describe('github 欄（v6 では使わない）', () => {
+    it('github 欄がなくてもOK', () => {
+      expect(validateContributors([validEntry])).toEqual([]);
     });
 
-    it('URL 形式と handle 形式の同一ユーザーもエラー', () => {
-      const entry2 = { ...validEntry, name: 'other', github: 'https://github.com/t0k0shi' };
-      const errors = validateContributors([validEntry, entry2]);
-      expect(errors.some((e) => e.check === 'CV-07')).toBe(true);
+    it('古い手順を見て github 欄を入れていてもOK（警告も出さない）', () => {
+      expect(validateContributors([{ ...validEntry, github: 't0k0shi' }])).toEqual([]);
     });
 
-    it('2回目の参加として +2 を付けたハンドルはOK', () => {
-      const errors = validateContributors([validEntry, { ...validEntry, github: 't0k0shi+2' }]);
-      expect(errors.some((e) => e.check === 'CV-07')).toBe(false);
+    it('github の値が重複していてもOK（CV-07 はなくした）', () => {
+      const errors = validateContributors([
+        { ...validEntry, github: 't0k0shi' },
+        { ...validEntry, github: 't0k0shi' },
+      ]);
+      expect(errors).toEqual([]);
     });
 
-    it('+2 を付けたハンドルが 2 件あるとエラー', () => {
-      const entry2 = { ...validEntry, github: 't0k0shi+2' };
-      const errors = validateContributors([validEntry, entry2, entry2]);
-      expect(errors.some((e) => e.check === 'CV-07')).toBe(true);
+    it('同じ人が 2 回参加して、中身がまったく同じエントリが 2 件あってもOK', () => {
+      expect(validateContributors([validEntry, validEntry])).toEqual([]);
     });
 
-    it('重複したときのメッセージで、+2 を付ける直し方を案内する', () => {
-      const errors = validateContributors([validEntry, validEntry]);
-      const message = errors.find((e) => e.check === 'CV-07')?.message ?? '';
-      expect(message).toContain('"t0k0shi+2"');
-    });
-
-    it('+2 がすでにあるときは、+3 を案内する', () => {
-      const errors = validateContributors([validEntry, { ...validEntry, github: 't0k0shi+2' }, validEntry]);
-      const message = errors.find((e) => e.check === 'CV-07')?.message ?? '';
-      expect(message).toContain('"t0k0shi+3"');
-    });
-
-    it('PR を出した人がわかるとき、他人のハンドル名の重複には、その人のハンドル名を案内する', () => {
-      const errors = validateContributors([validEntry, validEntry], { author: 'alice' });
-      const message = errors.find((e) => e.check === 'CV-07')?.message ?? '';
-      expect(message).toContain('"alice"');
-      expect(message).not.toContain('t0k0shi+2');
-    });
-
-    it('PR を出した人がすでに登録済みなら、その人のハンドル名に +2 を付けた値を案内する', () => {
-      const alice = { ...validEntry, github: 'alice' };
-      const errors = validateContributors([validEntry, alice, validEntry], { author: 'alice' });
-      const message = errors.find((e) => e.check === 'CV-07')?.message ?? '';
-      expect(message).toContain('"alice+2"');
-    });
-
-    it('重複したハンドル名が PR を出した人のものなら、今までどおり +2 を案内する（大文字小文字は区別しない）', () => {
-      const errors = validateContributors([validEntry, validEntry], { author: 'T0k0shi' });
-      const message = errors.find((e) => e.check === 'CV-07')?.message ?? '';
-      expect(message).toContain('"t0k0shi+2"');
-    });
-
-    it('異なるハンドルはOK', () => {
-      const entry2 = { ...validEntry, github: 'otheruser' };
-      const errors = validateContributors([validEntry, entry2]);
-      expect(errors.some((e) => e.check === 'CV-07')).toBe(false);
+    it('github 欄が空でもエラーにしない（必須ではない）', () => {
+      expect(validateContributors([{ ...validEntry, github: '' }])).toEqual([]);
     });
   });
 
@@ -209,6 +173,8 @@ describe('validateContributors', () => {
       expect(cv05).toBeDefined();
       expect(cv05!.message).toContain('エントリ[0]');
       expect(cv05!.message).toContain('red');
+      // どのエントリかは name で示す（github 欄はもうない）
+      expect(cv05!.message).toContain('ketts');
     });
   });
 });
