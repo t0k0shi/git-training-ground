@@ -3,13 +3,12 @@ import { BP_MOBILE_PX } from '@/lib/breakpoints';
 
 const DIFF_LINES = [
   { n: 30, text: '  {' },
-  { n: 31, text: '    "name": "あなたの名前",' },
-  { n: 32, text: '    "github": "your-github-handle",' },
-  { n: 33, text: '    "favoriteColor": "#FF5E5B",' },
-  { n: 34, text: '    "favoriteEmoji": "🦊",' },
-  { n: 35, text: '    "message": "よろしくです！",' },
-  { n: 36, text: '    "joinedAt": "2026-04-24"' },
-  { n: 37, text: '  },' },
+  { n: 31, text: '    "name": "あなたのニックネーム",' },
+  { n: 32, text: '    "favoriteColor": "#FF5E5B",' },
+  { n: 33, text: '    "favoriteEmoji": "🦊",' },
+  { n: 34, text: '    "message": "よろしくです！",' },
+  { n: 35, text: '    "joinedAt": "2026-04-24"' },
+  { n: 36, text: '  },' },
 ];
 
 export function HelpWantedSection() {

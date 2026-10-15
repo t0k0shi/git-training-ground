@@ -24,15 +24,13 @@
 [
   {
     "name": "ketts",
-    "github": "t0k0shi",
     "favoriteColor": "#E63946",
     "favoriteEmoji": "🚀",
     "message": "はじめてのOSS貢献！",
     "joinedAt": "2026-04-24"
   },
   {
-    "name": "あなたの名前",
-    "github": "your-github-handle",
+    "name": "あなたのニックネーム",
     "favoriteColor": "#FF5E5B",
     "favoriteEmoji": "🦊",
     "message": "よろしくです！",
@@ -45,14 +43,17 @@
 
 | フィールド | 説明 | 例 |
 |---|---|---|
-| `name` | 名前（ニックネーム可）。サイトには表示されず、カードには `github` のハンドル名が表示されます | `"ketts"` |
-| `github` | PR を出す自分の GitHub ハンドル（違っていると CI で止まり、Bot が正しい値を提案する）。2回目以降の参加は、後ろに `+2`、`+3` を付ける（アバターと表示は同じハンドルのまま） | `"t0k0shi"`、`"t0k0shi+2"` |
+| `name` | カードに表示される名前（ニックネーム）。本名でなくてかまいません | `"ketts"` |
 | `favoriteColor` | カードのボーダー色（`#RRGGBB`）| `"#E63946"` |
 | `favoriteEmoji` | 絵文字 1 文字 | `"🚀"` |
 | `message` | 1 行自己紹介 | `"よろしくです！"` |
 | `joinedAt` | 参加日（`YYYY-MM-DD`）| `"2026-04-24"` |
 
-詳しくは [チュートリアル](https://t0k0shi.github.io/git-training-ground/tutorial) を参照。
+アバターは、PR を出したアカウントのもの（GitHub のプロフィール画像）が自動で表示されます。入力は要りません。2 回目以降の参加も、同じ手順でエントリをもう 1 件追加するだけです。
+
+サイトに出る名前はニックネームだけですが、GitHub 上の PR には、PR を出したアカウントが残ります。
+
+詳しくは [チュートリアル](https://t0k0shi.github.io/git-training-ground/tutorial/) を参照。
 
 サイトは [GitHub Pages](https://t0k0shi.github.io/git-training-ground/) で公開しています。
 

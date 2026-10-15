@@ -68,8 +68,7 @@ export const MASK_SELECTORS: readonly string[] = [
 /** チュートリアル本文の「① 以下のコードをそのままコピー」の例（page.tsx から読めないときの予備） */
 export const FALLBACK_TUTORIAL_SNIPPET = `  ,
   {
-    "name": "あなたの名前",
-    "github": "your-github-handle",
+    "name": "あなたのニックネーム",
     "favoriteColor": "#FF5E5B",
     "favoriteEmoji": "🦊",
     "message": "よろしくです！",
