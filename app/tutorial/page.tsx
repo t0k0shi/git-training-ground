@@ -160,8 +160,7 @@ export default function TutorialPage() {
             <div className="bg-ink rounded-lg p-4 text-sm font-mono text-white overflow-x-auto mb-4">
               <pre>{`  ,
   {
-    "name": "あなたの名前",
-    "github": "your-github-handle",
+    "name": "あなたのニックネーム",
     "favoriteColor": "#FF5E5B",
     "favoriteEmoji": "🦊",
     "message": "よろしくです！",
@@ -188,7 +187,6 @@ export default function TutorialPage() {
               <pre>{`[
   {
     "name": "ketts",
-    "github": "t0k0shi",
     "favoriteColor": "#E63946",
     "favoriteEmoji": "🚀",
     "message": "はじめてのOSS貢献！",
@@ -196,7 +194,6 @@ export default function TutorialPage() {
   },
   {
     "name": "oginochihiro",
-    "github": "https://github.com/oginochihiro",
     "favoriteColor": "#FF5E5B",
     "favoriteEmoji": "🦊",
     "message": "よろしくです！",
@@ -216,8 +213,7 @@ export default function TutorialPage() {
             <div className="bg-bg-2 border border-line rounded-lg p-4 text-sm mb-4">
               <p className="text-ink-2 font-medium mb-2">各フィールドの意味</p>
               <div className="space-y-1 text-ink-2">
-                <p><code className="bg-paper border border-line px-1.5 rounded">name</code> — 名前（ニックネーム可）。サイトには表示されません。カードには <code className="bg-paper border border-line px-1 rounded">github</code> のハンドル名が表示されます</p>
-                <p><code className="bg-paper border border-line px-1.5 rounded">github</code> — <strong>PR を出す自分の</strong> GitHub のユーザー名（URL でも可）。アバターとトップの泡に使います。違っていると CI で止まり、Bot が正しい値を提案します</p>
+                <p><code className="bg-paper border border-line px-1.5 rounded">name</code> — カードに表示される名前（ニックネーム）。本名でなくてかまいません</p>
                 <p><code className="bg-paper border border-line px-1.5 rounded">favoriteColor</code> — カードボーダー色（<code className="bg-paper border border-line px-1 rounded">#RRGGBB</code> 形式）</p>
                 <p><code className="bg-paper border border-line px-1.5 rounded">favoriteEmoji</code> — 1 文字の絵文字</p>
                 <p><code className="bg-paper border border-line px-1.5 rounded">message</code> — 1 行自己紹介</p>
@@ -235,11 +231,13 @@ export default function TutorialPage() {
             </div>
 
             <div className="bg-bg-2 border border-line rounded-lg p-4 text-sm mb-4">
-              <p className="text-ink-2 font-medium mb-2">2回目以降の参加の場合</p>
+              <p className="text-ink-2 font-medium mb-2">アバターと 2 回目以降の参加</p>
               <p className="text-ink-2">
-                同じハンドル名は1回しか登録できません。2回目は <code className="bg-paper border border-line px-1 rounded">github</code> の値の後ろに <code className="bg-paper border border-line px-1 rounded">+2</code>（3回目は <code className="bg-paper border border-line px-1 rounded">+3</code>）を付けてください。
-                例: <code className="bg-paper border border-line px-1 rounded">&quot;github&quot;: &quot;your-github-handle+2&quot;</code>。
-                サイトには、これまでと同じアバターとハンドル名で表示されます。
+                カードのアバターは、PR を出したアカウントのものが自動で表示されます。入力は要りません。
+                2 回目以降も、同じ手順でエントリをもう 1 件追加してください。カードが 1 枚増えます（名前は同じでも、変えてもかまいません）。
+              </p>
+              <p className="text-ink-2 mt-2">
+                ※ サイトに出る名前はニックネームだけですが、GitHub 上の PR には、PR を出したアカウントが残ります。
               </p>
             </div>
 
@@ -390,8 +388,8 @@ export default function TutorialPage() {
             </figure>
 
             <ul className="list-disc list-inside space-y-1 text-sm mb-3">
-              <li>contributors.json の形式チェック（必須フィールド・favoriteColor 形式・重複ハンドルなど）</li>
-              <li>既存エントリが削除されていないかチェック</li>
+              <li>contributors.json の形式チェック（必須フィールド・favoriteColor 形式・絵文字が 1 つかなど）</li>
+              <li>他の人のエントリが削除・変更されていないかチェック</li>
               <li>1 PR で 1 エントリのみ追加しているかチェック</li>
             </ul>
             <p className="text-sm text-ink-2">
@@ -489,19 +487,16 @@ export default function TutorialPage() {
               <pre className="bg-ink text-bg p-3 rounded text-xs leading-relaxed overflow-x-auto">{`[
   {
     "name": "ketts",
-    "github": "t0k0shi",
     ...
   },
 <<<<<<< HEAD
   {
     "name": "自分",
-    "github": "me",
     ...
   }
 =======
   {
     "name": "他の人",
-    "github": "you",
     ...
   }
 >>>>>>> upstream/main
@@ -512,17 +507,14 @@ export default function TutorialPage() {
               <pre className="bg-ink text-bg p-3 rounded text-xs leading-relaxed overflow-x-auto">{`[
   {
     "name": "ketts",
-    "github": "t0k0shi",
     ...
   },
   {
     "name": "他の人",
-    "github": "you",
     ...
   },
   {
     "name": "自分",
-    "github": "me",
     ...
   }
 ]`}</pre>

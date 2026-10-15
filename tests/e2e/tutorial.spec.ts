@@ -66,7 +66,8 @@ test.describe('Tutorial page (v4)', () => {
       'コンフリクトが起きた場合は？',
       'コマンドラインでやりたい場合は？',
       'JSONの形式が不正',
-      '他のエントリが削除されています',
+      '他の人のエントリが削除または変更されています',
+      '本名を出したくない',
     ];
     for (const q of knownQuestions) {
       const item = page.getByText(q).first();
