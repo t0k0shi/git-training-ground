@@ -2,7 +2,7 @@
 
 - **Status**: Accepted
 - **Date**: 2026-10-15
-- **Supersedes**: [ADR-0013](./0013-check-handle-matches-pr-author.md)（`github` が PR を出した人と同じかの検査）。検査そのものの削除は v6 の T6-03 で行う
+- **Supersedes**: [ADR-0013](./0013-check-handle-matches-pr-author.md)（`github` が PR を出した人と同じかの検査）。`check-handle.yml`・`scripts/check-contributor-handle.mjs` は 2026-10-15 に削除した（必須チェックからも外した）
 - **Related**: [ADR-0007](./0007-use-pull-request-target-for-ai-review.md)、[ADR-0011](./0011-guard-changed-files-on-pull-request-target.md)
 
 ## Context
