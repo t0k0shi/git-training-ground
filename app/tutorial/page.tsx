@@ -401,7 +401,7 @@ export default function TutorialPage() {
               PR の画面に <strong>「Update branch」</strong> ボタンが出たら押してください。ほかの人の PR が先にマージされて、あなたの PR が古くなっている、という意味です。押すと最新の内容に追いつき、CI がもう一度動きます。
             </p>
             <p className="text-sm text-ink-2 mt-3">
-              初めて PR を出したときは、一部のチェックが <strong>「承認待ち」</strong>（Waiting for approval）のまま止まることがあります。管理人が承認すると動き出すので、そのまま待ってください。
+              初めて PR を出したときは、一部のチェックが <strong>「承認待ち」</strong>（Waiting for approval）のまま止まることがあります。管理人が承認すると動き出します。承認は管理人が手で行うので、長いと数日かかることがあります。何かをやり直す必要はないので、気長にお待ちください。
             </p>
           </StepGuide>
 
