@@ -3,8 +3,10 @@
  * contributors.json の 1 要素に対応する
  */
 export interface Contributor {
+  /** サイトに表示する名前（ニックネーム） */
   name: string;
-  github: string;
+  /** v5 までの欄。表示にもアバターにも使わない（ADR-0016） */
+  github?: string;
   favoriteColor: string;
   favoriteEmoji: string;
   message: string;
@@ -14,11 +16,19 @@ export interface Contributor {
 /**
  * ビルド時に派生した拡張型（コンポーネントに渡す際に使用）
  */
-export interface ContributorWithDerived extends Contributor {
-  /** エントリごとに一意なキー（2回目以降の参加の +数字を含む）。React の key に使う */
+export interface ContributorWithDerived extends Omit<Contributor, 'github'> {
+  /** React の key。contributors.json での位置から作る（"entry-0" など） */
   id: string;
-  /** アバターと表示に使う GitHub のハンドル（+数字を除く） */
-  handle: string;
-  avatarUrl: string;
+  /** エントリを追加した人のアバターの URL。わからなければ null */
+  avatarUrl: string | null;
   isNew: boolean;
+}
+
+/** scripts/build-avatars.mjs が書き出す data/avatars.generated.json の 1 件 */
+export interface AvatarEntry {
+  index: number;
+  login: string | null;
+  id: number | null;
+  source: 'pr' | 'commit' | 'none';
+  pr: number | null;
 }

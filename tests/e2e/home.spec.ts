@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import contributors from '../../data/contributors.json';
 
 // Issue #22 対応: v4 トップページの E2E テスト
 // app/page.tsx は 6 セクション (Hero / Concept / HelpWanted / Steps / Contributors / Footer) で構成される
@@ -135,5 +136,23 @@ test.describe('Home page (v4)', () => {
     await page.waitForLoadState('networkidle');
     const allIssues = [...errors, ...failedUrls];
     expect(allIssues, allIssues.join('\n')).toEqual([]);
+  });
+  // ハンドル名が本名に近い人もいるため、サイトに出すのは name だけにする（カード・泡・ツールチップ・画像の alt）
+  test('github のハンドル名をページに出さず、name を出す', async ({ page }) => {
+    const handles = contributors
+      .filter((c) => c.name !== c.github)
+      .map((c) => c.github.replace(/\+\d+$/, ''));
+    await page.waitForLoadState('networkidle');
+    const cards = page.getByTestId('contributor-card');
+    await expect(cards.first()).toBeVisible();
+    for (const c of contributors) {
+      await expect(cards.filter({ hasText: c.name }).first()).toBeVisible();
+    }
+    const text = await page.locator('body').innerText();
+    const alts = await page.locator('img[alt]').evaluateAll((imgs) => imgs.map((img) => img.getAttribute('alt')));
+    for (const handle of handles) {
+      expect(text, `本文に ${handle} が出ている`).not.toContain(`@${handle}`);
+      expect(alts, `alt に ${handle} が出ている`).not.toContain(handle);
+    }
   });
 });

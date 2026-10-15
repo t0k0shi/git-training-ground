@@ -1,30 +1,40 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { ContributorCard } from '@/components/home/ContributorCard';
 import type { ContributorWithDerived } from '@/lib/types';
 
 const makeContributor = (overrides: Partial<ContributorWithDerived> = {}): ContributorWithDerived => ({
   name: 'ketts',
-  github: 't0k0shi',
   favoriteColor: '#E63946',
   favoriteEmoji: '🚀',
   message: 'はじめてのOSS貢献！',
   joinedAt: '2026-04-24',
-  id: 't0k0shi',
-  handle: 't0k0shi',
-  avatarUrl: 'https://github.com/t0k0shi.png?size=80',
+  id: 'entry-0',
+  avatarUrl: 'https://avatars.githubusercontent.com/u/3?s=80',
   isNew: false,
   ...overrides,
 });
 
 describe('ContributorCard', () => {
-  it('favoriteEmoji / @handle / message / 参加日を表示する', () => {
+  it('favoriteEmoji / name / message / 参加日を表示する', () => {
     render(<ContributorCard contributor={makeContributor()} />);
 
     expect(screen.getByText('🚀')).toBeInTheDocument();
-    expect(screen.getByText('@t0k0shi')).toBeInTheDocument();
+    expect(screen.getByText('ketts')).toBeInTheDocument();
     expect(screen.getByText('「はじめてのOSS貢献！」')).toBeInTheDocument();
     expect(screen.getByText('2026/04/24')).toBeInTheDocument();
+  });
+
+  it('github のハンドル名はカードに表示しない（本名に近いハンドル名の人もいるため、表示は name だけ）', () => {
+    const { container } = render(<ContributorCard contributor={makeContributor()} />);
+    expect(container.textContent).not.toContain('t0k0shi');
+    expect(container.innerHTML).not.toContain('alt="t0k0shi"');
+  });
+
+  it('アバターがない（avatarUrl が null）ときは img を出さない', () => {
+    const { container } = render(<ContributorCard contributor={makeContributor({ avatarUrl: null })} />);
+    expect(container.querySelector('img')).toBeNull();
+    expect(screen.getByText('ketts')).toBeInTheDocument();
   });
 
   it('isNew=true のとき NEW バッジが表示される', () => {
@@ -39,19 +49,15 @@ describe('ContributorCard', () => {
 
   it('アバター img の src に avatarUrl が設定される', () => {
     render(<ContributorCard contributor={makeContributor()} />);
-    const img = screen.getByAltText('t0k0shi') as HTMLImageElement;
-    expect(img.src).toContain('github.com/t0k0shi.png');
+    const img = screen.getByAltText('ketts') as HTMLImageElement;
+    expect(img.src).toBe('https://avatars.githubusercontent.com/u/3?s=80');
     expect(img.getAttribute('loading')).toBe('lazy');
   });
 
-  it('onError で img の display が none になる', () => {
-    render(<ContributorCard contributor={makeContributor()} />);
-    const img = screen.getByAltText('t0k0shi') as HTMLImageElement;
-
-    // Simulate image load error
-    img.dispatchEvent(new Event('error'));
-
-    expect(img.style.display).toBe('none');
+  it('アバターの読み込みに失敗したら img を消す', () => {
+    const { container } = render(<ContributorCard contributor={makeContributor()} />);
+    fireEvent.error(screen.getByAltText('ketts'));
+    expect(container.querySelector('img')).toBeNull();
   });
 
   it('favoriteColor がボーダー色に反映される', () => {

@@ -6,34 +6,32 @@ import type { ContributorWithDerived } from '@/lib/types';
 
 const makeContributor = (overrides: Partial<ContributorWithDerived> = {}): ContributorWithDerived => ({
   name: 'user',
-  github: 'user',
   favoriteColor: '#123456',
   favoriteEmoji: '🎉',
   message: 'hi',
   joinedAt: '2026-04-24',
-  id: 'user',
-  handle: 'user',
-  avatarUrl: 'https://github.com/user.png?size=80',
+  id: 'entry-0',
+  avatarUrl: 'https://avatars.githubusercontent.com/u/3?s=80',
   isNew: false,
   ...overrides,
 });
 
 const mixed: ContributorWithDerived[] = [
-  makeContributor({ id: 'alice', handle: 'alice', github: 'alice', isNew: true }),
-  makeContributor({ id: 'bob', handle: 'bob', github: 'bob', isNew: false }),
-  makeContributor({ id: 'carol', handle: 'carol', github: 'carol', isNew: true }),
-  makeContributor({ id: 'dave', handle: 'dave', github: 'dave', isNew: false }),
+  makeContributor({ id: 'alice', name: 'alice', isNew: true }),
+  makeContributor({ id: 'bob', name: 'bob', isNew: false }),
+  makeContributor({ id: 'carol', name: 'carol', isNew: true }),
+  makeContributor({ id: 'dave', name: 'dave', isNew: false }),
 ];
 
 describe('ContributorsSection', () => {
   it('同じ人の 2 回目の参加（+2）も別のカードとして表示し、key がぶつからない', () => {
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     const twice = [
-      makeContributor({ id: 'alice', handle: 'alice', github: 'alice', message: '1回目' }),
-      makeContributor({ id: 'alice+2', handle: 'alice', github: 'alice+2', message: '2回目' }),
+      makeContributor({ id: 'alice', name: 'alice', message: '1回目' }),
+      makeContributor({ id: 'alice+2', name: 'alice', message: '2回目' }),
     ];
     render(<ContributorsSection contributors={twice} />);
-    expect(screen.getAllByText('@alice')).toHaveLength(2);
+    expect(screen.getAllByText('alice')).toHaveLength(2);
     const keyWarnings = errorSpy.mock.calls.filter((args) => String(args[0]).includes('same key'));
     errorSpy.mockRestore();
     expect(keyWarnings).toEqual([]);
@@ -46,10 +44,10 @@ describe('ContributorsSection', () => {
 
   it('初期表示は全員フィルターで全 contributors を表示する', () => {
     render(<ContributorsSection contributors={mixed} />);
-    expect(screen.getByText('@alice')).toBeInTheDocument();
-    expect(screen.getByText('@bob')).toBeInTheDocument();
-    expect(screen.getByText('@carol')).toBeInTheDocument();
-    expect(screen.getByText('@dave')).toBeInTheDocument();
+    expect(screen.getByText('alice')).toBeInTheDocument();
+    expect(screen.getByText('bob')).toBeInTheDocument();
+    expect(screen.getByText('carol')).toBeInTheDocument();
+    expect(screen.getByText('dave')).toBeInTheDocument();
   });
 
   it('セグメント「今週の新顔」ボタンのラベルに isNew の件数が含まれる', () => {
@@ -64,10 +62,10 @@ describe('ContributorsSection', () => {
 
     await user.click(screen.getByRole('button', { name: /今週の新顔/ }));
 
-    expect(screen.getByText('@alice')).toBeInTheDocument();
-    expect(screen.getByText('@carol')).toBeInTheDocument();
-    expect(screen.queryByText('@bob')).not.toBeInTheDocument();
-    expect(screen.queryByText('@dave')).not.toBeInTheDocument();
+    expect(screen.getByText('alice')).toBeInTheDocument();
+    expect(screen.getByText('carol')).toBeInTheDocument();
+    expect(screen.queryByText('bob')).not.toBeInTheDocument();
+    expect(screen.queryByText('dave')).not.toBeInTheDocument();
   });
 
   it('「全員」に戻すと再び全 contributors が表示される', async () => {
@@ -77,7 +75,7 @@ describe('ContributorsSection', () => {
     await user.click(screen.getByRole('button', { name: /今週の新顔/ }));
     await user.click(screen.getByRole('button', { name: /全員/ }));
 
-    expect(screen.getByText('@bob')).toBeInTheDocument();
-    expect(screen.getByText('@dave')).toBeInTheDocument();
+    expect(screen.getByText('bob')).toBeInTheDocument();
+    expect(screen.getByText('dave')).toBeInTheDocument();
   });
 });

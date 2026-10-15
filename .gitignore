@@ -46,3 +46,6 @@ next-env.d.ts
 # python
 __pycache__/
 *.pyc
+
+# scripts/build-avatars.mjs が公開のビルドで書き出す（コミットしない）
+data/avatars.generated.json

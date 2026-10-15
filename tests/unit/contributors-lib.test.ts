@@ -128,91 +128,104 @@ describe('entryKey', () => {
   });
 });
 
+const AVATARS_PATH = /avatars\.generated\.json$/;
+
+// contributors.json と avatars.generated.json の読み込みを、パスで分けて差し替える
+function mockFiles(contributors: unknown[], avatars?: unknown) {
+  vi.mocked(fs.readFile).mockImplementation((async (p: unknown) => {
+    if (AVATARS_PATH.test(String(p))) {
+      if (avatars === undefined) throw Object.assign(new Error('ENOENT'), { code: 'ENOENT' });
+      return JSON.stringify(avatars);
+    }
+    return JSON.stringify(contributors);
+  }) as typeof fs.readFile);
+}
+
+const base = {
+  favoriteColor: '#E63946',
+  favoriteEmoji: '🚀',
+  message: 'hi',
+  joinedAt: '2026-04-24',
+};
+
 describe('getContributors', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it('contributors.json を読み込んで ContributorWithDerived[] を返す', async () => {
-    const mockData = JSON.stringify([
-      {
-        name: 'ketts',
-        github: 't0k0shi',
-        favoriteColor: '#E63946',
-        favoriteEmoji: '🚀',
-        message: 'はじめてのOSS貢献！',
-        joinedAt: '2026-04-24',
-      },
-    ]);
-    vi.mocked(fs.readFile).mockResolvedValue(mockData);
+    mockFiles([{ ...base, name: 'ketts', github: 't0k0shi' }], {
+      entries: [{ index: 0, login: 't0k0shi', id: 3, source: 'commit', pr: null }],
+    });
 
-    // getContributors の now を注入できないため、最低限の構造チェック
     const result = await getContributors();
 
     expect(result).toHaveLength(1);
     expect(result[0].name).toBe('ketts');
-    expect(result[0].handle).toBe('t0k0shi');
-    expect(result[0].avatarUrl).toBe('https://github.com/t0k0shi.png?size=80');
     expect(typeof result[0].isNew).toBe('boolean');
   });
 
-  it('github フィールドが URL 形式でも handle を正しく抽出する', async () => {
-    const mockData = JSON.stringify([
-      {
-        name: 'testuser',
-        github: 'https://github.com/testuser',
-        favoriteColor: '#123456',
-        favoriteEmoji: '🎉',
-        message: 'test',
-        joinedAt: '2026-04-24',
-      },
-    ]);
-    vi.mocked(fs.readFile).mockResolvedValue(mockData);
+  it('アバターは生成ファイルの追加者の ID から作る（github 欄は使わない）', async () => {
+    mockFiles([{ ...base, name: 'MissuN.uy', github: 'MissuN.uy' }], {
+      entries: [{ index: 0, login: 'Fujii-Sys26', id: 123, source: 'pr', pr: 73 }],
+    });
 
     const result = await getContributors();
 
-    expect(result[0].handle).toBe('testuser');
-    expect(result[0].avatarUrl).toBe('https://github.com/testuser.png?size=80');
+    expect(result[0].avatarUrl).toBe('https://avatars.githubusercontent.com/u/123?s=80');
   });
 
-  it('2回目の参加（+2）は、同じハンドルとアバターで、別の id になる', async () => {
-    const base = {
-      name: 'ketts',
-      favoriteColor: '#E63946',
-      favoriteEmoji: '🚀',
-      message: 'hi',
-      joinedAt: '2026-04-24',
-    };
-    vi.mocked(fs.readFile).mockResolvedValue(
-      JSON.stringify([
-        { ...base, github: 't0k0shi' },
-        { ...base, github: 't0k0shi+2' },
-      ]),
-    );
+  it('GitHub のユーザー名を、表示に渡すデータに含めない', async () => {
+    mockFiles([{ ...base, name: 'ketts', github: 't0k0shi' }], {
+      entries: [{ index: 0, login: 't0k0shi', id: 3, source: 'commit', pr: null }],
+    });
+
+    const [c] = await getContributors();
+
+    expect(c).not.toHaveProperty('handle');
+    expect(c).not.toHaveProperty('github');
+    expect(JSON.stringify(c)).not.toContain('t0k0shi');
+  });
+
+  it('追加者がわからないエントリは、アバターなし', async () => {
+    mockFiles([{ ...base, name: 'a' }], { entries: [{ index: 0, login: null, id: null, source: 'none', pr: null }] });
 
     const result = await getContributors();
 
-    expect(result.map((c) => c.handle)).toEqual(['t0k0shi', 't0k0shi']);
-    expect(result[1].avatarUrl).toBe('https://github.com/t0k0shi.png?size=80');
-    expect(result.map((c) => c.id)).toEqual(['t0k0shi', 't0k0shi+2']);
+    expect(result[0].avatarUrl).toBeNull();
+  });
+
+  it('生成ファイルがない（ローカル・PR の CI）ときは、全員アバターなしでエラーにしない', async () => {
+    mockFiles([{ ...base, name: 'a' }, { ...base, name: 'b' }]);
+
+    const result = await getContributors();
+
+    expect(result.map((c) => c.avatarUrl)).toEqual([null, null]);
+  });
+
+  it('生成ファイルの件数がエントリの件数と合わないときは、全員アバターなし（古いファイルを使わない）', async () => {
+    mockFiles([{ ...base, name: 'a' }, { ...base, name: 'b' }], {
+      entries: [{ index: 0, login: 'x', id: 1, source: 'pr', pr: 1 }],
+    });
+
+    const result = await getContributors();
+
+    expect(result.map((c) => c.avatarUrl)).toEqual([null, null]);
+  });
+
+  it('id は位置から作る（同じ人の 2 回目、中身が同じ 2 件でも重ならない）', async () => {
+    mockFiles([{ ...base, name: 'a' }, { ...base, name: 'a' }]);
+
+    const result = await getContributors();
+
+    expect(result.map((c) => c.id)).toEqual(['entry-0', 'entry-1']);
   });
 
   it('joinedAt が 7 日以内の場合 isNew が true になる', async () => {
-    const mockData = JSON.stringify([
-      {
-        name: 'newuser',
-        github: 'newuser',
-        favoriteColor: '#AABBCC',
-        favoriteEmoji: '✨',
-        message: 'new!',
-        joinedAt: '2026-04-24',
-      },
-    ]);
-    vi.mocked(fs.readFile).mockResolvedValue(mockData);
+    mockFiles([{ ...base, name: 'newuser' }]);
 
     const result = await getContributors();
 
-    // 実行時の日付が 2026-04-24 から 7 日以内であれば true
     // テスト環境では実際の現在日時を使うため、isNew の型のみ確認
     expect(typeof result[0].isNew).toBe('boolean');
   });

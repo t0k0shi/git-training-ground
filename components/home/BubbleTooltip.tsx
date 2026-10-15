@@ -25,8 +25,8 @@ export function BubbleTooltip({ contributor, x, y }: BubbleTooltipProps) {
       }}
       className="px-4 py-3 rounded-xl shadow-card min-w-[180px] max-w-[240px]"
     >
-      <p className="font-mono font-semibold text-ink text-sm">
-        @{contributor.handle}
+      <p className="font-semibold text-ink text-sm truncate">
+        {contributor.name}
       </p>
       <p className="text-muted text-xs mt-1">
         joined {contributor.joinedAt}
