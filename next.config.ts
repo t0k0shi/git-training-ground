@@ -12,6 +12,9 @@ process.env.NEXT_PUBLIC_BASE_PATH = basePath;
 
 const nextConfig: NextConfig = {
   output: "export",
+  // ページを tutorial/index.html の形で書き出す。GitHub Pages では /tutorial/ がこのファイルで開き、
+  // /tutorial は /tutorial/ に転送される。tutorial.html だけだと /tutorial/ が 404 になる
+  trailingSlash: true,
   basePath,
   assetPrefix: basePath,
   env: {

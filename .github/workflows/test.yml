@@ -42,3 +42,7 @@ jobs:
       # 素の <a href="/..."> は GitHub Pages で basePath が付かず 404 になる。通常のビルドの E2E では見つからないため、ここで確かめる
       - name: Check links have the basePath
         run: node scripts/check-base-path-links.mjs out /git-training-ground
+
+      # GitHub Pages は /tutorial/ を tutorial/index.html で返す。tutorial.html しかないと 404 になる（trailingSlash: true で作る）
+      - name: Check pages open with a trailing slash
+        run: test -f out/tutorial/index.html || { echo "❌ out/tutorial/index.html がありません。/tutorial/ が 404 になります（next.config.ts の trailingSlash を確かめてください）"; exit 1; }
