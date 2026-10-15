@@ -78,4 +78,26 @@ describe('ContributorsSection', () => {
     expect(screen.getByText('bob')).toBeInTheDocument();
     expect(screen.getByText('dave')).toBeInTheDocument();
   });
+  // contributors.json の並び（追加された順）の逆。joinedAt は手で書くので、並びには使わない
+  it('カードは新しく追加された順（contributors.json の後ろから）に並ぶ', () => {
+    render(<ContributorsSection contributors={mixed} />);
+    const names = screen.getAllByTestId('contributor-card').map((card) => card.querySelector('p')?.textContent);
+    expect(names).toEqual(['dave', 'carol', 'bob', 'alice']);
+  });
+
+  it('「今週の新顔」でも新しい順に並ぶ', async () => {
+    const user = userEvent.setup();
+    render(<ContributorsSection contributors={mixed} />);
+
+    await user.click(screen.getByRole('button', { name: /今週の新顔/ }));
+
+    const names = screen.getAllByTestId('contributor-card').map((card) => card.querySelector('p')?.textContent);
+    expect(names).toEqual(['carol', 'alice']);
+  });
+
+  it('並べ替えても、渡された配列は書き換えない', () => {
+    const input = [...mixed];
+    render(<ContributorsSection contributors={input} />);
+    expect(input.map((c) => c.name)).toEqual(['alice', 'bob', 'carol', 'dave']);
+  });
 });
