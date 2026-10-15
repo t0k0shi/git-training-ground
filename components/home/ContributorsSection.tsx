@@ -18,9 +18,13 @@ export function ContributorsSection({ contributors }: ContributorsSectionProps) 
     [contributors],
   );
 
+  // 新しく追加された人を上に出す。contributors.json は追加された順に並んでいるので、後ろから並べる
+  // （joinedAt は参加者が手で書くので、並びには使わない）
+  const newestFirst = useMemo(() => [...contributors].reverse(), [contributors]);
+
   const visible = useMemo(
-    () => (filter === 'all' ? contributors : contributors.filter((c) => c.isNew)),
-    [contributors, filter],
+    () => (filter === 'all' ? newestFirst : newestFirst.filter((c) => c.isNew)),
+    [newestFirst, filter],
   );
 
   return (
