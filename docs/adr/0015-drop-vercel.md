@@ -12,7 +12,7 @@ ADR-0010 では、初心者がマージ前に自分のカードの見た目を�
 
 ## Decision
 
-- Vercel とリポジトリの連携を外す（GitHub の Vercel アプリのリポジトリのアクセスから外すか、Vercel のプロジェクトで Git の連携を解除する。管理人が手で行う）。
+- Vercel とリポジトリの連携を外す（管理人が手で行う）。2026-10-15 に外し、Vercel のプロジェクトも削除した。PR #67 に空のコミットを push して Vercel のチェックが付かないこと、`git-training-ground.vercel.app` が 404 を返すことを確かめた。
 - サイトの公開は GitHub Pages（`deploy.yml`）だけにする。
 - チュートリアルの手順 8 と FAQ から Vercel の案内を消し、代わりに、初めての PR でチェックが「承認待ち」になることを案内する（承認の設定は `first_time_contributors` のまま）。
 
@@ -28,4 +28,4 @@ ADR-0010 では、初心者がマージ前に自分のカードの見た目を�
 
 - **Positive**: 参加者の PR のチェックが、必須のもの（GitHub Actions）だけになる。
 - **Negative**: マージ前に見た目を確認する手段がない。必要になったら、GitHub Actions でビルドした成果物を Artifacts に置く形を検討する。
-- **関連**: Vercel 側のプロジェクト（`git-training-ground.vercel.app`）を消すかは管理人が決める。残すと、古い URL が外部リンクで使われ続ける（ADR-0010 の Negative）。
+- **関連**: Vercel 側のプロジェクト（`git-training-ground.vercel.app`）は 2026-10-15 に削除した。古い URL は 404 になるので、ADR-0010 の Negative（古い URL が外部リンクで使われ続ける）は解消した。古いリンクを見つけたら GitHub Pages の URL に直す。
