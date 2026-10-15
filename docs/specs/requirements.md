@@ -78,7 +78,7 @@ Git/GitHub 未経験者が「はじめてのPull Request」を安全に体験で
 | ID | 要件 | 優先度 |
 |----|------|--------|
 | F-030 | PR時の自動バリデーション（validate-pr.yml） | Must |
-| F-031 | main push時のVercel自動デプロイ | Must |
+| F-031 | main push時の GitHub Pages 自動デプロイ（ADR-0010・ADR-0015 で Vercel から変更） | Must |
 
 ## 3. 非機能要件
 

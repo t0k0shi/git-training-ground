@@ -19,7 +19,7 @@
 
 詳しくは[チュートリアル](https://t0k0shi.github.io/git-training-ground/tutorial)をご覧ください。
 
-正式なサイトは [GitHub Pages](https://t0k0shi.github.io/git-training-ground/) で公開しています。Vercel は PR ごとのプレビューにだけ使っています。
+サイトは [GitHub Pages](https://t0k0shi.github.io/git-training-ground/) で公開しています。
 
 ## 技術スタック
 

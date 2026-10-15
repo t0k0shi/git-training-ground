@@ -4,7 +4,7 @@
 
 ```
 ┌─────────────────────────────────────────────────┐
-│                   Vercel (Hosting)               │
+│               GitHub Pages (Hosting)             │
 │  ┌─────────────────────────────────────────────┐ │
 │  │         Next.js 16 (SSG / Static Export)    │ │
 │  │                                             │ │
@@ -39,7 +39,7 @@
 | 言語 | TypeScript | 5.x |
 | テスト (単体) | vitest + Testing Library | 4.x |
 | テスト (E2E) | Playwright | 1.58.x |
-| ホスティング | Vercel | - |
+| ホスティング | GitHub Pages（`deploy.yml`）。ADR-0015 で Vercel をやめた | - |
 | CI | GitHub Actions | - |
 
 ## 3. ディレクトリ構成
