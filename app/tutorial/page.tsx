@@ -140,7 +140,7 @@ export default function TutorialPage() {
                 コマンドラインで操作したい方へ
               </summary>
               <div className="mt-3 space-y-2 text-ink-2">
-                <p>作業用ブランチを作成してから編集します。<code className="bg-slate-100 px-1 rounded">&lt;yourname&gt;</code> は半角英数字のハンドル名に置き換えてください（ひらがな・漢字・空白は不可）。</p>
+                <p>作業用ブランチを作成してから編集します。<code className="bg-slate-100 px-1 rounded">&lt;yourname&gt;</code> は自分の名前（ニックネームでもかまいません）に置き換えてください。ブランチ名には、半角の英数字とハイフン（-）だけを使います。</p>
                 <CodeBlock code="git switch -c add-<yourname>" />
                 <p className="mt-2">例: <code className="bg-slate-100 px-1 rounded">git switch -c add-oginochihiro</code></p>
                 <p>その後、お好きなエディタで <code className="bg-slate-100 px-1 rounded">data/contributors.json</code> を開きます。</p>
@@ -265,7 +265,7 @@ export default function TutorialPage() {
             </figure>
 
             <div className="bg-bg-2 rounded-lg border border-line p-4 text-sm space-y-2 mb-3">
-              <p><strong className="text-ink">Commit message:</strong> <code className="bg-white px-1.5 py-0.5 rounded">Add &lt;yourname&gt; to contributors</code>（<code className="bg-white px-1 rounded">&lt;yourname&gt;</code> は自分のハンドル名に置換）</p>
+              <p><strong className="text-ink">Commit message:</strong> <code className="bg-white px-1.5 py-0.5 rounded">Add &lt;yourname&gt; to contributors</code>（<code className="bg-white px-1 rounded">&lt;yourname&gt;</code> は自分の名前に置換。この形はおすすめで、違っていてもかまいません）</p>
               <p><strong className="text-ink">選択:</strong> 「Create a new branch for this commit and start a pull request」を選ぶ</p>
               <p><strong className="text-ink">ブランチ名:</strong> <code className="bg-white px-1.5 py-0.5 rounded">add-&lt;yourname&gt;</code> のように設定（例: <code className="bg-white px-1 rounded">add-oginochihiro</code>）</p>
             </div>
@@ -280,7 +280,7 @@ export default function TutorialPage() {
 
             <div className="bg-paper border-l-4 border-accent rounded-lg p-4 text-sm mb-3">
               <p className="text-ink-2">
-                <strong>ブランチ名の注意:</strong> 半角英数字とハイフンのみ使用してください。ひらがな・漢字・空白は使えません。
+                <strong>ブランチ名の注意:</strong> 半角の英数字とハイフン（<code className="bg-white px-1 rounded">-</code>）だけにしてください。全角の文字（ひらがな・漢字・全角のハイフン「－」）、空白、<code className="bg-white px-1 rounded">!</code> などの記号は避けます。
               </p>
             </div>
 
@@ -365,8 +365,8 @@ export default function TutorialPage() {
             </figure>
 
             <div className="bg-bg-2 rounded-lg border border-line p-4 text-sm space-y-2 mb-3">
-              <p><strong className="text-ink">Title:</strong> <code className="bg-white px-1.5 py-0.5 rounded">Add &lt;yourname&gt; to contributors</code>（コミットメッセージが自動入力されます）</p>
-              <p><strong className="text-ink">Description:</strong> テンプレートが入っています。「チェックリスト」の項目を確かめて、当てはまるものの <code className="bg-white px-1.5 py-0.5 rounded">[ ]</code> を <code className="bg-white px-1.5 py-0.5 rounded">[x]</code> に書き換えてください（PR を作ったあとでも、チェックボックスをクリックすれば付けられます）。「変更内容」は空欄でもOKです</p>
+              <p><strong className="text-ink">Title:</strong> コミットメッセージが自動で入ります。そのままで大丈夫です（<code className="bg-white px-1.5 py-0.5 rounded">Add &lt;yourname&gt; to contributors</code> の形はおすすめですが、違っていてもかまいません。CI ではタイトルを検査しません）</p>
+              <p><strong className="text-ink">Description:</strong> テンプレートが入っています。「チェックリスト」の項目を確かめて、当てはまるものの <code className="bg-white px-1.5 py-0.5 rounded">[ ]</code> を <code className="bg-white px-1.5 py-0.5 rounded">[x]</code> に書き換えてください（PR を作ったあとでも、チェックボックスをクリックすれば付けられます）。「変更内容」は書かなくてもかまいません</p>
             </div>
             <p>
               内容を確認して「<strong>Create pull request</strong>」をクリックしてください。

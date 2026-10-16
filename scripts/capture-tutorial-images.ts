@@ -139,6 +139,11 @@ interface ShotDefinition {
   mask?: string[];
   /** extendTop: 切り出し範囲を上に広げる量（px）。見出しやタブを一緒に写したいときに使う */
   clip?: { minHeight?: number; maxHeight?: number; extendTop?: number };
+  /**
+   * true なら、要素を画面の中央に合わせず、ページのいちばん上で撮る。
+   * 縦に長い要素を中央に合わせると下にスクロールし、GitHub の固定ヘッダー（PR のタイトルの帯）が上に重なるため
+   */
+  scrollToTop?: boolean;
 }
 
 interface ShotResult {
@@ -358,9 +363,13 @@ async function capture(page: Page, shot: ShotDefinition, ctx: CaptureContext, ou
   const highlight = await requireVisible(page, shot.highlight, `${shot.file} の強調対象`);
   const clipTarget = shot.clipTarget ? await requireVisible(page, shot.clipTarget, `${shot.file} の切り出し基準`) : highlight;
 
-  await highlight.evaluate((el) => el.scrollIntoView({ block: 'center', inline: 'center' }));
-  if (clipTarget !== highlight) {
-    await clipTarget.evaluate((el) => el.scrollIntoView({ block: 'center', inline: 'center' }));
+  if (shot.scrollToTop) {
+    await page.evaluate(() => window.scrollTo(0, 0));
+  } else {
+    await highlight.evaluate((el) => el.scrollIntoView({ block: 'center', inline: 'center' }));
+    if (clipTarget !== highlight) {
+      await clipTarget.evaluate((el) => el.scrollIntoView({ block: 'center', inline: 'center' }));
+    }
   }
   await page.waitForTimeout(300);
 
@@ -827,6 +836,8 @@ export const SHOTS: ShotDefinition[] = [
     highlight: CHECKS_LIST,
     // 「Checks」タブも一緒に写す
     clip: { extendTop: 110 },
+    // チェックの一覧は縦に長いので、中央に合わせると固定ヘッダー（アカウント名を含む）が重なる
+    scrollToTop: true,
   },
 ];
 
